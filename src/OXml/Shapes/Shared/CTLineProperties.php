@@ -1,0 +1,85 @@
+<?php
+
+namespace Imoing\Pptx\OXml\Shapes\Shared;
+
+use Imoing\Pptx\OXml\SimpleTypes\STLineWidth;
+use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
+use Imoing\Pptx\OXml\XmlChemy\Choice;
+use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
+use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
+use Imoing\Pptx\OXml\XmlChemy\ZeroOrOneChoice;
+use Imoing\Pptx\Util\Emu;
+use Imoing\Pptx\Util\Length;
+
+/**
+ * @property Length $w
+ * @property $eg_lineFillProperties
+ * @property $prstDash
+ * @property $custDash
+ */
+class CTLineProperties extends BaseOXmlElement
+{
+    #[ZeroOrOneChoice(choices:[
+        new Choice("a:noFill"),
+        new Choice("a:solidFill"),
+        new Choice("a:gradFill"),
+        new Choice("a:pattFill"),
+    ], successors: [
+        "a:prstDash",
+        "a:custDash",
+        "a:round",
+        "a:bevel",
+        "a:miter",
+        "a:headEnd",
+        "a:tailEnd",
+        "a:extLst",
+    ])]
+    protected $_eg_lineFillProperties;
+
+    #[ZeroOrOne("a:prstDash", successors: [
+        "a:custDash",
+        "a:round",
+        "a:bevel",
+        "a:miter",
+        "a:headEnd",
+        "a:tailEnd",
+        "a:extLst",
+    ])]
+    protected $_prstDash;
+
+    #[ZeroOrOne("a:custDash", successors: [
+        "a:custDash",
+        "a:round",
+        "a:bevel",
+        "a:miter",
+        "a:headEnd",
+        "a:tailEnd",
+        "a:extLst",
+    ])]
+    protected $_custDash;
+
+    #[OptionalAttribute("w", STLineWidth::class, default: new Emu(0))]
+    protected $_w;
+
+    public function getEg_fillProperties()
+    {
+        return $this->eg_lineFillProperties;
+    }
+
+    public function getPrstDash_val()
+    {
+        $prstDash = $this->prstDash;
+        if (empty($prstDash)) {
+            return null;
+        }
+
+        return $prstDash->val;
+    }
+
+    public function setPrstDash_val($val): void
+    {
+        $this->_remove_custDash();
+        $prstDash = $this->get_or_add_prstDash();
+        $prstDash->val = $val;
+    }
+}

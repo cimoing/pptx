@@ -1,0 +1,25 @@
+{
+  "name": "imoing/pptx",
+  "description": "pptx inspired by python pptx",
+  "authors": [
+    {
+      "name": "Jake"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "\\Imoing\\Pptx\\": "src"
+    },
+    "files": [
+      "src/helper.php",
+      "src/bootstrap.php"
+    ]
+  },
+  "require": {
+    "php": "^8.2",
+    "ext-dom": "*",
+    "ext-json": "*",
+    "ext-zip": "*",
+    "ext-gd": "*"
+  }
+}
