@@ -10,4 +10,11 @@ class NoFill extends Fill
     {
         return MsoFillType::BACKGROUND;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'type' => 'none',
+        ];
+    }
 }

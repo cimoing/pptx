@@ -89,10 +89,7 @@ class Part extends RelatableMixin {
 
     protected function getRels(): Relationships
     {
-        if ($this->_rels === null) {
-            $this->_rels = new Relationships($this->getPartName()->getBaseURI());
-        }
-        return $this->_rels;
+        return $this->getRelationships();
     }
 
     /**
@@ -117,6 +114,9 @@ class Part extends RelatableMixin {
     private ?Relationships $_relations = null;
     public function getRelationships(): Relationships
     {
-        return $this->getRels();
+        if ($this->_relations === null) {
+            $this->_relations = new Relationships($this->partName->getBaseURI());
+        }
+        return $this->_relations;
     }
 }

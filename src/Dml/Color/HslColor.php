@@ -11,4 +11,9 @@ class HslColor extends Color
     {
         return MsoColorType::HSL;
     }
+
+    public function getRgb(): RGBColor
+    {
+        return RGBColor::fromString($this->_xClr->getHexValue());
+    }
 }

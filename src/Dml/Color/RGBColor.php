@@ -8,6 +8,7 @@ use Imoing\Pptx\Common\BaseObject;
  * @property int $r
  * @property int $g
  * @property int $b
+ * @property int $a
  */
 class RGBColor extends BaseObject
 {

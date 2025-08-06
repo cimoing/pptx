@@ -55,18 +55,26 @@ class SlidePart extends BaseSlidePart
         return $this->_slide;
     }
 
+    private ?int $_slideId = null;
     public function getSlideId(): int
     {
-        $presentationPart = $this->getPackage()->presentationPart;
+        if ($this->_slideId == null) {
+            $presentationPart = $this->getPackage()->presentationPart;
+            $this->_slideId = $presentationPart->getSlideId($this);
+        }
 
-        return $presentationPart->getSlideId($this);
+        return $this->_slideId;
     }
 
+    private ?SlideLayout $_slideLayout = null;
     public function getSlideLayout(): SlideLayout
     {
-        $layoutPart = $this->partRelatedBy(RT::SLIDE_LAYOUT);
-        assert($layoutPart instanceof SlideLayoutPart);
-        return $layoutPart->slideLayout;
+        if ($this->_slideLayout == null) {
+            $layoutPart = $this->partRelatedBy(RT::SLIDE_LAYOUT);
+            assert($layoutPart instanceof SlideLayoutPart);
+            $this->_slideLayout = $layoutPart->getSlideLayout();
+        }
+        return $this->_slideLayout;
     }
 
     private function addNotesSlidePart()
@@ -75,5 +83,10 @@ class SlidePart extends BaseSlidePart
         $this->relateTo($slidePart, RT::NOTES_SLIDE);
 
         return $slidePart;
+    }
+
+    public function getTheme()
+    {
+        return $this->getSlideLayout()->getSlideMaster();
     }
 }

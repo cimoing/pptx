@@ -30,6 +30,11 @@ class BaseObject
         return null;
     }
 
+    protected function getOriginProperty(string $name)
+    {
+        return array_key_exists($name, $this->_properties) ? $this->_properties[$name] : null;
+    }
+
     public function __set(string $name, $value)
     {
         if (method_exists($this, $setter = 'set' . ucfirst($name))) {

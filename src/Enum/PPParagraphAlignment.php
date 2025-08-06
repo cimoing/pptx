@@ -3,11 +3,13 @@
 namespace Imoing\Pptx\Enum;
 
 use Imoing\Pptx\Enum\Base\IBaseEnum;
+use Imoing\Pptx\Enum\Base\IBaseXmlEnum;
 use Imoing\Pptx\Enum\Base\TraitEnum;
+use Imoing\Pptx\Enum\Base\TraitXmlEnum;
 
-enum PPParagraphAlignment: int implements IBaseEnum
+enum PPParagraphAlignment: int implements IBaseXmlEnum
 {
-    use TraitEnum;
+    use TraitXmlEnum;
     case CENTER = 2;
     case DISTRIBUTE = 5;
     case JUSTIFY = 4;
@@ -17,20 +19,21 @@ enum PPParagraphAlignment: int implements IBaseEnum
     case THAI_DISTRIBUTE = 6;
     case MIXED = -2;
 
-
-    public function getDescription(): string
+    public static function getXmlValues(): array
     {
-        return match ($this) {
-            self::CENTER => "Center align",
-            self::DISTRIBUTE => "Evenly distributes e.g. Japanese characters from left to right within a line",
-            self::JUSTIFY => "Justified, i.e. each line both begins and ends at the margin.
-
-Spacing between words is adjusted such that the line exactly fills the width of the paragraph.",
-            self::JUSTIFY_LOW => "Justify using a small amount of space between words.",
-            self::LEFT => "Left aligned",
-            self::RIGHT => "Right aligned",
-            self::THAI_DISTRIBUTE => "Thai distributed",
-            self::MIXED => "Multiple alignments are present in a set of paragraphs (read-only).",
-        };
+        return [
+            self::CENTER->value => ['ctr', 'PP_ALIGN'],
+            self::DISTRIBUTE->value => ["dist", "Evenly distributes e.g. Japanese characters from left to right within a line"],
+            self::JUSTIFY->value => [
+                "just",
+                "Justified, i.e. each line both begins and ends at the margin.\n\nSpacing between words".
+                " is adjusted such that the line exactly fills the width of the paragraph."
+            ],
+            self::JUSTIFY_LOW->value => ["justLow", "Justify using a small amount of space between words."],
+            self::LEFT->value => ["l", "Left aligned"],
+            self::RIGHT->value => ["r", "Right aligned"],
+            self::THAI_DISTRIBUTE->value => ["thaiDist", "Thai distributed"],
+            self::MIXED->value => ["", "Multiple alignments are present in a set of paragraphs (read-only)."],
+        ];
     }
 }

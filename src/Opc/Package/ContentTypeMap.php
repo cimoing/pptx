@@ -34,7 +34,7 @@ class ContentTypeMap
         /**
          * @var CTTypes $element
          */
-        $element = parseXml('ct:Types', $xml);
+        $element = parseXml($xml);
         $defaults = [];
         $overrides = [];
 

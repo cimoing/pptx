@@ -18,6 +18,11 @@ trait TraitXmlEnum
         throw new \Exception(sprintf("%s has no XML mapping for %s", __CLASS__, $xmlValue));
     }
 
+    /**
+     * @param IBaseXmlEnum $value
+     * @return string
+     * @throws \Exception
+     */
     public static function toXml(IBaseXmlEnum $value): string
     {
         $xmlValue = $value->getXmlValue();

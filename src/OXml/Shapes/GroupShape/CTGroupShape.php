@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\OXml\Shapes\GroupShape;
 
+use Imoing\Pptx\Dml\Fill\Fill;
 use Imoing\Pptx\Enum\MsoConnectorType;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Ns\NsMap;
@@ -238,5 +239,15 @@ class CTGroupShape extends BaseShapeElement
         }
 
         return -1;
+    }
+
+    public function getFill(): ?Fill
+    {
+        $spPr = $this->grpSpPr;
+        if (empty($spPr) || empty($spPr->eg_fillProperties)) {
+            return null;
+        }
+
+        return Fill::create($spPr->eg_fillProperties);
     }
 }

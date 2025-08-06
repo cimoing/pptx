@@ -11,12 +11,4 @@ class NoneFill extends Fill
     {
         return null;
     }
-
-    public function toArray(): array
-    {
-        return [
-            'type' => 'color',
-            'value' => '#fff',
-        ];
-    }
 }

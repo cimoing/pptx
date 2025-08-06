@@ -23,4 +23,9 @@ class CTBlipFillProperties extends AbsFill
         $srcRect = $this->_add_srcRect();
         list($srcRect->l, $srcRect->t, $srcRect->r, $srcRect->b) = $cropping;
     }
+
+    public function getJsonType(): string
+    {
+        return 'image';
+    }
 }

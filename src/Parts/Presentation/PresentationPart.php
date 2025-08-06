@@ -3,8 +3,8 @@
 namespace Imoing\Pptx\Parts\Presentation;
 
 use Imoing\Pptx\Opc\Constants\RT;
+use Imoing\Pptx\Opc\Package\XmlPart;
 use Imoing\Pptx\Opc\PackURI;
-use Imoing\Pptx\Opc\XmlPart;
 use Imoing\Pptx\OXml\Presentation\CTPresentation;
 use Imoing\Pptx\Parts\CoreProps\CorePropertiesPart;
 use Imoing\Pptx\Parts\Slide\SlideMasterPart;
@@ -20,7 +20,6 @@ use Imoing\Pptx\Slide\SlideMaster;
  */
 class PresentationPart extends XmlPart
 {
-    protected static string $nsTag = 'p:presentation';
     public function addSlide(SlideLayout $slideLayout): array
     {
         $partName = $this->getNextSlidePartName();

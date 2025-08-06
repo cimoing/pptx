@@ -10,14 +10,13 @@ use Imoing\Pptx\OXml\Dml\Color\CTPresetColor;
  */
 class PrstColor extends Color
 {
-
     public function getColorType(): ?MsoColorType
     {
         return MsoColorType::PRESET;
     }
 
-    public function __toString(): string
+    public function getRgb(): RGBColor
     {
-        return $this->_xClr->val;
+        return RGBColor::fromString($this->_xClr->getHexValue());
     }
 }

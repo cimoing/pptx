@@ -2,7 +2,7 @@
 
 namespace Imoing\Pptx\Shared;
 
-use Imoing\Pptx\Opc\XmlPart;
+use Imoing\Pptx\Opc\Package\XmlPart;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\Types\ProvidesPart;
 

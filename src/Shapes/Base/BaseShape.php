@@ -20,6 +20,8 @@ use Imoing\Pptx\Util\Length;
  * @property Length $left
  * @property Length $top
  * @property Length $width
+ * @property bool $flipV
+ * @property bool $flipH
  * @property-read bool $isPlaceholder
  * @property string $name
  * @property-read BaseSlidePart $part
@@ -110,6 +112,26 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->cx = $width;
     }
 
+    public function getFlipV(): bool
+    {
+        return $this->_element->flipV;
+    }
+
+    public function setFlipV(bool $flipV): void
+    {
+        $this->_element->flipV = $flipV;
+    }
+
+    public function getFlipH(): bool
+    {
+        return $this->_element->flipH;
+    }
+
+    public function setFlipH(bool $flipH): void
+    {
+        $this->_element->flipH = $flipH;
+    }
+
     public function isPlaceholder(): bool
     {
         return $this->_element->hasPhElm;
@@ -129,7 +151,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     {
         $part = $this->_parent->getPart();
         assert($part instanceof BaseSlidePart);
-        return $this->part;
+        return $part;
     }
 
     public function getPlaceholderFormat(): PlaceholderFormat
@@ -163,4 +185,52 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     }
 
     abstract public function getShapeType(): MsoShapeType;
+
+    public function getTextArr(): array
+    {
+        return [
+
+        ];
+    }
+
+    public function getOutlineArr(): array
+    {
+        return [];
+    }
+
+    public function getShadowArr(): ?array
+    {
+        return [
+
+        ];
+    }
+
+    public function toArray(): array
+    {
+        $fill = $this->_element->getFill() ? $this->_element->getFill()->toArray() : null;
+
+        if (!empty($fill) && $fill['type'] == 'scheme') {
+            $theme = $this->_parent->getColorScheme();
+            $fill = [
+                'type' => 'color',
+                'color' => $theme[$fill['scheme']],
+            ];
+        }
+
+        return [
+            'id' => $this->shapeId,
+            'left' => $this->left->pt,
+            'top' => $this->top->pt,
+            'width' => $this->width->pt,
+            'height' => $this->height->pt,
+            'rotate' => $this->rotation,
+            'fill' => $fill,
+            'outline' => $this->getOutlineArr(),
+            'text' => $this->getTextArr(),
+            'flipH' => $this->flipH,
+            'flipV' => $this->flipV,
+            'name' => $this->name,
+        ];
+    }
+
 }

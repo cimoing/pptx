@@ -15,7 +15,7 @@ use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
  * @property-read SlideMaster $slideMaster
  * @property-read array $usedBySlides
  */
-class SlideLayout extends BasesLide
+class SlideLayout extends BaseSlide
 {
     /**
      * @return \Traversable<int,SlidePlaceholder>
@@ -72,10 +72,28 @@ class SlideLayout extends BasesLide
         return $items;
     }
 
+    private ?array $_colorScheme = null;
+    public function getColorScheme(): array
+    {
+        if (null === $this->_colorScheme) {
+            $this->_colorScheme = $this->getSlideMaster()->getColorScheme();
+        }
+
+        return $this->_colorScheme;
+    }
+
     public function toArray(): array
     {
+        $fill = $this->getBackground()->toArray();
+        if (!empty($fill) && $fill['type'] === 'scheme') {
+            $fill = [
+                'type' => 'color',
+                'color' => $this->getColorScheme()[$fill['scheme']],
+            ];
+        }
         return [
-            'fill' => $this->getBackground()->toArray(),
+            'fill' => $fill,
+            'name' => $this->name,
             'elements' => $this->getShapes()->toArray(),
         ];
     }

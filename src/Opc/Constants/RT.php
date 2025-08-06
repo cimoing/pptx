@@ -14,4 +14,7 @@ class RT
     const SLIDE_LAYOUT = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout";
     const SLIDE_MASTER = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster";
     const NOTES_SLIDE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide";
+
+    const THEME = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme";
+    const THEME_OVERRIDE = "http://schemas.openxmlformats.org/officeDocument/2006/relationships/themeOverride";
 }

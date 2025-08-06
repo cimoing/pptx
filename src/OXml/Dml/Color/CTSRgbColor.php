@@ -12,4 +12,9 @@ class CTSRgbColor extends BaseColorElement
 {
     #[RequiredAttribute("val", STHexColorRGB::class)]
     protected mixed $_val;
+
+    public function getHexValue(): string
+    {
+        return sprintf('#%s', $this->val);
+    }
 }

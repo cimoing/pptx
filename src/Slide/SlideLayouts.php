@@ -2,16 +2,17 @@
 
 namespace Imoing\Pptx\Slide;
 
-use Imoing\Pptx\Common\TraitArrayAccess;
 use Imoing\Pptx\OXml\Slide\CTSlideLayoutIdList;
 use Imoing\Pptx\Parts\Slide\SlideMasterPart;
 use Imoing\Pptx\Shared\ParentedElementProxy;
+use IteratorAggregate;
 use Traversable;
 
 /**
  * @property SlideMasterPart $part
+ * @property SlideMaster $parent
  */
-class SlideLayouts extends ParentedElementProxy implements \IteratorAggregate
+class SlideLayouts extends ParentedElementProxy implements IteratorAggregate
 {
 
     protected CTSlideLayoutIdList $_sldLayoutIdLst;
@@ -29,7 +30,7 @@ class SlideLayouts extends ParentedElementProxy implements \IteratorAggregate
     }
 
     /**
-     * @return Traversable<int, SlideLayout>
+     * @return Traversable<int,SlideLayout>
      */
     public function getIterator(): Traversable
     {

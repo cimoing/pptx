@@ -4,8 +4,8 @@ namespace Imoing\Pptx\Parts\CoreProps;
 
 use DateTime;
 use Imoing\Pptx\Opc\Constants\ContentType;
+use Imoing\Pptx\Opc\Package\XmlPart;
 use Imoing\Pptx\Opc\PackURI;
-use Imoing\Pptx\Opc\XmlPart;
 use Imoing\Pptx\OXml\CoreProps\CTCoreProperties;
 use Imoing\Pptx\Package\Package;
 

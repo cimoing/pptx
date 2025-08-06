@@ -20,14 +20,14 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 class CTNonVisualDrawingProps extends BaseOXmlElement
 {
     #[ZeroOrOne("a:hlinkClick", successors: ["a:hlinkHover", "a:extLst"])]
-    protected ?CTHyperlink $hlinkClick;
+    protected ?CTHyperlink $_hlinkClick;
 
     #[ZeroOrOne("a:hlinkHover", successors: ["a:extLst"])]
-    protected ?CTHyperlink $hlinkHover;
+    protected ?CTHyperlink $_hlinkHover;
 
     #[RequiredAttribute("id", STDrawingElementId::class)]
-    public string $id;
+    protected string $_id;
 
     #[RequiredAttribute("name", XsdString::class)]
-    protected string $name;
+    protected string $_name;
 }

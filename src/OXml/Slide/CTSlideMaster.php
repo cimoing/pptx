@@ -8,6 +8,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 
 /**
  * @method CTSlideLayoutIdList get_or_add_sldLayoutIdLst()
+ * @property ?CTColorMap $clrMap
  */
 class CTSlideMaster extends BaseOXmlElement
 {
@@ -16,4 +17,10 @@ class CTSlideMaster extends BaseOXmlElement
 
     #[ZeroOrOne("p:sldLayoutIdLst", successors: ["p:transition", "p:timing", "p:hf", "p:txStyles", "p:extLst",])]
     protected CTSlideLayoutIdList $_sldLayoutIdLst;
+
+    #[ZeroOrOne("p:clrMap")]
+    protected mixed $_clrMap;
+
+    #[ZeroOrOne("p:txStyles")]
+    protected mixed $_txStyles;
 }

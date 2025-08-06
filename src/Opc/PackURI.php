@@ -84,7 +84,16 @@ class PackURI extends BaseObject
     // Simulated posixpath functions for compatibility
     private static function posixJoin(...$parts): string
     {
-        return implode('/', $parts);
+        $path = '';
+        foreach ($parts as $part) {
+            if (str_starts_with($part, '/')) {
+                $path = $part;
+            } else {
+                $path = str_ends_with($path, '/') ? $path . $part : sprintf('%s/%s', $path, $part);
+            }
+        }
+
+        return $path;
     }
 
     private static function posixAbs(string $path): string

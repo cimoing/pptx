@@ -149,7 +149,7 @@ class PackageLoader {
             return CTRelationships::create();
         }
 
-        $obj = \parseXml('pr:Relationships',$relXml); // 假设 parseXml 是一个可用函数
+        $obj = \parseXml($relXml); // 假设 parseXml 是一个可用函数
         assert($obj instanceof CTRelationships);
         return $obj;
     }

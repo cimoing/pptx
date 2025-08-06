@@ -14,10 +14,10 @@ use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 class CTConnector extends BaseShapeElement
 {
     #[OneAndOnlyOne("p:nvCxnSpPr")]
-    protected mixed $nvCxnSpPr;
+    protected mixed $_nvCxnSpPr;
 
     #[OneAndOnlyOne("p:spPr")]
-    protected CTShapeProperties $spPr;
+    protected CTShapeProperties $_spPr;
 
     public static function createCxnSp(\DOMDocument $dom, int $id, string $name, string $prst, int $x, int $y, int $cx, int $cy, bool $flipH, bool $flipV): CTConnector
     {

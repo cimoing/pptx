@@ -37,6 +37,9 @@ class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Co
         return $this->shapeFactory($element);
     }
 
+    /**
+     * @return \Traversable<int,BaseShape>
+     */
     public function getIterator(): \Traversable
     {
         foreach ($this->iterMemberElms() as $elm) {
@@ -148,5 +151,14 @@ class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Co
     protected function shapeFactory(BaseShapeElement $shapeElement): BaseShape
     {
         return ShapeTree::baseShapeFactory($shapeElement,$this);
+    }
+
+    public function toArray(): array
+    {
+        $arr = [];
+        foreach ($this as $shape) {
+            $arr[] = $shape->toArray();
+        }
+        return $arr;
     }
 }

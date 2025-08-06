@@ -64,7 +64,7 @@ class ZeroOrOneChoice extends BaseChildElement
                 if (empty($node)) {
                     break;
                 }
-                $element->removeChild($node);
+                $element->removeChild($node->element);
             }
         };
 

@@ -20,6 +20,12 @@ use Imoing\Pptx\OXml\Dml\Fill\CTSolidColorFillProperties;
  */
 abstract class Fill extends BaseObject
 {
+    private mixed $_xFill;
+    public function __construct($xFill)
+    {
+        parent::__construct();
+        $this->_xFill = $xFill;
+    }
     public static function create(mixed $xFill): Fill
     {
         $clsMap = [
@@ -44,7 +50,7 @@ abstract class Fill extends BaseObject
             $cls = Fill::class;
         }
 
-        return call_user_func([$cls, 'create'], $xFill);
+        return new $cls($xFill);
     }
 
     abstract public function getType(): ?MsoFillType;
@@ -73,5 +79,8 @@ abstract class Fill extends BaseObject
         throw new \Exception(sprintf("fill type %s has no pattern, call .patterned() first", __CLASS__));
     }
 
-    abstract function toArray();
+    public function toArray(): array
+    {
+        return [];
+    }
 }

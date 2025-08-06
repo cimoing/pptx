@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
+use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
 use Imoing\Pptx\OXml\SimpleTypes\STLineWidth;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\Choice;
@@ -13,9 +14,13 @@ use Imoing\Pptx\Util\Length;
 
 /**
  * @property Length $w
- * @property $eg_lineFillProperties
+ * @property ?AbsFill $eg_lineFillProperties
+ * @property ?AbsFill $eg_fillProperties
  * @property $prstDash
  * @property $custDash
+ * @property string $prstDashVal
+ * @method void _remove_prstDash()
+ * @method void _remove_custDash()
  */
 class CTLineProperties extends BaseOXmlElement
 {
@@ -34,7 +39,7 @@ class CTLineProperties extends BaseOXmlElement
         "a:tailEnd",
         "a:extLst",
     ])]
-    protected $_eg_lineFillProperties;
+    protected mixed $_eg_lineFillProperties;
 
     #[ZeroOrOne("a:prstDash", successors: [
         "a:custDash",
@@ -45,7 +50,7 @@ class CTLineProperties extends BaseOXmlElement
         "a:tailEnd",
         "a:extLst",
     ])]
-    protected $_prstDash;
+    protected mixed $_prstDash;
 
     #[ZeroOrOne("a:custDash", successors: [
         "a:custDash",
@@ -56,17 +61,17 @@ class CTLineProperties extends BaseOXmlElement
         "a:tailEnd",
         "a:extLst",
     ])]
-    protected $_custDash;
+    protected mixed $_custDash;
 
     #[OptionalAttribute("w", STLineWidth::class, default: new Emu(0))]
-    protected $_w;
+    protected mixed $_w;
 
     public function getEg_fillProperties()
     {
         return $this->eg_lineFillProperties;
     }
 
-    public function getPrstDash_val()
+    public function getPrstDashVal()
     {
         $prstDash = $this->prstDash;
         if (empty($prstDash)) {
@@ -76,7 +81,7 @@ class CTLineProperties extends BaseOXmlElement
         return $prstDash->val;
     }
 
-    public function setPrstDash_val($val): void
+    public function setPrstDashVal($val): void
     {
         $this->_remove_custDash();
         $prstDash = $this->get_or_add_prstDash();

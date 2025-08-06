@@ -56,8 +56,6 @@ class Presentation extends PartElementProxy
         $this->part->save($file);
     }
 
-
-
     public function getSlideLayouts(): SlideLayouts
     {
         return $this->slideMasters[0]->slideLayouts;

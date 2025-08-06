@@ -25,7 +25,7 @@ enum MsoThemeColorIndex: int
     case TEXT_2 = 15;
     case MIXED = -2;
 
-    public function getXmlValues(): array
+    public static function getXmlValues(): array
     {
         return [
             self::NOT_THEME_COLOR->value => ["", "Indicates the color is not a theme color."],

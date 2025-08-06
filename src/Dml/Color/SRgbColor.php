@@ -30,9 +30,4 @@ class SRgbColor extends Color
     {
         $this->_srgbClr->val = (string) $rgb;
     }
-
-    public function __toString(): string
-    {
-        return $this->_srgbClr->val;
-    }
 }

@@ -13,6 +13,7 @@ use Imoing\Pptx\Parts\Presentation\PresentationPart;
 use Imoing\Pptx\Parts\Slide\SlideLayoutPart;
 use Imoing\Pptx\Parts\Slide\SlideMasterPart;
 use Imoing\Pptx\Parts\Slide\SlidePart;
+use Imoing\Pptx\Parts\Theme\OfficeStyleSheetPart;
 
 class PartFactory
 {
@@ -52,6 +53,7 @@ class PartFactory
         ContentType::VIDEO => MediaPart::class,
         ContentType::WMV => MediaPart::class,
         ContentType::X_MS_VIDEO => MediaPart::class,
+        ContentType::OFC_THEME => OfficeStyleSheetPart::class,
     ];
     private static function getPartClass(string $contentType): string
     {

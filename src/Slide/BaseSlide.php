@@ -9,7 +9,7 @@ use Imoing\Pptx\Shared\PartElementProxy;
  * @property-read CTSlide $_element
  * @property string $name
  */
-class BasesLide extends PartElementProxy
+class BaseSlide extends PartElementProxy
 {
     private ?Background $_background = null;
 

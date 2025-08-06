@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\AutoShape;
 
 use Imoing\Pptx\OXml\SimpleTypes\STPositiveCoordinate;
+use Imoing\Pptx\OXml\SimpleTypes\XsdString;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrMore;
@@ -17,6 +18,7 @@ use Imoing\Pptx\Util\Length;
  * @property CTPath2DMoveTo[] $moveTo
  * @property ?Length $width;
  * @property ?Length $height
+ * @property ?string $path
  */
 class CTPath2D extends BaseOXmlElement
 {
@@ -34,6 +36,9 @@ class CTPath2D extends BaseOXmlElement
 
     #[OptionalAttribute("h", STPositiveCoordinate::class)]
     protected ?Length $_height;
+
+    #[OptionalAttribute("path", XsdString::class)]
+    protected ?string $_path;
 
     public function add_close(): CTPath2DClose
     {

@@ -57,15 +57,13 @@ class FillFormat extends BaseObject
         $this->_fill = new SolidFill($solidFill);
     }
 
-    public function getType(): MsoFillType
+    public function getType(): ?MsoFillType
     {
         return $this->_fill->type;
     }
 
     public function toArray(): array
     {
-        return [
-            'type' => $this->getType()->name,
-        ];
+        return $this->_fill->toArray();
     }
 }

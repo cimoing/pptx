@@ -14,7 +14,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  * @property ?CTColor $bgClr
  * @property ?MsoPatternType $prst
  */
-class CTPatternFillProperties extends BaseOXmlElement
+class CTPatternFillProperties extends AbsFill
 {
     #[ZeroOrOne("a:fgClr", successors: ["a:bgClr"])]
     protected string $_fgClr;
@@ -39,5 +39,10 @@ class CTPatternFillProperties extends BaseOXmlElement
         <a:srgbClr val=\"000000\"/>
         </a:fgClr>", nsdecls("a"));
         return makeOXmlElement($this->ownerDocument, $xml);
+    }
+
+    public function getJsonType(): string
+    {
+        return 'PATTERN_FILL';
     }
 }

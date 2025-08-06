@@ -2,7 +2,7 @@
 
 namespace Imoing\Pptx\Types;
 
-use Imoing\Pptx\Opc\XmlPart;
+use Imoing\Pptx\Opc\Package\XmlPart;
 
 interface ProvidesPart
 {

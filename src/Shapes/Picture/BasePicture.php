@@ -14,7 +14,7 @@ use Imoing\Pptx\Types\ProvidesPart;
  * @property float $cropLeft
  * @property float $cropTop
  * @property-read LineFormat $line
- * @property-read CTLineProperties $ln
+ * @property-read ?CTLineProperties $ln
  */
 abstract class BasePicture extends BaseShape
 {
@@ -64,7 +64,7 @@ abstract class BasePicture extends BaseShape
         return $this->_line;
     }
 
-    public function getLn(): CTLineProperties
+    public function getLn(): ?CTLineProperties
     {
         return $this->_picture->getLn();
     }
@@ -72,5 +72,10 @@ abstract class BasePicture extends BaseShape
     public function get_or_add_ln(): CTLineProperties
     {
         return $this->_picture->get_or_add_ln();
+    }
+
+    public function getOutlineArr(): array
+    {
+        return $this->line->toArray();
     }
 }

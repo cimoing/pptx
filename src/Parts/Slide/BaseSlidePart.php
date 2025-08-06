@@ -3,7 +3,7 @@
 namespace Imoing\Pptx\Parts\Slide;
 
 use Imoing\Pptx\Opc\Constants\RT;
-use Imoing\Pptx\Opc\XmlPart;
+use Imoing\Pptx\Opc\Package\XmlPart;
 use Imoing\Pptx\OXml\Slide\CTSlide;
 use Imoing\Pptx\Parts\Image\Image;
 use Imoing\Pptx\Parts\Image\ImagePart;

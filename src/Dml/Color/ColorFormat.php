@@ -64,6 +64,11 @@ class ColorFormat extends BaseObject
         return $this->_color->themeColor;
     }
 
+    public function isThemeColor(): bool
+    {
+        return !($this->themeColor === MsoThemeColorIndex::NOT_THEME_COLOR);
+    }
+
     public function setThemeColor(MsoThemeColorIndex $themeColor): void
     {
         if (!($this->_color instanceof SchemeColor)) {
@@ -93,5 +98,21 @@ class ColorFormat extends BaseObject
         if ($this->_color instanceof NoneColor) {
             throw new \Exception("can't set brightness when color.type is None. Set color.rgb  or .theme_color first.");
         }
+    }
+
+    public function toArray(): array
+    {
+        if (empty($this->type)) {
+            return [
+                'type' => 'none',
+            ];
+        }
+        return $this->isThemeColor() ? [
+            'type' => 'scheme',
+            'scheme' => $this->themeColor->getXmlValue(),
+        ] : [
+            'type' => 'color',
+            'color' => (string) $this->getRgb(),
+        ];
     }
 }

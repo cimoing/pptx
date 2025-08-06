@@ -22,11 +22,11 @@ use Imoing\Pptx\OXml\Dml\Color\CTSystemColor;
 abstract class Color extends BaseObject
 {
     /**
-     * @var BaseColorElement
+     * @var ?BaseColorElement
      */
     protected mixed $_xClr;
 
-    public function __construct(BaseColorElement $xClr)
+    public function __construct(?BaseColorElement $xClr)
     {
         parent::__construct();
         $this->_xClr = $xClr;
@@ -43,7 +43,7 @@ abstract class Color extends BaseObject
             CTSystemColor::class => SysColor::class,
         ];
 
-        $cls = $clsMaps[$xClr] ?? NoneColor::class;
+        $cls = $clsMaps[is_null($xClr) ? null : get_class($xClr)] ?? NoneColor::class;
         return new $cls($xClr);
     }
 
@@ -101,6 +101,4 @@ abstract class Color extends BaseObject
         $colorElm->add_lumMod($lumModVal);
         $colorElm->add_lumOff($lumOffVal);
     }
-
-    abstract function __toString(): string;
 }

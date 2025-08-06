@@ -2,6 +2,8 @@
 
 namespace Imoing\Pptx\Parts\Slide;
 
+use Imoing\Pptx\Opc\Constants\RT;
+use Imoing\Pptx\Parts\Theme\OfficeStyleSheetPart;
 use Imoing\Pptx\Slide\SlideLayout;
 use Imoing\Pptx\Slide\SlideMaster;
 
@@ -25,5 +27,13 @@ class SlideMasterPart extends BaseSlidePart
             $this->_slideMaster = new SlideMaster($this->_element, $this);
         }
         return $this->_slideMaster;
+    }
+
+    public function getThemePart(): OfficeStyleSheetPart
+    {
+        $obj =  $this->partRelatedBy(RT::THEME);
+        assert($obj instanceof OfficeStyleSheetPart);
+
+        return $obj;
     }
 }

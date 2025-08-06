@@ -2,8 +2,10 @@
 
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
+use Imoing\Pptx\Dml\Fill\Fill;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Ns\NsMap;
+use Imoing\Pptx\OXml\Shapes\GroupShape\CTGroupShapeNonVisual;
 use Imoing\Pptx\OXml\Text\CTTextBody;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\Util\Length;
@@ -12,7 +14,7 @@ use Imoing\Pptx\Util\Length;
  * @property CTShapeProperties $spPr
  * @property Length $x
  * @property Length $y
- * @property Length $cx
+ * @property Length  $cx
  * @property Length $cy
  * @property bool $flipH
  * @property bool $flipV
@@ -52,25 +54,35 @@ class BaseShapeElement extends BaseOXmlElement
 
     public function getFlipH(): bool
     {
-        return (bool) $this->getXfrmAttr("flipH");
+        return (bool) $this->getXfrm()?->flipH;
     }
 
     public function setFlipH($value): void
     {
-        $this->setXfrmAttr("flipH", $value);
+        $xfrm = $this->get_or_add_xfrm();
+        $xfrm->flipH = $value;
     }
 
     public function getFlipV(): bool
     {
-        return (bool) $this->getXfrmAttr("flipV");
+        return (bool) $this->getXfrm()?->flipV;
     }
 
     public function setFlipV($value): void
     {
-        $this->setXfrmAttr("flipV", $value);
+        $xfrm = $this->get_or_add_xfrm();
+        $xfrm->flipV = $value;
     }
 
+    public function getFill(): ?Fill
+    {
+        $spPr = $this->spPr;
+        if (empty($spPr) || empty($spPr->eg_fillProperties)) {
+            return null;
+        }
 
+        return Fill::create($spPr->eg_fillProperties);
+    }
 
     public function get_or_add_xfrm(): CTTransform2D
     {
@@ -195,7 +207,8 @@ class BaseShapeElement extends BaseOXmlElement
 
     protected function getNvXxPr()
     {
-        return $this->xpath("./*[1]", 'p:nvGrpSpPr')->item(0);
+        $node = $this->xpath("./*[1]", 'p:nvGrpSpPr')->item(0);
+        return NsMap::castDom($node);
     }
 
     private function getXfrmAttr(string $name): ?Length

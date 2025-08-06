@@ -53,4 +53,9 @@ class CTGradientFillProperties extends AbsFill
     {
         return CTGradientStopList::newGsLst($this->ownerDocument);
     }
+
+    public function getJsonType(): string
+    {
+        return 'gradient';
+    }
 }

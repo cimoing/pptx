@@ -63,7 +63,7 @@ class CTTextBody extends BaseOXmlElement
     public static function new_a_txBody(): CTTextBody
     {
         $xml = self::_a_txBody_tmpl();
-        $obj = parseXml("a:txBody", $xml);
+        $obj = parseXml($xml);
         assert($obj instanceof CTTextBody);
         return $obj;
     }
@@ -89,7 +89,7 @@ class CTTextBody extends BaseOXmlElement
 '</c:txPr>',
         nsdecls(["a","c"]));
 
-        return parseXml("c:txPr", $xml);
+        return parseXml($xml);
     }
 
     public function unclear_content(): void

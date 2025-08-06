@@ -3,7 +3,7 @@
 namespace Imoing\Pptx\Shapes;
 
 use Imoing\Pptx\Common\BaseObject;
-use Imoing\Pptx\Opc\XmlPart;
+use Imoing\Pptx\Opc\Package\XmlPart;
 use Imoing\Pptx\Types\ProvidesPart;
 
 /**

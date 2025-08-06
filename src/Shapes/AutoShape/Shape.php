@@ -18,6 +18,7 @@ use Imoing\Pptx\Types\ProvidesPart;
  * @property-read ?MsoAutoShapeType $autoShapeType
  * @property-read FillFormat $fill
  * @property-read bool $hasTextFrame
+ * @property-read LineFormat $line
  */
 class Shape extends BaseShape
 {
@@ -71,7 +72,7 @@ class Shape extends BaseShape
     public function getLn(): CTLineProperties
     {
         if (is_null($this->_ln)) {
-            $this->_ln = $this->_sp->ln;
+            $this->_ln = $this->_sp->get_or_add_ln();
         }
         return $this->_ln;
     }
@@ -105,5 +106,10 @@ class Shape extends BaseShape
     {
         $txBody = $this->_sp->get_or_add_txBody();
         return new TextFrame($txBody, $this);
+    }
+
+    public function getOutlineArr(): array
+    {
+        return $this->getLine()->toArray();
     }
 }

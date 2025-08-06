@@ -3,8 +3,10 @@
 namespace Imoing\Pptx\OXml\Shapes\Connector;
 
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
+use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
 use Imoing\Pptx\OXml\SimpleTypes\STDrawingElementId;
 use Imoing\Pptx\OXml\SimpleTypes\XsdUnsignedInt;
+use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 use Imoing\Pptx\OXml\XmlChemy\RequiredAttribute;
 
 /**
@@ -17,4 +19,7 @@ class CTConnection extends BaseShapeElement
 
     #[RequiredAttribute("idx", XsdUnsignedInt::class)]
     protected int $idx;
+
+    #[OneAndOnlyOne("p:spPr")]
+    protected CTShapeProperties $_spPr;
 }

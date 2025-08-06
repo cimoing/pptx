@@ -7,9 +7,9 @@ use Imoing\Pptx\OXml\XmlChemy\BaseChildElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 
 /**
- * @property string $ang
+ * @property float $ang
  */
-class CTLinearShadeProperties extends BaseChildElement
+class CTLinearShadeProperties extends AbsFill
 {
     #[OptionalAttribute("ang", STPositiveFixedAngle::class)]
     protected string $_ang;

@@ -15,6 +15,7 @@ class Background extends ElementProxy
     public function __construct(CTCommonSlideData $cSld)
     {
         parent::__construct($cSld);
+        $this->_cSld = $cSld;
     }
 
     private ?FillFormat $_fill = null;
@@ -30,6 +31,6 @@ class Background extends ElementProxy
 
     public function toArray(): array
     {
-        return $this->fill->toArray();
+        return $this->getFill()->toArray();
     }
 }

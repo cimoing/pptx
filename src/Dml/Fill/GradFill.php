@@ -6,7 +6,6 @@ use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Enum\MsoFillType;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientStop;
-use Imoing\Pptx\OXml\Dml\Fill\CTGradientStopList;
 
 /**
  * @property ?float $gradientAngle
@@ -74,16 +73,16 @@ class GradFill extends Fill
     {
         return [
             'type' => 'gradient',
-            'value' => [
-                'rot' => $this->gradientAngle ?: 0,
-                'path' => $this->_gradFill->lin ? 'line' : ($this->_gradFill->path ?? ''),
-                'colors' => $this->_gradFill->gsLst ? array_map(function ($gs) {
+            'gradient' => [
+                'rot' => $this->_gradFill->lin?->ang,
+                'path' => $this->_gradFill->lin ? $this->_gradFill->path->path : 'line',
+                'colors' => array_map(function ($gs) {
                     $color = ColorFormat::fromColorChoiceParent($gs);
                     return [
                         'pos' => $gs->pos,
                         'color' => (string) $color->getRgb(),
                     ];
-                }, $this->_gradFill->gsLst->gs) : [],
+                }, $this->gradientStops()),
             ],
         ];
     }

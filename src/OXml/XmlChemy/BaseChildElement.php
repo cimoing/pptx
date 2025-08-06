@@ -31,7 +31,7 @@ abstract class BaseChildElement extends BaseObject
     }
 
     protected BaseOXmlElement $_elementCls;
-    protected string $_propName;
+    protected string $_propName = '';
     public function populateClassMembers(BaseOXmlElement $elementCls, string $propName, ...$args): void
     {
         $this->_elementCls = $elementCls;
@@ -127,28 +127,33 @@ abstract class BaseChildElement extends BaseObject
         $this->_elementCls->addCustomFunction($methodName, $fun);
     }
 
+    protected function getPropName(): string
+    {
+        return $this->_propName;
+    }
+
     protected function getAddMethodName(): string
     {
-        return sprintf("_add_%s", $this->_propName);
+        return sprintf("_add_%s", $this->getPropName());
     }
 
     protected function getInsertMethodName(): string
     {
-        return sprintf("_insert_%s", $this->_propName);
+        return sprintf("_insert_%s", $this->getPropName());
     }
 
     protected function getNewMethodName(): string
     {
-        return sprintf("_new_%s", $this->_propName);
+        return sprintf("_new_%s", $this->getPropName());
     }
 
     protected function getGetterMethodName(): string
     {
-        return sprintf('_get_%s', $this->_propName);
+        return sprintf('_get_%s', $this->getPropName());
     }
 
     protected function getRemoveMethodName(): string
     {
-        return sprintf('_remove_%s', $this->_propName);
+        return sprintf('_remove_%s', $this->getPropName());
     }
 }

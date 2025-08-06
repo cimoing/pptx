@@ -13,7 +13,6 @@ use Imoing\Pptx\Slide\SlideLayouts;
  */
 class SlideShapes extends BaseGroupShapes
 {
-
     public function cloneLayoutPlaceholders(SlideLayout $slideLayout): void
     {
         foreach ($slideLayout->iterClonablePlaceholders() as $placeholder) {
@@ -31,5 +30,10 @@ class SlideShapes extends BaseGroupShapes
         }
 
         return null;
+    }
+
+    public function getColorScheme(): array
+    {
+        return $this->parent->getColorScheme();
     }
 }

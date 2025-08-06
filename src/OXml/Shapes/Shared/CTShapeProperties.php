@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
+use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTCustomGeometry2D;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPresetGeometry2D;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
@@ -18,6 +19,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOneChoice;
  * @property ?CTCustomGeometry2D $custGeom
  * @property ?CTLineProperties $ln
  * @property ?CTPresetGeometry2D $prstGeom
+ * @property ?AbsFill $eg_fillProperties
  */
 class CTShapeProperties extends BaseOXmlElement
 {
@@ -87,7 +89,7 @@ class CTShapeProperties extends BaseOXmlElement
         "a:sp3d",
         "a:extLst",
     ])]
-    protected $eg_fillProperties;
+    protected mixed $_eg_fillProperties;
 
     #[ZeroOrOne("a:ln", successors: [
         "a:effectLst",

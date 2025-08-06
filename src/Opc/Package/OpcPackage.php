@@ -18,6 +18,7 @@ class OpcPackage extends RelatableMixin implements IPackage {
     private $_rels;
 
     public function __construct($pkgFile) {
+        parent::__construct();
         $this->pkgFile = $pkgFile;
     }
 

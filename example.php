@@ -43,7 +43,12 @@ function sample3()
         $tpl['slides'][] = $layout->iterClonablePlaceholders();
     }
 }
-sample1();
 
+function toJson() {
+    $ppt = \Imoing\Pptx\Presentation::load("./default.pptx");
+    echo json_encode($ppt->slideLayouts->toArray(), JSON_PRETTY_PRINT);
+}
+
+toJson();
 
 

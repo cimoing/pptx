@@ -34,7 +34,7 @@ function _isPptxPackage(PresentationPart $part)
     return in_array($part->contentType(), $validContentTypes);
 }
 
-function parseXml(string $nsTag, string $xml): BaseOXmlElement
+function parseXml(string $xml): BaseOXmlElement
 {
     $dom = new \DOMDocument();
     $dom->loadXML($xml);

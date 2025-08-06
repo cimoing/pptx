@@ -24,7 +24,7 @@ class Slides extends ParentedElementProxy implements \ArrayAccess,\IteratorAggre
     }
 
     /**
-     * @return Traversable
+     * @return Traversable<int,Slide>
      */
     public function getIterator(): Traversable
     {
@@ -52,5 +52,15 @@ class Slides extends ParentedElementProxy implements \ArrayAccess,\IteratorAggre
         $this->_sldIdLst->add_sldId($rId);
 
         return $slide;
+    }
+
+    public function toArray(): array
+    {
+        $items = [];
+        foreach ($this as $slide) {
+            $items[] = $slide->toArray();
+        }
+
+        return $items;
     }
 }

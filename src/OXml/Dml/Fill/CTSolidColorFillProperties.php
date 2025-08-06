@@ -2,11 +2,15 @@
 
 namespace Imoing\Pptx\OXml\Dml\Fill;
 
+use Imoing\Pptx\OXml\Dml\Color\BaseColorElement;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\Choice;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOneChoice;
 
-class CTSolidColorFillProperties extends BaseOXmlElement
+/**
+ * @property BaseColorElement $eg_colorChoice
+ */
+class CTSolidColorFillProperties extends AbsFill
 {
     #[ZeroOrOneChoice([
         new Choice("a:scrgbClr"),
@@ -16,5 +20,15 @@ class CTSolidColorFillProperties extends BaseOXmlElement
         new Choice("a:schemeClr"),
         new Choice("a:prstClr"),
     ])]
-    protected string $eg_colorChoice;
+    protected mixed $_eg_colorChoice;
+
+    public function getJsonType(): string
+    {
+        return 'color';
+    }
+
+    public function getJsonValue(): mixed
+    {
+        return $this->eg_colorChoice->getJsonValue();
+    }
 }

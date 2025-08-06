@@ -30,6 +30,6 @@ class SlideLayoutPart extends BaseSlidePart
             assert($obj instanceof SlideMasterPart);
             $this->_slideMaster = $obj->slideMaster;
         }
-        return $this->slideMaster;
+        return $this->_slideMaster;
     }
 }

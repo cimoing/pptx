@@ -28,4 +28,12 @@ class CTBackgroundProperties extends BaseOXmlElement
     {
         return CTGradientFillProperties::newGradFill($this->ownerDocument);
     }
+
+    public function toArray(): array
+    {
+        return [
+            'value' => '',
+            'type' => $this->eg_fillProperties->getJsonType(),
+        ];
+    }
 }

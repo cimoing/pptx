@@ -66,6 +66,7 @@ use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
 use Imoing\Pptx\OXml\Shapes\Shared\CTTransform2D;
 use Imoing\Pptx\OXml\Slide\CTBackground;
 use Imoing\Pptx\OXml\Slide\CTBackgroundProperties;
+use Imoing\Pptx\OXml\Slide\CTColorMap;
 use Imoing\Pptx\OXml\Slide\CTCommonSlideData;
 use Imoing\Pptx\OXml\Slide\CTNotesMaster;
 use Imoing\Pptx\OXml\Slide\CTNotesSlide;
@@ -89,7 +90,9 @@ use Imoing\Pptx\OXml\Text\CTTextParagraphProperties;
 use Imoing\Pptx\OXml\Text\CTTextSpacing;
 use Imoing\Pptx\OXml\Text\CTTextSpacingPercent;
 use Imoing\Pptx\OXml\Text\CTTextSpacingPoint;
+use Imoing\Pptx\OXml\Theme\CTColorScheme;
 use Imoing\Pptx\OXml\Theme\CTOfficeStyleSheet;
+use Imoing\Pptx\OXml\Theme\CTThemeElements;
 
 NsMap::registerTagClass('ct:Default', CTDefault::class);
 NsMap::registerTagClass('ct:Override', CTOverride::class);
@@ -116,6 +119,21 @@ NsMap::registerTagClass("a:schemeClr", CTSchemeColor::class);
 NsMap::registerTagClass("a:scrgbClr", CTScRgbColor::class);
 NsMap::registerTagClass("a:srgbClr", CTSRgbColor::class);
 NsMap::registerTagClass("a:sysClr", CTSystemColor::class);
+
+# theme.clr
+NsMap::registerTagClass("a:dk1", CTColor::class);
+NsMap::registerTagClass("a:lt1", CTColor::class);
+NsMap::registerTagClass("a:dk2", CTColor::class);
+NsMap::registerTagClass("a:lt2", CTColor::class);
+NsMap::registerTagClass("a:accent1", CTColor::class);
+NsMap::registerTagClass("a:accent2", CTColor::class);
+NsMap::registerTagClass("a:accent3", CTColor::class);
+NsMap::registerTagClass("a:accent4", CTColor::class);
+NsMap::registerTagClass("a:accent5", CTColor::class);
+NsMap::registerTagClass("a:accent6", CTColor::class);
+NsMap::registerTagClass("a:hlink", CTColor::class);
+NsMap::registerTagClass("a:folHlink", CTColor::class);
+
 
 # dml.fill
 NsMap::registerTagClass("a:bip", CTBlip::class);
@@ -195,6 +213,7 @@ NsMap::registerTagClass("p:bg", CTBackground::class);
 NsMap::registerTagClass("p:bgPr", CTBackgroundProperties::class);
 NsMap::registerTagClass("p:childTnLst", CTTimeNodeList::class);
 NsMap::registerTagClass("p:cSld", CTCommonSlideData::class);
+NsMap::registerTagClass("p:clrMap", CTColorMap::class);
 NsMap::registerTagClass("p:notes", CTNotesSlide::class);
 NsMap::registerTagClass("p:notesMaster", CTNotesMaster::class);
 NsMap::registerTagClass("p:sld", CTSlide::class);
@@ -231,3 +250,5 @@ NsMap::registerTagClass("p:txBody", CTTextBody::class);
 
 # theme
 NsMap::registerTagClass("a:theme", CTOfficeStyleSheet::class);
+NsMap::registerTagClass("a:themeElements", CTThemeElements::class);
+NsMap::registerTagClass("a:clrScheme", CTColorScheme::class);

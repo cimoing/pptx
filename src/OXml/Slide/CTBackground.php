@@ -30,4 +30,11 @@ class CTBackground extends BaseOXmlElement
         $this->_insert_bgPr($obj);
         return $obj;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'type' => '',
+        ];
+    }
 }

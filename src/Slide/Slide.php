@@ -13,7 +13,7 @@ use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
  * @property-read SlidePlaceholders $placeholders
  * @property SlideShapes $shapes
  */
-class Slide extends BasesLide
+class Slide extends BaseSlide
 {
     public function getFollowMasterBackground(): bool
     {
@@ -45,4 +45,26 @@ class Slide extends BasesLide
         return $this->_shapes;
     }
 
+    private ?array $_colorScheme = null;
+
+    public function getColorScheme(): array
+    {
+        if (null === $this->_colorScheme) {
+            $this->_colorScheme = $this->part->slideLayout->getColorScheme();
+
+            // TODO clrMapOvr
+        }
+
+        return $this->_colorScheme;
+    }
+
+    public function toArray(): array
+    {
+        $background = $this->getBackground();
+        return [
+            'fill' => $background->toArray(),
+            'name' => $this->name,
+            'elements' => $this->shapes->toArray(),
+        ];
+    }
 }

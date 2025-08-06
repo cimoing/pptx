@@ -21,18 +21,19 @@ class Choice extends BaseChildElement
         $this->addCreator();
         $this->addInserter();
         $this->addAdder();
+        $this->addGetOrChangeToMethod();
     }
 
     protected function addGetOrChangeToMethod(): void
     {
         $func = function (BaseOXmlElement $elementObj): BaseOXmlElement {
             $propName = $this->getPropName();
-            $child = isset($elementObj[$propName]) ? $elementObj->{$propName} : null;
+            $child = isset($elementObj->{$propName}) ? $elementObj->{$propName} : null;
             if ($child !== null) {
                 return $child;
             }
 
-            $removeMethod = [$elementObj, $this->getRemoveMethodName()];
+            $removeMethod = [$elementObj, $this->getRemoveGroupMethodName()];
             call_user_func($removeMethod);
 
             $addMethod = [$elementObj, $this->getAddMethodName()];
@@ -61,6 +62,6 @@ class Choice extends BaseChildElement
 
     protected function getRemoveGroupMethodName(): string
     {
-        return sprintf('remove_%s', $this->_groupPropName);
+        return sprintf('_remove_%s', $this->_groupPropName);
     }
 }

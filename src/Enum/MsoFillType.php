@@ -31,4 +31,17 @@ enum MsoFillType: int
     {
         return "{$this->name} ({$this->value})";
     }
+
+    public function getJsonValue(): string
+    {
+        return match ($this) {
+            self::BACKGROUND => 'none',
+            self::PICTURE => 'image',
+            self::SOLID => 'color',
+            self::TEXTURED => 'textured',
+            self::GRADIENT => 'gradient',
+            self::PATTERNED => 'pattern',
+            self::GROUP => 'group',
+        };
+    }
 }

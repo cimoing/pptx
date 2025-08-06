@@ -19,9 +19,4 @@ class SCRgbColor extends Color
     {
         return RGBColor::create(255 * $this->_xClr->r, 255 * $this->_xClr->g, 255 * $this->_xClr->b);
     }
-
-    public function __toString(): string
-    {
-        return sprintf('#%s', $this->getRgb());
-    }
 }

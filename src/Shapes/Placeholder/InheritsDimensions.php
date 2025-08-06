@@ -88,7 +88,7 @@ trait InheritsDimensions
 
     protected function getEffectiveValue(string $attrName)
     {
-        $value = parent::__get($attrName);
+        $value = $this->getOriginProperty($attrName);
         if ($value === null) {
             $value = $this->getInheritedValue($attrName);
         }
