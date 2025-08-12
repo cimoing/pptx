@@ -1,9 +1,10 @@
 <?php
 namespace Imoing\Pptx\Enum;
 
+use Imoing\Pptx\Enum\Base\IBaseXmlEnum;
 use Imoing\Pptx\Enum\Base\TraitXmlEnum;
 
-enum MsoLineDashStyle: int
+enum MsoLineDashStyle: int implements IBaseXmlEnum
 {
     use TraitXmlEnum;
     case DASH = 4;
@@ -16,7 +17,7 @@ enum MsoLineDashStyle: int
     case SQUARE_DOT = 2;
     case DASH_STYLE_MIXED = -2;
 
-    public function getXmlValues(): array
+    public static function getXmlValues(): array
     {
         return [
             self::DASH->value => ["dash", "Line consists of dashes only."],
@@ -29,5 +30,14 @@ enum MsoLineDashStyle: int
             self::SQUARE_DOT->value => ["sysDash", "Line is made up of square dots."],
             self::DASH_STYLE_MIXED->value => ["", "Not supported."],
         ];
+    }
+
+    public function getHtmlValue(): string
+    {
+        return match ($this->value) {
+            self::DASH->value, self::DASH_DOT->value, self::LONG_DASH->value, self::DASH_STYLE_MIXED->value, self::LONG_DASH_DOT->value => "dashed",
+            self::DASH_DOT_DOT->value, self::ROUND_DOT->value, self::SQUARE_DOT->value => "dotted",
+            self::SOLID->value => "solid",
+        };
     }
 }

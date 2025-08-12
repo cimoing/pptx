@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\Slide;
 
 use Imoing\Pptx\Enum\PPPlaceholderType;
+use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlideLayoutPart;
 use Imoing\Pptx\Shapes\Placeholder\SlidePlaceholder;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
@@ -17,6 +18,17 @@ use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
  */
 class SlideLayout extends BaseSlide
 {
+    public function getInheritedBackground(): Background
+    {
+        if (!$this->_element->cSld->bg) {
+            $bg = $this->part->slideMaster->getBackground();
+        } else {
+            $bg = $this->getBackground();
+        }
+
+        return $bg;
+    }
+
     /**
      * @return \Traversable<int,SlidePlaceholder>
      */
@@ -45,6 +57,21 @@ class SlideLayout extends BaseSlide
         return $this->_placeholders;
     }
 
+    public function getPhLevelPPr(int $phIdx, int $level): ?CTLevelParaProperties
+    {
+        $ph = $this->placeholders->get($phIdx);
+        if (!$ph) {
+            return null;
+        }
+
+        $pPr = $ph->getLevelPPr($level);
+        if ($pPr) {
+            return $pPr;
+        }
+
+        return $this->slideMaster->getPhLevelPPr($ph->element->phType, $level);
+    }
+
     private ?LayoutShapes $_shapes = null;
     public function getShapes(): LayoutShapes
     {
@@ -59,6 +86,17 @@ class SlideLayout extends BaseSlide
         return $this->part->slideMaster;
     }
 
+    public function getColorMap(): array
+    {
+        //TODO merge color map
+        return $this->slideMaster->getColorMap();
+    }
+
+    public function getSchemeColor(string $scheme): string
+    {
+        return $this->slideMaster->getSchemeColor($scheme);
+    }
+
     public function getUsedBySlides(): array
     {
         $slides = $this->part->package->presentationPart->getPresentation()->slides;
@@ -70,6 +108,16 @@ class SlideLayout extends BaseSlide
         }
 
         return $items;
+    }
+
+    public function getPlaceholderLevelPProperties(int $phIdx, int $level): ?CTLevelParaProperties
+    {
+        $ph = $this->placeholders->get($phIdx);
+        if (!$ph) {
+            return null;
+        }
+
+        $pPr = $ph->getLevelPProperties($level);
     }
 
     private ?array $_colorScheme = null;
@@ -91,10 +139,36 @@ class SlideLayout extends BaseSlide
                 'color' => $this->getColorScheme()[$fill['scheme']],
             ];
         }
+
+        $elements = [];
+        $unwrap = function ($element) use (&$elements, &$unwrap) {
+            if (!array_key_exists('elements', $element)) {
+                $elements[] = $element;
+                return;
+            }
+
+            $children = $element['elements'];
+            unset($element['elements']);
+            foreach ($children as $child) {
+                // 涉及旋转的
+                if ($element['rotate'] > 0) {
+                    list($child['left'], $child['top']) = self::calculateRotatePosition([$element['left'], $element['top']], [$element['width'], $element['height']],[$child['left'], $child['top']], $element['rotate']);
+                } else {
+                    $child['top'] += $element['top'];
+                    $child['left'] += $element['left'];
+                }
+
+                $unwrap(array_merge($element, $child));
+            }
+        };
+        foreach ($this->shapes->toArray() as $element) {
+            $unwrap($element);
+        }
+
         return [
-            'fill' => $fill,
+            'background' => $fill,
             'name' => $this->name,
-            'elements' => $this->getShapes()->toArray(),
+            'elements' => $elements,
         ];
     }
 }

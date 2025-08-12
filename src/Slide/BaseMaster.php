@@ -2,6 +2,8 @@
 
 namespace Imoing\Pptx\Slide;
 
+use Imoing\Pptx\Enum\PPPlaceholderType;
+use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Shapes\ShapeTree\MasterPlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\MasterShapes;
 
@@ -19,6 +21,16 @@ class BaseMaster extends BaseSlide
         }
 
         return $this->_placeholders;
+    }
+
+    public function getPhLevelPPr(PPPlaceholderType $phType, int $level): ?CTLevelParaProperties
+    {
+        $ph = $this->placeholders->get($phType);
+        if (!$ph) {
+            return null;
+        }
+
+        return $ph->getLevelPPr($level);
     }
 
     private ?MasterShapes $_shapes = null;

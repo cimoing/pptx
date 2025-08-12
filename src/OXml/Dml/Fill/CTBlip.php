@@ -7,7 +7,7 @@ use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 
 /**
- * @property string $rEmbed
+ * @property ?string $rEmbed
  */
 class CTBlip extends BaseOXmlElement
 {

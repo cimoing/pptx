@@ -3,11 +3,13 @@
 namespace Imoing\Pptx\Enum;
 
 use Imoing\Pptx\Enum\Base\IBaseEnum;
+use Imoing\Pptx\Enum\Base\IBaseXmlEnum;
 use Imoing\Pptx\Enum\Base\TraitEnum;
+use Imoing\Pptx\Enum\Base\TraitXmlEnum;
 
-enum MsoTextUnderlineType: int implements IBaseEnum
+enum MsoTextUnderlineType: int implements IBaseXmlEnum
 {
-    use TraitEnum;
+    use TraitXmlEnum;
     case NONE = 0;
     case DASH_HEAVY_LINE = 8;
     case DASH_LINE = 7;
@@ -28,29 +30,28 @@ enum MsoTextUnderlineType: int implements IBaseEnum
     case WORDS = 1;
     case MIXED = -2;
 
-
-    public function getDescription(): string
+    public static function getXmlValues(): array
     {
-        return match ($this) {
-            self::NONE => "Specifies no underline.",
-            self::DASH_HEAVY_LINE => "Specifies a dash underline.",
-            self::DASH_LINE => "Specifies a dash line underline.",
-            self::DASH_LONG_HEAVY_LINE => "Specifies a long heavy line underline.",
-            self::DASH_LONG_LINE => "Specifies a dashed long line underline.",
-            self::DOT_DASH_HEAVY_LINE => "Specifies a dot dash heavy line underline.",
-            self::DOT_DASH_LINE => "Specifies a dot dash line underline.",
-            self::DOT_DOT_DASH_HEAVY_LINE => "Specifies a dot dot dash heavy line underline.",
-            self::DOT_DOT_DASH_LINE => "Specifies a dot dot dash line underline.",
-            self::DOTTED_HEAVY_LINE => "Specifies a dotted heavy line underline.",
-            self::DOTTED_LINE => "Specifies a dotted line underline.",
-            self::DOUBLE_LINE => "Specifies a double line underline.",
-            self::HEAVY_LINE => "Specifies a heavy line underline.",
-            self::SINGLE_LINE => "Specifies a single line underline.",
-            self::WAVY_DOUBLE_LINE => "Specifies a wavy double line underline.",
-            self::WAVY_HEAVY_LINE => "Specifies a wavy heavy line underline.",
-            self::WAVY_LINE => "Specifies a wavy line underline.",
-            self::WORDS => "Specifies underlining words.",
-            self::MIXED => "Specifies a mix of underline types (read-only).",
-        };
+        return [
+            self::NONE->value => ['none', 'Specifies no underline.'],
+            self::DASH_HEAVY_LINE->value => ['dashHeavy', 'Specifies a dash underline.'],
+            self::DASH_LINE->value => ['dash', 'Specifies a dash line underline.'],
+            self::DASH_LONG_HEAVY_LINE->value => ['dashLongHeavy', 'Specifies a long heavy line underline.'],
+            self::DASH_LONG_LINE->value => ['dashLong', 'Specifies a dashed long line underline.'],
+            self::DOT_DASH_HEAVY_LINE->value => ['dotDashHeavy', 'Specifies a dot dash heavy line underline.'],
+            self::DOT_DASH_LINE->value => ['dotDash', 'Specifies a dot dash line underline.'],
+            self::DOT_DOT_DASH_HEAVY_LINE->value => ['dotDotDashHeavy', 'Specifies a dot dot dash heavy line underline.'],
+            self::DOT_DOT_DASH_LINE->value => ['dotDotDash', 'Specifies a dot dot dash line underline.'],
+            self::DOTTED_HEAVY_LINE->value => ['dottedHeavy', 'Specifies a dotted heavy line underline.'],
+            self::DOTTED_LINE->value => ['dotted', 'Specifies a dotted line underline.'],
+            self::DOUBLE_LINE->value => ['dbl', 'Specifies a double line underline.'],
+            self::HEAVY_LINE->value => ['heavy', 'Specifies a heavy line underline.'],
+            self::SINGLE_LINE->value => ['sng', 'Specifies a single line underline.'],
+            self::WAVY_DOUBLE_LINE->value => ['wavyDbl', 'Specifies a wavy double line underline.'],
+            self::WAVY_HEAVY_LINE->value => ['wavyHeavy', 'Specifies a wavy heavy line underline.'],
+            self::WAVY_LINE->value => ['wavy', 'Specifies a wavy line underline.'],
+            self::WORDS->value => ['words', 'Specifies underlining words.'],
+            self::MIXED->value => ['', 'Specifies a mix of underline types (read-only).'],
+        ];
     }
 }

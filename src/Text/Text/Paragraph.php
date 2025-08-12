@@ -2,12 +2,22 @@
 
 namespace Imoing\Pptx\Text\Text;
 
+use Imoing\Pptx\Enum\PPParagraphAlignment;
+use Imoing\Pptx\OXml\Text\CTRegularTextRun;
+use Imoing\Pptx\OXml\Text\CTTextCharacterProperties;
+use Imoing\Pptx\OXml\Text\CTTextField;
+use Imoing\Pptx\OXml\Text\CTTextLineBreak;
 use Imoing\Pptx\OXml\Text\CTTextParagraph;
+use Imoing\Pptx\OXml\Text\CTTextParagraphProperties;
+use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\Shapes\Subshape;
 use Imoing\Pptx\Types\ProvidesPart;
 
 /**
  * @property string $text
+ * @property CTTextParagraphProperties $pPr
+ * @property CTTextCharacterProperties $defRPr
+ * @property-read TextFrame $_parent
  */
 class Paragraph extends Subshape
 {
@@ -29,6 +39,57 @@ class Paragraph extends Subshape
         $r = $this->_p->addR();
         return new Run($r, $this);
     }
+    public function getAlignment(): ?PPParagraphAlignment
+    {
+        $algn = $this->pPr->algn;
+        if ($algn) {
+            return $algn;
+        }
+
+        $lvl = $this->getLevel();
+        $pPr = $this->_parent->getLevelPPr($lvl);
+        $algn = $pPr?->algn;
+
+        return $algn;
+    }
+
+    public function setAlignment(?PPParagraphAlignment $value): void
+    {
+        $this->pPr->algn = $value;
+    }
+
+    public function clear(): self
+    {
+        foreach ($this->_element->contentChildren as $elm) {
+            $this->_element->removeChild($elm->element);
+        }
+        return $this;
+    }
+
+    public function getFont(): Font
+    {
+        return new Font($this->defRPr, $this->_parent->getLevelPPr($this->getLevel()));
+    }
+
+    public function getLevel(): int
+    {
+        return $this->pPr->lvl ?: 1;
+    }
+
+    public function setLevel(int $value): void
+    {
+        $this->pPr->lvl = $value;
+    }
+
+    public function getRuns(): array
+    {
+        $items = [];
+        foreach ($this->_element->r_lst as $r) {
+            $items[] = new Run($r, $this);
+        }
+
+        return $items;
+    }
 
     public function getText(): string
     {
@@ -46,11 +107,95 @@ class Paragraph extends Subshape
         $this->_element->append_text($text);
     }
 
-    public function clear(): self
+
+
+    /**
+     * 判断使用何种列表,空则表示不使用列表
+     * @return string
+     */
+    public function getHtmlLiTag(): string
     {
-        foreach ($this->_element->contentChildren as $elm) {
-            $this->_element->removeChild($elm->element);
+        if (!$this->_p->pPr) {
+            return '';
         }
-        return $this;
+
+        if (!empty($this->_p->pPr->buChar)) {
+            return 'ul';
+        }
+        if (!empty($this->_p->pPr->buAutoNum)) {
+            return 'ol';
+        }
+
+        return '';
+    }
+
+    public function getHtmlStyle(): string
+    {
+        $algn = $this->getAlignment();
+        if (empty($algn)) {
+            return '';
+        }
+
+        $val = $algn->getHtmlValue();
+
+        return "text-align: $val;";
+    }
+
+    public function getHtmlSpan(): string
+    {
+        $span = '';
+
+        foreach ($this->_p->contentChildren as $child) {
+            $fonts = $this->getChildFont($child);
+            $style = implode(';', array_map(function ($key, $value) {
+                return "$key: $value;";
+            }, array_keys($fonts), $fonts));
+
+            $style = empty($style) ? '' : " style=\"$style\"";
+
+            // TODO link
+            $text = $child->getHtmlText();
+            // 替换制表符
+            $text = str_replace("\t", '&nbsp;&nbsp;&nbsp;&nbsp;', $text);
+            // 替换空格
+            $text = str_replace(" ", '&nbsp;', $text);
+            $span .= "<span$style>$text</span>";
+        }
+
+        return $span;
+    }
+
+    /**
+     * 获取子项的字体
+     * @param  CTRegularTextRun|CTTextLineBreak|CTTextField $element
+     * @return array
+     */
+    protected function getChildFont(CTRegularTextRun|CTTextLineBreak|CTTextField $element): array
+    {
+        $font = $this->getFont();
+        $childFont = new Font($element->get_or_add_rPr());
+        $pArr = $font->toHtmlStyle();
+        $cArr = $childFont->toHtmlStyle();
+        return array_merge($pArr, $cArr);
+    }
+
+    public function toHtml(): string
+    {
+        $liTag = $this->getHtmlLiTag();
+        $tag = empty($liTag) ? 'p' : 'li';
+        $style = $this->getHtmlStyle();
+        $style = empty($style) ? '' : " style=\"$style\"";
+
+        return  "<$tag$style>{$this->getHtmlSpan()}</$tag>";
+    }
+
+    protected function getPPr(): CTTextParagraphProperties
+    {
+        return $this->_p->get_or_add_pPr();
+    }
+
+    protected function getDefRPr(): CTTextCharacterProperties
+    {
+        return $this->pPr->get_or_add_defRPr();
     }
 }

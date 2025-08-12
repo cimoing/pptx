@@ -78,4 +78,30 @@ abstract class BasePicture extends BaseShape
     {
         return $this->line->toArray();
     }
+
+    public function getClipArr(): array
+    {
+        $prop = $this->_picture->blipFill->srcRect;
+        if (empty($prop)) {
+            return [
+                'range' => [
+                    [0,0],
+                    [100,100],
+                ],
+            ];
+        }
+
+        return [
+            'range' => [
+                [
+                    ($prop->l ?: 0) * 100,
+                    ($prop->t ?: 0) * 100,
+                ],
+                [
+                    100 - ($prop->r ?: 0) * 100,
+                    100 - ($prop->b ?: 0) * 100,
+                ],
+            ],
+        ];
+    }
 }

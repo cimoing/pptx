@@ -2,8 +2,10 @@
 
 namespace Imoing\Pptx\OXml\Text;
 
+use Imoing\Pptx\OXml\SimpleTypes\XsdBoolean;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
+use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 
 /**
@@ -40,5 +42,10 @@ class CTRegularTextRun extends BaseOXmlElement
             },
             $str
         );
+    }
+
+    public function getHtmlText(): string
+    {
+        return $this->rPr?->b ? "<strong>{$this->getText()}</strong>" : $this->getText();
     }
 }

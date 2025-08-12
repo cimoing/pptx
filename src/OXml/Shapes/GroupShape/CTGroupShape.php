@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\GroupShape;
 
 use Imoing\Pptx\Dml\Fill\Fill;
+use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Enum\MsoConnectorType;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Ns\NsMap;
@@ -13,7 +14,6 @@ use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\OXml\Shapes\Shared\CTPoint2D;
 use Imoing\Pptx\OXml\Shapes\Shared\CTPositiveSize2D;
 use Imoing\Pptx\OXml\Shapes\Shared\CTTransform2D;
-use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 use Imoing\Pptx\Util\Emu;
 
@@ -34,7 +34,7 @@ class CTGroupShape extends BaseShapeElement
     const SHAPE_TAGS = [
         'p:sp',
         'p:grpSp',
-        'p:graphicFrame',
+        //'p:graphicFrame',
         'p:cxnSp',
         'p:pic',
         'p:contentPart',
@@ -153,7 +153,7 @@ class CTGroupShape extends BaseShapeElement
     }
 
     /**
-     * @return \Iterator<int, BaseShapeElement>
+     * @return \Iterator<int,BaseShapeElement>
      */
     public function iter_shape_elms(): \Iterator
     {
@@ -249,5 +249,10 @@ class CTGroupShape extends BaseShapeElement
         }
 
         return Fill::create($spPr->eg_fillProperties);
+    }
+
+    public function getFillFormat(): FillFormat
+    {
+        return FillFormat::fromFillParent($this->grpSpPr);
     }
 }

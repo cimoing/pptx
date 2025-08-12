@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
 use Imoing\Pptx\OXml\SimpleTypes\STCoordinate;
+use Imoing\Pptx\OXml\SimpleTypes\XsdString;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\RequiredAttribute;
 use Imoing\Pptx\Util\Length;

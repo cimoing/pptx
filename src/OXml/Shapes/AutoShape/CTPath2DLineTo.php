@@ -12,5 +12,26 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 class CTPath2DLineTo extends BaseOXmlElement
 {
     #[ZeroOrOne("a:pt", successors: [])]
-    protected ?CTAdjPoint2D $pt;
+    protected ?CTAdjPoint2D $_pt;
+
+    public function getCommand(): string
+    {
+        return 'L';
+    }
+
+    public function getPtLst(): array
+    {
+        $pt = $this->pt;
+        return !empty($pt) ? [$pt] : [];
+    }
+
+    public function getPointArray(): array
+    {
+        return [
+            'x' => $this->pt->x->px,
+            'y' => $this->pt->y->px,
+            'relative' => true,
+            'type' => $this->getCommand(),
+        ];
+    }
 }

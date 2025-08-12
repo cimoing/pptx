@@ -23,7 +23,12 @@ class SRgbColor extends Color
 
     public function getRgb(): RGBColor
     {
-        return RGBColor::fromString($this->_srgbClr->val);
+        $rgb = RGBColor::fromString($this->_srgbClr->val);
+        if (!is_null($this->_srgbClr->alpha)) {
+            $rgb->setAlpha(intval($this->_srgbClr->alpha?->val * 255));
+        }
+
+        return $rgb;
     }
 
     public function setRgb(RGBColor $rgb): void

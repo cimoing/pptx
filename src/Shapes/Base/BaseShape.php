@@ -4,9 +4,19 @@ namespace Imoing\Pptx\Shapes\Base;
 
 use Imoing\Pptx\Common\BaseObject;
 use Imoing\Pptx\Dml\Effect\ShadowFormat;
+use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Enum\MsoShapeType;
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
+use Imoing\Pptx\OXml\Shapes\Shared\CTPoint2D;
 use Imoing\Pptx\Parts\Slide\BaseSlidePart;
+use Imoing\Pptx\Shapes\AutoShape\Shape;
+use Imoing\Pptx\Shapes\GroupShape;
+use Imoing\Pptx\Shapes\ShapeTree\BasePlaceholders;
+use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
+use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
+use Imoing\Pptx\Slide\Slide;
+use Imoing\Pptx\Slide\SlideLayout;
+use Imoing\Pptx\Slide\SlideMaster;
 use Imoing\Pptx\Types\ProvidesPart;
 use Imoing\Pptx\Util\Length;
 
@@ -35,8 +45,8 @@ use Imoing\Pptx\Util\Length;
 abstract class BaseShape extends BaseObject implements ProvidesPart
 {
     protected ?BaseShapeElement $_element;
-    protected ProvidesPart $_parent;
-    public function __construct(BaseShapeElement $shapeElement, ProvidesPart $parent)
+    protected Slide|SlideShapes|SlideLayout|LayoutShapes|SlideMaster|self|BasePlaceholders $_parent;
+    public function __construct(BaseShapeElement $shapeElement, mixed $parent)
     {
         parent::__construct([]);
         $this->_element = $shapeElement;
@@ -72,7 +82,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         return false;
     }
 
-    public function getHeight(): Length
+    public function getHeight(): ?Length
     {
         return $this->_element->cy;
     }
@@ -82,7 +92,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->cy = $height;
     }
 
-    public function getLeft(): Length
+    public function getLeft(): ?Length
     {
         return $this->_element->x;
     }
@@ -92,7 +102,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->x = $left;
     }
 
-    public function getTop(): Length
+    public function getTop(): ?Length
     {
         return $this->_element->y;
     }
@@ -102,7 +112,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->y = $top;
     }
 
-    public function getWidth(): Length
+    public function getWidth(): ?Length
     {
         return $this->_element->cx;
     }
@@ -110,6 +120,22 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     public function setWidth(Length $width): void
     {
         $this->_element->cx = $width;
+    }
+
+    /**
+     * @return Length[]|null [left, top]
+     */
+    public function getChOff(): ?array
+    {
+        return null;
+    }
+
+    /**
+     * @return Length[]|null [cx, cy]
+     */
+    public function getChExt(): ?array
+    {
+        return null;
     }
 
     public function getFlipV(): bool
@@ -132,7 +158,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->flipH = $flipH;
     }
 
-    public function isPlaceholder(): bool
+    public function getIsPlaceholder(): bool
     {
         return $this->_element->hasPhElm;
     }
@@ -186,11 +212,60 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
     abstract public function getShapeType(): MsoShapeType;
 
-    public function getTextArr(): array
+    private ?FillFormat $_fill = null;
+    public function getFill(): FillFormat
     {
-        return [
+        if (is_null($this->_fill)) {
+            $this->_fill = FillFormat::fromFillParent($this->_element->spPr);
+        }
+        return $this->_fill;
+    }
 
-        ];
+    public function getFillColor(): ?string
+    {
+        return $this->fillToColor($this->getFill());
+    }
+
+    public function fillToColor(FillFormat $fill): ?string
+    {
+        $arr = $fill->toArray();
+
+        $fillType = $arr['type'] ?? '';
+
+        if ($fillType === 'color') {
+            return $arr['color'];
+        }
+
+        if ($fillType === 'scheme') {
+            return $this->_parent->getSchemeColor($arr['scheme']);
+        }
+
+        return null;
+    }
+
+    public function getFillArr(): array
+    {
+        $fill = $this->getFill();
+        $color = $this->fillToColor($fill);
+        if (!empty($color)) {
+            return [
+                'fill' => $color,
+            ];
+        }
+
+        $arr = $fill->toArray();
+        if (!empty($arr['type']) && !empty($arr[$arr['type']])) {
+            unset($arr['type']);
+            $arr['fill'] = '';
+            return $arr;
+        }
+
+        return $arr;
+    }
+
+    public function getTextArr(): ?array
+    {
+        return null;
     }
 
     public function getOutlineArr(): array
@@ -200,37 +275,45 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
     public function getShadowArr(): ?array
     {
-        return [
+        $shadow = $this->getShadow();
+        $arr = $shadow->toArray();
 
-        ];
+        if (empty($arr)) {
+            return null;
+        }
+
+        $arr['color'] = $this->colorToString($arr['color']);
+
+        return $arr;
+    }
+
+    protected function colorToString(?array $color)
+    {
+        $colorType = $color['type'] ?? '';
+        if ($colorType === 'scheme') {
+            return $this->getSchemeColor($color['scheme']);
+        } elseif ($colorType === 'color') {
+            return $color['color'];
+        }
+
+        return '';
     }
 
     public function toArray(): array
     {
-        $fill = $this->_element->getFill() ? $this->_element->getFill()->toArray() : null;
-
-        if (!empty($fill) && $fill['type'] == 'scheme') {
-            $theme = $this->_parent->getColorScheme();
-            $fill = [
-                'type' => 'color',
-                'color' => $theme[$fill['scheme']],
-            ];
-        }
-
-        return [
+        $arr = [
             'id' => $this->shapeId,
-            'left' => $this->left->pt,
-            'top' => $this->top->pt,
-            'width' => $this->width->pt,
-            'height' => $this->height->pt,
+            'left' => $this->left?->px,
+            'top' => $this->top?->px,
+            'width' => $this->width?->px,
+            'height' => $this->height?->px,
             'rotate' => $this->rotation,
-            'fill' => $fill,
-            'outline' => $this->getOutlineArr(),
-            'text' => $this->getTextArr(),
-            'flipH' => $this->flipH,
-            'flipV' => $this->flipV,
             'name' => $this->name,
+            'isPlaceholder' => $this->isPlaceholder,
         ];
+        assert(is_array($arr));
+
+        return $arr;
     }
 
 }

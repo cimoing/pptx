@@ -21,7 +21,7 @@ class GradFill extends Fill
     protected $_gradFill;
     public function __construct($gradFill)
     {
-        parent::__construct();
+        parent::__construct($gradFill);
         $this->_element = $this->_gradFill = $gradFill;
     }
 
@@ -58,7 +58,7 @@ class GradFill extends Fill
     public function gradientStops(): array
     {
         if (empty($this->_gradientStops)) {
-            $this->_gradientStops = $this->_gradFill->get_or_add_gsLst()->gs;
+            $this->_gradientStops = $this->_gradFill->get_or_add_gsLst()->gs_lst;
         }
 
         return $this->_gradientStops;
@@ -71,15 +71,16 @@ class GradFill extends Fill
 
     public function toArray(): array
     {
+        $pathType = $this->_gradFill->path?->path ?? 'line';
         return [
             'type' => 'gradient',
             'gradient' => [
                 'rot' => $this->_gradFill->lin?->ang,
-                'path' => $this->_gradFill->lin ? $this->_gradFill->path->path : 'line',
+                'type' => $pathType === 'line' ? 'linear' : 'radial',
                 'colors' => array_map(function ($gs) {
                     $color = ColorFormat::fromColorChoiceParent($gs);
                     return [
-                        'pos' => $gs->pos,
+                        'pos' => $gs->pos * 100,
                         'color' => (string) $color->getRgb(),
                     ];
                 }, $this->gradientStops()),

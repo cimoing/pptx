@@ -13,6 +13,7 @@ use Imoing\Pptx\Shapes\Picture\Movie;
 use Imoing\Pptx\Shapes\Picture\Picture;
 use Imoing\Pptx\Shapes\Placeholder\LayoutPlaceholder;
 use Imoing\Pptx\Shapes\Placeholder\MasterPlaceholder;
+use Imoing\Pptx\Shapes\Placeholder\NotesSlidePlaceholder;
 use Imoing\Pptx\Shapes\Placeholder\PlaceholderGraphicFrame;
 use Imoing\Pptx\Shapes\Placeholder\PlaceholderPicture;
 use Imoing\Pptx\Shapes\Placeholder\SlidePlaceholder;
@@ -20,15 +21,6 @@ use Imoing\Pptx\Types\ProvidesPart;
 
 class ShapeTree
 {
-    public static function masterShapeFactory(BaseShapeElement $shapeElement, ProvidesPart $parent): BaseShape
-    {
-        if ($shapeElement instanceof CTShape && $shapeElement->hasPhElm) {
-            return new MasterPlaceholder($shapeElement,$parent);
-        }
-
-        return self::baseShapeFactory($shapeElement, $parent);
-    }
-
     public static function baseShapeFactory(BaseShapeElement $shapeElement, ProvidesPart $parent): BaseShape
     {
         $tag = $shapeElement->tagName;
@@ -46,7 +38,7 @@ class ShapeTree
             'p:sp' => Shape::class,
             'p:pic' => Picture::class,
         ];
-        $cls = $clsMap[$tag] ?? BaseShape::class;
+        $cls = $clsMap[$tag] ?? Shape::class;
 
         return new $cls($shapeElement, $parent);
     }
@@ -80,6 +72,24 @@ class ShapeTree
     {
         if ($shapeElement instanceof CTShape && $shapeElement->hasPhElm) {
             return new LayoutPlaceholder($shapeElement,$parent);
+        }
+
+        return self::baseShapeFactory($shapeElement, $parent);
+    }
+
+    public static function masterShapeFactory(BaseShapeElement $shapeElement, ProvidesPart $parent): BaseShape
+    {
+        if ($shapeElement instanceof CTShape && $shapeElement->hasPhElm) {
+            return new MasterPlaceholder($shapeElement,$parent);
+        }
+
+        return self::baseShapeFactory($shapeElement, $parent);
+    }
+
+    public static function notesShapeFactory(BaseShapeElement $shapeElement, ProvidesPart $parent): BaseShape
+    {
+        if ($shapeElement instanceof CTShape && $shapeElement->hasPhElm) {
+            return new NotesSlidePlaceholder($shapeElement,$parent);
         }
 
         return self::baseShapeFactory($shapeElement, $parent);

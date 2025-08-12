@@ -20,4 +20,9 @@ class LayoutShapes extends BaseShapes
     {
         return $this->parent->getColorScheme();
     }
+
+    public function getSchemeColor(string $scheme): string
+    {
+        return $this->parent->getSchemeColor($scheme);
+    }
 }

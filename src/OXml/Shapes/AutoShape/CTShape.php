@@ -34,7 +34,7 @@ class CTShape extends BaseShapeElement
     protected CTShapeProperties $_spPr;
 
     #[ZeroOrOne("p:txBody", successors: ["p:extLst"])]
-    protected ?CTTextBody $txBody;
+    protected ?CTTextBody $_txBody;
 
     public function add_path(Length $w, Length $h): CTPath2D
     {
@@ -69,7 +69,7 @@ class CTShape extends BaseShapeElement
 
     public function getIsTextBox(): bool
     {
-        return $this->nvSpPr->cNvSpPr->txBox === true;
+        return $this->nvSpPr->cNvSpPr->txBox === true || !is_null($this->txBody);
     }
 
     public function getLn(): ?CTLineProperties

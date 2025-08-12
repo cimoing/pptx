@@ -44,11 +44,27 @@ function sample3()
     }
 }
 
+function sample4()
+{
+    $fmla = new \Imoing\Pptx\OXml\SimpleTypes\Formula([
+        'a' => 1,
+        'b' => 2,
+        'c' => 3,
+    ]);
+
+    $fmla->addGd('d', 'sqrt 2');
+    var_dump($fmla->execute('*/ d d 1'));
+}
+
 function toJson() {
-    $ppt = \Imoing\Pptx\Presentation::load("./default.pptx");
-    echo json_encode($ppt->slideLayouts->toArray(), JSON_PRETTY_PRINT);
+    $ppt = \Imoing\Pptx\Presentation::load("./d1.pptx");
+    $arr = $ppt->toArray();
+    //$arr['slides'] = array_slice($arr['slides'], 0, 1);
+    $content = json_encode($arr, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+    file_put_contents('./default.json', $content);
 }
 
 toJson();
+//sample4();
 
 

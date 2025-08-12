@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\AutoShape;
 
 use Imoing\Pptx\Enum\MsoAutoShapeType;
+use Imoing\Pptx\Enum\MsoShapeType;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\RequiredAttribute;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;

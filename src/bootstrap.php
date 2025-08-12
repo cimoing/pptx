@@ -21,12 +21,16 @@ use Imoing\Pptx\OXml\Dml\Fill\CTGradientFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientStop;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientStopList;
 use Imoing\Pptx\OXml\Dml\Fill\CTGroupFillProperties;
+use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTLinearShadeProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTNoFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTPatternFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTRelativeRect;
 use Imoing\Pptx\OXml\Dml\Fill\CTSolidColorFillProperties;
 use Imoing\Pptx\OXml\Dml\Line\CTPresetLineDashProperties;
+use Imoing\Pptx\OXml\Drawing\CTEffectList;
+use Imoing\Pptx\OXml\Drawing\CTListStyle;
+use Imoing\Pptx\OXml\Drawing\CTOuterShadow;
 use Imoing\Pptx\OXml\Ns\NsMap;
 use Imoing\Pptx\OXml\Presentation\CTPresentation;
 use Imoing\Pptx\OXml\Presentation\CTSlideId;
@@ -41,6 +45,7 @@ use Imoing\Pptx\OXml\Shapes\AutoShape\CTGeomGuideList;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTNonVisualDrawingShapeProps;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2D;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DClose;
+use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DCubicBezTo;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DLineTo;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DList;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DMoveTo;
@@ -114,6 +119,7 @@ NsMap::registerTagClass("a:fgClr", CTColor::class);
 NsMap::registerTagClass("a:hslClr", CTHslColor::class);
 NsMap::registerTagClass("a:lumMod", CTPercentage::class);
 NsMap::registerTagClass("a:lumOff", CTPercentage::class);
+NsMap::registerTagClass("a:alpha", CTPercentage::class);
 NsMap::registerTagClass("a:prstClr", CTPresetColor::class);
 NsMap::registerTagClass("a:schemeClr", CTSchemeColor::class);
 NsMap::registerTagClass("a:scrgbClr", CTScRgbColor::class);
@@ -136,7 +142,7 @@ NsMap::registerTagClass("a:folHlink", CTColor::class);
 
 
 # dml.fill
-NsMap::registerTagClass("a:bip", CTBlip::class);
+NsMap::registerTagClass("a:blip", CTBlip::class);
 NsMap::registerTagClass("a:blipFill", CTBlipFillProperties::class);
 NsMap::registerTagClass("a:gradFill", CTGradientFillProperties::class);
 NsMap::registerTagClass("a:grpFill", CTGroupFillProperties::class);
@@ -163,9 +169,11 @@ NsMap::registerTagClass("p:sldSz", CTSlideSize::class);
 NsMap::registerTagClass("a:avLst", CTGeomGuideList::class);
 NsMap::registerTagClass("a:custGeom", CTCustomGeometry2D::class);
 NsMap::registerTagClass("a:gd", CTGeomGuide::class);
+NsMap::registerTagClass("a:gdLst", CTGeomGuideList::class);
 NsMap::registerTagClass("a:close", CTPath2DClose::class);
 NsMap::registerTagClass("a:lnTo", CTPath2DLineTo::class);
 NsMap::registerTagClass("a:moveTo", CTPath2DMoveTo::class);
+NsMap::registerTagClass('a:cubicBezTo', CTPath2DCubicBezTo::class);
 NsMap::registerTagClass("a:path", CTPath2D::class);
 NsMap::registerTagClass("a:pathLst", CTPath2DList::class);
 NsMap::registerTagClass("a:prstGeom", CTPresetGeometry2D::class);
@@ -173,6 +181,8 @@ NsMap::registerTagClass("a:pt", CTAdjPoint2D::class);
 NsMap::registerTagClass("p:cNvSpPr", CTNonVisualDrawingShapeProps::class);
 NsMap::registerTagClass("p:nvSpPr", CTShapeNonVisual::class);
 NsMap::registerTagClass("p:sp", CTShape::class);
+
+NsMap::registerTagClass('p:graphicFrame', CTShape::class);
 
 # shapes.connector
 NsMap::registerTagClass("a:endCxn", CTConnection::class);
@@ -207,6 +217,10 @@ NsMap::registerTagClass("p:nvPr", CTApplicationNonVisualDrawingProps::class);
 NsMap::registerTagClass("p:ph", CTPlaceholder::class);
 NsMap::registerTagClass("p:spPr", CTShapeProperties::class);
 NsMap::registerTagClass("p:xfrm", CTTransform2D::class);
+
+# drawing
+NsMap::registerTagClass("a:effectLst", CTEffectList::class);
+NsMap::registerTagClass("a:outerShdw", CTOuterShadow::class);
 
 # slide
 NsMap::registerTagClass("p:bg", CTBackground::class);
@@ -247,6 +261,18 @@ NsMap::registerTagClass("a:spcPts", CTTextSpacingPoint::class);
 NsMap::registerTagClass("a:txBody", CTTextBody::class);
 NsMap::registerTagClass("c:txPr", CTTextBody::class);
 NsMap::registerTagClass("p:txBody", CTTextBody::class);
+
+# listStyle
+NsMap::registerTagClass("a:lstStyle", CTListStyle::class);
+NsMap::registerTagClass("a:lvl1pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl2pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl3pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl4pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl5pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl6pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl7pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl8pPr", CTLevelParaProperties::class);
+NsMap::registerTagClass("a:lvl9pPr", CTLevelParaProperties::class);
 
 # theme
 NsMap::registerTagClass("a:theme", CTOfficeStyleSheet::class);

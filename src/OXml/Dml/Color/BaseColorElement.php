@@ -8,6 +8,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 /**
  * @property ?CTPercentage $lumMod
  * @property ?CTPercentage $lumOff
+ * @property ?CTPercentage $alpha
  */
 class BaseColorElement extends BaseOXmlElement
 {
@@ -15,7 +16,10 @@ class BaseColorElement extends BaseOXmlElement
     protected mixed $_lumMod;
 
     #[ZeroOrOne("a:lumOff")]
-    protected mixed $l_umOff;
+    protected mixed $_lumOff;
+
+    #[ZeroOrOne("a:alpha")]
+    protected mixed $_alpha;
 
     public function add_lumMod($value)
     {
@@ -37,11 +41,6 @@ class BaseColorElement extends BaseOXmlElement
         $this->_remove_lumMod();
         $this->_remove_lumOff();
         return $this;
-    }
-
-    public function getJsonValue(): mixed
-    {
-        return '#fff';
     }
 
     public function getHexValue(): string

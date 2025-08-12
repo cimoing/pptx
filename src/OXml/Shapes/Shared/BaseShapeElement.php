@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
 use Imoing\Pptx\Dml\Fill\Fill;
+use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Ns\NsMap;
 use Imoing\Pptx\OXml\Shapes\GroupShape\CTGroupShapeNonVisual;
@@ -32,7 +33,7 @@ use Imoing\Pptx\Util\Length;
  */
 class BaseShapeElement extends BaseOXmlElement
 {
-    public function getCx(): Length
+    public function getCx(): ?Length
     {
         return $this->getXfrmAttr("cx");
     }
@@ -42,7 +43,7 @@ class BaseShapeElement extends BaseOXmlElement
         $this->setXfrmAttr("cx", $value);
     }
 
-    public function getCy(): Length
+    public function getCy(): ?Length
     {
         return $this->getXfrmAttr("cy");
     }
@@ -82,6 +83,11 @@ class BaseShapeElement extends BaseOXmlElement
         }
 
         return Fill::create($spPr->eg_fillProperties);
+    }
+
+    public function getFillFormat(): FillFormat
+    {
+        return FillFormat::fromFillParent($this->spPr);
     }
 
     public function get_or_add_xfrm(): CTTransform2D
@@ -180,7 +186,7 @@ class BaseShapeElement extends BaseOXmlElement
         return $obj;
     }
 
-    public function getX(): Length
+    public function getX(): ?Length
     {
         return $this->getXfrmAttr('x');
     }
@@ -195,7 +201,7 @@ class BaseShapeElement extends BaseOXmlElement
         return $this->spPr->xfrm;
     }
 
-    public function getY(): Length
+    public function getY(): ?Length
     {
         return $this->getXfrmAttr('y');
     }

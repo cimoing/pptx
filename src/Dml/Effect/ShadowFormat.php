@@ -3,6 +3,8 @@
 namespace Imoing\Pptx\Dml\Effect;
 
 use Imoing\Pptx\Common\BaseObject;
+use Imoing\Pptx\Dml\Color\ColorFormat;
+use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
 
 /**
@@ -36,5 +38,26 @@ class ShadowFormat extends BaseObject
         } else {
             $this->_element->get_or_add_effectLst();
         }
+    }
+
+    public function toArray(): ?array
+    {
+        if (!$this->_element->effectLst || !$this->_element->effectLst->outerShdw) {
+            return null;
+        }
+
+        $shadow = $this->_element->effectLst->outerShdw;
+        $color = ColorFormat::fromColorChoiceParent($shadow);
+
+        $direction = $shadow->dir ?: 0;
+        $distance = $shadow->dist?->px ?: 0;
+        $blurRad = $shadow->blurRad?->px ?: '';
+
+        return [
+            'h' => $distance * cos($direction * M_PI / 180),
+            'v' => $distance * sin($direction * M_PI / 180),
+            'blur' => $blurRad,
+            'color' => $color->toArray(),
+        ];
     }
 }

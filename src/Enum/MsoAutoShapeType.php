@@ -23,6 +23,10 @@ Enum MsoAutoShapeType: int implements IBaseXmlEnum
     case ARC = 25;
     case BALLOON = 137;
     case BENT_ARROW = 41;
+    case BENT_CONNECTOR2 = 201;
+    case BENT_CONNECTOR3 = 202;
+    case BENT_CONNECTOR4 = 203;
+    case BENT_CONNECTOR5 = 204;
     case BENT_UP_ARROW = 44;
     case BEVEL = 15;
     case BLOCK_ARC = 20;
@@ -110,6 +114,8 @@ Enum MsoAutoShapeType: int implements IBaseXmlEnum
     case LEFT_RIGHT_UP_ARROW = 40;
     case LEFT_UP_ARROW = 43;
     case LIGHTNING_BOLT = 22;
+
+    case LINE = 184;
     case LINE_CALLOUT_1 = 109;
     case LINE_CALLOUT_1_ACCENT_BAR = 113;
     case LINE_CALLOUT_1_BORDER_AND_ACCENT_BAR = 121;
@@ -211,6 +217,10 @@ Enum MsoAutoShapeType: int implements IBaseXmlEnum
             self::BALLOON->value => ["wedgeRoundRectCallout","Rounded Rectangular Callout"],
             self::BENT_ARROW->value => ["bentArrow","Block arrow that follows a curved 90-degree angle"],
             self::BENT_UP_ARROW->value => ["bentUpArrow","Block arrow that follows a sharp 90-degree angle. Points up by default"],
+            self::BENT_CONNECTOR2->value => ["bentConnector2","Bent connector 2"],
+            self::BENT_CONNECTOR3->value => ["bentConnector3","Bent connector 3"],
+            self::BENT_CONNECTOR4->value => ["bentConnector4","Bent connector 4"],
+            self::BENT_CONNECTOR5->value => ["bentConnector5","Bent connector 5"],
             self::BEVEL->value => ["bevel","Bevel"],
             self::BLOCK_ARC->value => ["blockArc","Block arc"],
             self::CAN->value => ["can","Can"],
@@ -377,6 +387,7 @@ Enum MsoAutoShapeType: int implements IBaseXmlEnum
             self::U_TURN_ARROW->value => ["uturnArrow","Block arrow forming a U shape"],
             self::VERTICAL_SCROLL->value => ["verticalScroll","Vertical scroll"],
             self::WAVE->value => ["wave","Wave"],
+            self::LINE->value => ["line", "Line"],
         ];
 
         return $values;

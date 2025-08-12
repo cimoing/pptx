@@ -6,6 +6,7 @@ use Imoing\Pptx\Enum\MsoAutoSize;
 use Imoing\Pptx\Enum\MsoVerticalAnchor;
 use Imoing\Pptx\OXml\SimpleTypes\STCoordinate32;
 use Imoing\Pptx\OXml\SimpleTypes\STTextWrappingType;
+use Imoing\Pptx\OXml\SimpleTypes\XsdString;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\Choice;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
@@ -26,6 +27,7 @@ use Imoing\Pptx\Util\Length;
  * @property Length $rIns
  * @property Length $bIns
  * @property ?string $wrap
+ * @property ?string $vert
  */
 class CTTextBodyProperties extends BaseOXmlElement
 {
@@ -53,6 +55,9 @@ class CTTextBodyProperties extends BaseOXmlElement
 
     #[OptionalAttribute("wrap", STTextWrappingType::class)]
     protected ?string $_wrap;
+
+    #[OptionalAttribute("vert", XsdString::class)]
+    protected ?string $_vert;
 
     public function getAutofit(): ?MsoAutoSize
     {

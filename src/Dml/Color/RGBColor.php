@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\Dml\Color;
 
 use Imoing\Pptx\Common\BaseObject;
+use Imoing\Pptx\OXml\Dml\Color\CTPercentage;
 
 /**
  * @property int $r
@@ -42,6 +43,18 @@ class RGBColor extends BaseObject
 
     public function __toString(): string
     {
-        return sprintf('%02X%02X%02X', $this->r, $this->g, $this->b);
+        return !is_null($this->_alpha) ? sprintf('#%02X%02X%02X%02X', $this->r, $this->g, $this->b, (int) $this->_alpha) : sprintf('#%02X%02X%02X', $this->r, $this->g, $this->b);
+    }
+
+    private ?int $_alpha = null;
+    public function setAlpha(?int $val): void
+    {
+        $this->_alpha = $val;
+    }
+
+    private ?int $_lumMod = null;
+    public function applyLumMod(?int $val): void
+    {
+        $this->_lumMod = $val;
     }
 }

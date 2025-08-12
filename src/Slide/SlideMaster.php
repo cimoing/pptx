@@ -67,4 +67,30 @@ class SlideMaster extends BaseMaster
 
         return $this->_colorScheme;
     }
+
+    public function getColorMap(): array
+    {
+        $clrMap = $this->_element->clrMap;
+        return [
+            'bg1' => $clrMap->bg1,
+            'tx1' => $clrMap->tx1,
+            'bg2' => $clrMap->bg2,
+            'tx2' => $clrMap->tx2,
+            'accent1' => $clrMap->accent1,
+            'accent2' => $clrMap->accent2,
+            'accent3' => $clrMap->accent3,
+            'accent4' => $clrMap->accent4,
+            'accent5' => $clrMap->accent5,
+            'accent6' => $clrMap->accent6,
+            'hlink' => $clrMap->hlink,
+            'folHlink' => $clrMap->folHlink,
+        ];
+    }
+
+    public function getSchemeColor(string $scheme): string
+    {
+        $map = $this->getColorMap();
+        $alias = $map[$scheme];
+        return $this->getColorScheme()[$alias];
+    }
 }

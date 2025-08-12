@@ -11,6 +11,7 @@ use Imoing\Pptx\Common\BaseObject;
  * @property-read float $mm
  * @property-read int $emu
  * @property-read float $pt
+ * @property-read int $px 转为像素
  */
 class Length extends BaseObject
 {
@@ -19,6 +20,8 @@ class Length extends BaseObject
     const EMUS_PER_CM = 360000;
     const EMUS_PER_MM = 36000;
     const EMUS_PER_PT = 12700;
+
+    const EMUS_PER_PX = 9144;
 
     protected int $emu;
 
@@ -49,6 +52,11 @@ class Length extends BaseObject
 
     public function getPt(): float {
         return $this->emu / self::EMUS_PER_PT;
+    }
+
+    public function getPx(): float
+    {
+        return round($this->emu / self::EMUS_PER_PT * (96 / 72), 3);
     }
 
     private array $_cache = [];

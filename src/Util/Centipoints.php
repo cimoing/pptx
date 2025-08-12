@@ -4,6 +4,9 @@ namespace Imoing\Pptx\Util;
 
 use Imoing\Pptx\Util\Length;
 
+/**
+ * 1/100磅
+ */
 class Centipoints extends Length
 {
     public function __construct(int $centipoints) {

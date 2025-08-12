@@ -20,7 +20,7 @@ class BlipFill extends Fill
         return [
             'type' => 'image',
             'image' => [
-                'rId' => $this->_xFill->blip->rEmbed,
+                'rId' => $this->_xFill?->blip?->rEmbed,
                 'opacity' => 0,
             ],
         ];

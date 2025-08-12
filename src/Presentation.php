@@ -107,4 +107,16 @@ class Presentation extends PartElementProxy
 
         return $this->_slides;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->coreProperties->title,
+            'width' => 1280,
+            'height' => 720,
+            //'theme' => $this->slideMasters[0]->getColorScheme(),
+            'slides' => $this->slides->toArray(),
+            //'slideLayouts' => $this->slideLayouts->toArray(),
+        ];
+    }
 }

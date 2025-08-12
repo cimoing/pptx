@@ -12,7 +12,10 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  * @method CTTextParagraphProperties get_or_add_pPr()
  * @method CTTextLineBreak _add_br()
  * @method CTRegularTextRun _add_r()
- * @property-read BaseOXmlElement[] $contentChildren
+ * @property-read CTRegularTextRun[]|CTTextLineBreak[]|CTTextField[] $contentChildren
+ * @property ?CTTextCharacterProperties $pPr
+ * @property CTRegularTextRun[] $r_lst
+ * @property ?CTTextCharacterProperties $endParaRPr
  */
 class CTTextParagraph extends BaseOXmlElement
 {

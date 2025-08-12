@@ -2,14 +2,18 @@
 
 namespace Imoing\Pptx\OXml\Text;
 
+use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Ns\NsMap;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 use Imoing\Pptx\OXml\XmlChemy\OneOrMore;
+use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 
 /**
  * @method CTTextParagraph add_p()
  * @property CTTextParagraph[] $p_lst
+ * @property CTTextBodyProperties $bodyPr
+ * @property ?CTListStyle $lstStyle
  */
 class CTTextBody extends BaseOXmlElement
 {
@@ -18,6 +22,9 @@ class CTTextBody extends BaseOXmlElement
 
     #[OneOrMore("a:p")]
     protected CTTextParagraph $_p;
+
+    #[ZeroOrOne("a:lstStyle")]
+    protected ?CTListStyle $_lstStyle;
 
     public function clearContent(): void
     {

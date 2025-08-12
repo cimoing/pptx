@@ -6,7 +6,7 @@ use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OneOrMore;
 
 /**
- * @property CTGradientStop[] $gs
+ * @property CTGradientStop[] $gs_lst
  */
 class CTGradientStopList extends BaseOXmlElement
 {

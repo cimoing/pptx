@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Slide;
 
+use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlidePart;
 use Imoing\Pptx\Shapes\ShapeTree\SlidePlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
@@ -35,6 +36,11 @@ class Slide extends BaseSlide
         return $this->_placeholders;
     }
 
+    public function getPhLevelPPr(int $phIdx, int $level): ?CTLevelParaProperties
+    {
+        return $this->part->slideLayout->getPhLevelPPr($phIdx, $level);
+    }
+
     private ?SlideShapes $_shapes = null;
     public function getShapes(): SlideShapes
     {
@@ -49,22 +55,68 @@ class Slide extends BaseSlide
 
     public function getColorScheme(): array
     {
-        if (null === $this->_colorScheme) {
-            $this->_colorScheme = $this->part->slideLayout->getColorScheme();
+        return $this->part->slideLayout->getColorScheme();
+    }
 
-            // TODO clrMapOvr
-        }
+    public function getColorMap(): array
+    {
+        return $this->part->slideLayout->getColorMap();
+    }
 
-        return $this->_colorScheme;
+    public function getSchemeColor(string $scheme): string
+    {
+        return $this->part->slideLayout->getSchemeColor($scheme);
     }
 
     public function toArray(): array
     {
-        $background = $this->getBackground();
+        $background = $this->getInheritedBackground();
+
+        $elements = [];
+        $phIdxList = [];
+
+        $unwrap = function ($element) use (&$elements, &$unwrap, &$phIdxList) {
+            $isPlaceholder = array_key_exists('isPlaceholder', $element) && $element['isPlaceholder'];
+            if (!array_key_exists('elements', $element)) {
+                $elements[] = $element;
+                if ($isPlaceholder) {
+                    $phIdxList[$element['id']] = count($elements) - 1;
+                }
+                return;
+            }
+
+            $children = $element['elements'];
+            unset($element['elements']);
+            foreach ($children as $child) {
+                $child['top'] += $element['top'];
+                $child['left'] += $element['left'];
+                $unwrap(array_merge($element, $child));
+            }
+        };
+        foreach ($this->shapes->toArray() as $element) {
+            $unwrap($element);
+        }
+
+        // layout elements
+        $layouts = $this->part->slideLayout->toArray();
+        $layoutElements = array_filter($layouts['elements'], function ($element) {
+            return !array_key_exists('isPlaceholder', $element) || $element['isPlaceholder'] === false;
+        });
+
+        $backgroundArr = $background->toArray();
+        if ($backgroundArr['type'] == 'none') {
+            $backgroundArr = $layouts['background'];
+        } elseif ($backgroundArr['type'] == 'scheme') {
+            $backgroundArr = [
+                'type' => 'solid',
+                'color' => $this->getSchemeColor($backgroundArr['scheme']),
+            ];
+        }
+
         return [
-            'fill' => $background->toArray(),
+            'background' => $backgroundArr,
             'name' => $this->name,
-            'elements' => $this->shapes->toArray(),
+            'elements' => array_merge($layoutElements, $elements),
         ];
     }
 }

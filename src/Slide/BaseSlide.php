@@ -21,6 +21,17 @@ class BaseSlide extends PartElementProxy
         return $this->_background;
     }
 
+    public function getInheritedBackground(): Background
+    {
+        if (!$this->_element->cSld->bg) {
+            $bg = $this->part->slideLayout->getInheritedBackground();
+        } else {
+            $bg = $this->getBackground();
+        }
+
+        return $bg;
+    }
+
     public function getName(): string
     {
         return $this->_element->cSld->name;
@@ -30,5 +41,21 @@ class BaseSlide extends PartElementProxy
     {
         $newName = empty($name) ? "" : $name;
         $this->_element->cSld->name = $newName;
+    }
+
+    public static function calculateRotatePosition(array $offset, array $size, array $childOffset, int $rotate): array
+    {
+        $radians = $rotate * M_PI / 180;
+        $centerX = $offset[0] + $size[0] / 2;
+        $centerY = $offset[1] + $size[1] / 2;
+
+        $relativeX = $childOffset[0] - $size[0] / 2;
+        $relativeY = $childOffset[1] - $size[1] / 2;
+
+        $rotateX = $relativeX * cos($radians) + $relativeY * sin($radians);
+        $rotateY = $relativeX * -sin($radians) + $relativeY * cos($radians);
+        $x = $centerX + $rotateX;
+        $y = $centerY + $rotateY;
+        return [$x, $y];
     }
 }

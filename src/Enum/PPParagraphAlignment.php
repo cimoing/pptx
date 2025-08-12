@@ -36,4 +36,15 @@ enum PPParagraphAlignment: int implements IBaseXmlEnum
             self::MIXED->value => ["", "Multiple alignments are present in a set of paragraphs (read-only)."],
         ];
     }
+
+    public function getHtmlValue(): string
+    {
+        return match ($this->value) {
+            self::CENTER->value => 'center',
+            self::DISTRIBUTE->value, self::JUSTIFY->value=> 'justify',
+            self::LEFT->value => 'left',
+            self::RIGHT->value => 'right',
+            default => 'inherit',
+        };
+    }
 }

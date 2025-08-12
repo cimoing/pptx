@@ -11,7 +11,7 @@ use Imoing\Pptx\Shapes\Placeholder\MasterPlaceholder;
 
 class MasterPlaceholders extends BasePlaceholders implements \IteratorAggregate
 {
-    public function get(PPPlaceholderType $phType, ?MasterPlaceholder $default = null): BasePlaceholder
+    public function get(PPPlaceholderType $phType, ?MasterPlaceholder $default = null): ?MasterPlaceholder
     {
         foreach ($this as $placeholder) {
             if ($placeholder->phType === $phType) {

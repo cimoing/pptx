@@ -47,4 +47,28 @@ class Picture extends BasePicture
     {
         return MsoShapeType::PICTURE;
     }
+
+    public function toArray(): array
+    {
+        $supportedGeom = ['roundRect', 'ellipse', 'triangle', 'rhombus', 'pentagon', 'hexagon', 'heptagon', 'octagon', 'parallelogram', 'trapezoid'];
+        $geom = $this->getAutoShapeType()?->getXmlValue() ?: 'rect';
+
+        $clip = $this->getClipArr();
+        $clip['shape'] = in_array($geom, $supportedGeom) ? $geom : 'rect';
+
+        return array_merge(parent::toArray(), [
+            'type' => 'image',
+            //'src' => $this->getImage()?->base64 ?: '',
+            'fixedRatio' => true, // 固定图片宽高比例
+            'outline' => $this->getOutlineArr(),
+            'clip' => $clip,
+            // filters 滤镜
+            'flipH' => $this->getFlipH(),
+            'flipV' => $this->getFlipV(),
+            // shadow 阴影
+            // radius 圆角半径
+            // colorMask 颜色蒙版
+            // imageType 图片类型 'pageFigure' | 'itemFigure' | 'background'
+        ]);
+    }
 }

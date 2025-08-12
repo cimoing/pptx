@@ -11,7 +11,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 class CTTextField extends BaseOXmlElement
 {
     #[ZeroOrOne("a:rPr", successors: ["a:pPr", "a:t"])]
-    protected ?CTTextCharacterProperties $rPr;
+    protected ?CTTextCharacterProperties $_rPr;
 
     #[ZeroOrOne("a:t", successors: [])]
     protected ?BaseOXmlElement $t;
@@ -24,5 +24,10 @@ class CTTextField extends BaseOXmlElement
         }
 
         return $t->textContent ?: '';
+    }
+
+    public function getHtmlText(): string
+    {
+        return $this->getText();
     }
 }

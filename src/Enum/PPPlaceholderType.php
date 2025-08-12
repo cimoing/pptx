@@ -55,4 +55,26 @@ enum PPPlaceholderType: int implements IBaseXmlEnum
             self::MIXED->value => ["", "Return value only; multiple placeholders of differing types."],
         ];
     }
+
+    public function getHtmlValue(): string
+    {
+        return match ($this->value) {
+            self::BITMAP->value => 'bitmap',
+            self::BODY->value, self::VERTICAL_BODY->value => 'content',
+            self::CENTER_TITLE->value, self::TITLE->value, self::VERTICAL_TITLE->value => 'title',
+            self::CHART->value => 'chart',
+            self::DATE->value => 'date',
+            self::FOOTER->value => 'footer',
+            self::HEADER->value => 'header',
+            self::MEDIA_CLIP->value => 'media',
+            self::OBJECT->value, self::VERTICAL_OBJECT->value => 'object',
+            self::ORG_CHART->value => 'dgm',
+            self::PICTURE->value => 'pic',
+            self::SLIDE_IMAGE->value => 'sldImg',
+            self::SLIDE_NUMBER->value => 'sldNum',
+            self::SUBTITLE->value => 'subTitle',
+            self::TABLE->value => 'table',
+            self::MIXED->value => '',
+        };
+    }
 }

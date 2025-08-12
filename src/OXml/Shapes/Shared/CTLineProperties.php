@@ -2,7 +2,9 @@
 
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
+use Imoing\Pptx\Enum\MsoLineDashStyle;
 use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
+use Imoing\Pptx\OXml\Dml\Line\CTPresetLineDashProperties;
 use Imoing\Pptx\OXml\SimpleTypes\STLineWidth;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\Choice;
@@ -16,9 +18,9 @@ use Imoing\Pptx\Util\Length;
  * @property Length $w
  * @property ?AbsFill $eg_lineFillProperties
  * @property ?AbsFill $eg_fillProperties
- * @property $prstDash
+ * @property ?CTPresetLineDashProperties $prstDash
  * @property $custDash
- * @property string $prstDashVal
+ * @property ?MsoLineDashStyle $prstDashVal
  * @method void _remove_prstDash()
  * @method void _remove_custDash()
  */

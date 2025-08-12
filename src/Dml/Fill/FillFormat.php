@@ -46,7 +46,7 @@ class FillFormat extends BaseObject
         return $this->_fill->backColor;
     }
 
-    public function getForceColor(): ColorFormat
+    public function getForeColor(): ColorFormat
     {
         return $this->_fill->foreColor;
     }

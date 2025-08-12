@@ -6,6 +6,20 @@ use Imoing\Pptx\OXml\SimpleTypes\XsdString;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 
+/**
+ * @property string $bg1
+ * @property string $tx1
+ * @property string $bg2
+ * @property string $tx2
+ * @property string $accent1
+ * @property string $accent2
+ * @property string $accent3
+ * @property string $accent4
+ * @property string $accent5
+ * @property string $accent6
+ * @property string $hlink
+ * @property string $folHlink
+ */
 class CTColorMap extends BaseOXmlElement
 {
     #[OptionalAttribute("bg1", XsdString::class, default: "lt1")]

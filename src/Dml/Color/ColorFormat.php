@@ -104,7 +104,8 @@ class ColorFormat extends BaseObject
     {
         if (empty($this->type)) {
             return [
-                'type' => 'none',
+                'type' => 'color',
+                'color' => '#000000',
             ];
         }
         return $this->isThemeColor() ? [

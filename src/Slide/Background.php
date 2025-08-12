@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\Slide;
 
 use Imoing\Pptx\Dml\Fill\FillFormat;
+use Imoing\Pptx\OXml\Dml\Fill\CTNoFillProperties;
 use Imoing\Pptx\OXml\Slide\CTCommonSlideData;
 use Imoing\Pptx\Shared\ElementProxy;
 
@@ -27,6 +28,11 @@ class Background extends ElementProxy
         }
 
         return $this->_fill;
+    }
+
+    public function hasBg(): bool
+    {
+        return !is_null($this->_cSld->bg) && !($this->_cSld->bg->bgPr->eg_fillProperties instanceof CTNoFillProperties);
     }
 
     public function toArray(): array

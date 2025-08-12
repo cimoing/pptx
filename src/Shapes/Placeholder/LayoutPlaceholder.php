@@ -3,6 +3,8 @@
 namespace Imoing\Pptx\Shapes\Placeholder;
 
 use Imoing\Pptx\Enum\PPPlaceholderType;
+use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
+use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTShape;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
 
@@ -28,5 +30,17 @@ class LayoutPlaceholder extends Shape
         $slideMaster = $this->part->slideMaster;
 
         return $slideMaster->placeholders->get($baseType, null);
+    }
+
+    public function getLstStyle(): ?CTListStyle
+    {
+        return $this->_element->txBody?->lstStyle;
+    }
+
+    public function getLevelPPr(int $level): ?CTLevelParaProperties
+    {
+        $style = $this->getLstStyle();
+        $propName = 'lvl' . $level . 'pPr';
+        return $style?->$propName;
     }
 }

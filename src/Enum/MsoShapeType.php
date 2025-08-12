@@ -3,7 +3,9 @@
 namespace Imoing\Pptx\Enum;
 
 use Imoing\Pptx\Enum\Base\IBaseEnum;
+use Imoing\Pptx\Enum\Base\IBaseXmlEnum;
 use Imoing\Pptx\Enum\Base\TraitEnum;
+use Imoing\Pptx\Enum\Base\TraitXmlEnum;
 
 enum MsoShapeType: int implements IBaseEnum
 {

@@ -6,6 +6,7 @@ use Imoing\Pptx\Common\BaseObject;
 
 /**
  * @property string $blob
+ * @property string $base64
  * @property string $contentType
  * @property array $dpi
  * @property string $ext
@@ -92,5 +93,10 @@ class Image extends BaseObject
     protected function setSize(array $values): void
     {
         list($this->width, $this->height) = $values;
+    }
+
+    protected function getBase64(): string
+    {
+        return sprintf('data:%s;base64,%s', $this->contentType, base64_encode($this->blob));
     }
 }

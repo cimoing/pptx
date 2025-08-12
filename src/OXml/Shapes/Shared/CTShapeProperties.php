@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Shapes\Shared;
 
 use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
+use Imoing\Pptx\OXml\Drawing\CTEffectList;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTCustomGeometry2D;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTPresetGeometry2D;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
@@ -20,6 +21,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOneChoice;
  * @property ?CTLineProperties $ln
  * @property ?CTPresetGeometry2D $prstGeom
  * @property ?AbsFill $eg_fillProperties
+ * @property ?CTEffectList $effectLst
  */
 class CTShapeProperties extends BaseOXmlElement
 {
@@ -106,5 +108,5 @@ class CTShapeProperties extends BaseOXmlElement
         "a:sp3d",
         "a:extLst",
     ])]
-    protected $_effectLst;
+    protected ?CTEffectList $_effectLst;
 }

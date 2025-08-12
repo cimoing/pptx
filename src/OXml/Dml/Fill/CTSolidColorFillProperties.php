@@ -26,9 +26,4 @@ class CTSolidColorFillProperties extends AbsFill
     {
         return 'color';
     }
-
-    public function getJsonValue(): mixed
-    {
-        return $this->eg_colorChoice->getJsonValue();
-    }
 }

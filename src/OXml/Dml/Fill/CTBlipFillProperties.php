@@ -16,7 +16,7 @@ class CTBlipFillProperties extends AbsFill
     protected ?CTBlip $_blip;
 
     #[ZeroOrOne("a:srcRect", successors: ["a:tile", "a:stretch"])]
-    protected string $_srcRect;
+    protected ?CTRelativeRect $_srcRect;
 
     public function crop(array $cropping): void
     {

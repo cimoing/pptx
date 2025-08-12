@@ -40,7 +40,7 @@ class LineFormat extends BaseObject
             if ($this->fill->type != MsoFillType::SOLID) {
                 $this->fill->solid();
             }
-            $this->_color = $this->getFill()->getForceColor();
+            $this->_color = $this->fill->foreColor;
         }
 
         return $this->_color;
@@ -53,7 +53,7 @@ class LineFormat extends BaseObject
             return null;
         }
 
-        return $ln->prstDashVal;
+        return $ln->prstDashVal?->getXmlValue();
     }
 
     public function setDashStyle(?string $dashStyle): void
@@ -137,8 +137,7 @@ class LineFormat extends BaseObject
         return [
             'color' => $color,
             'width' => $this->width->getPt(),
-            'type' => $borderType,
-            'strokeDashArray' => $strokeDash,
+            'style' => $borderType,
         ];
     }
 }

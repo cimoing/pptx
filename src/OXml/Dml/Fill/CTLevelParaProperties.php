@@ -3,18 +3,24 @@
 namespace Imoing\Pptx\OXml\Dml\Fill;
 
 use Imoing\Pptx\Enum\PPParagraphAlignment;
+use Imoing\Pptx\OXml\Text\CTTextCharacterProperties;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
+use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 use Imoing\Pptx\Util\Length;
 
 /**
  * @property ?PPParagraphAlignment $algn
+ * @property ?CTTextCharacterProperties $defRPr
  */
 class CTLevelParaProperties extends BaseOXmlElement
 {
-    #[OptionalAttribute("algn", PPParagraphAlignment::class, default: "l")]
+    #[OptionalAttribute("algn", PPParagraphAlignment::class, default: PPParagraphAlignment::LEFT)]
     protected string $_algn;
 
     #[OptionalAttribute("defTabSz", Length::class)]
     protected ?Length $_defTabSz;
+
+    #[ZeroOrOne("a:defRPr", successors: ["a:extLst"])]
+    protected ?CTTextCharacterProperties $_defRPr;
 }
