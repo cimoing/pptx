@@ -29,6 +29,15 @@ class SlideMaster extends BaseMaster
         return $this->part->getThemePart();
     }
 
+    private ?OfficeStyleSheet $_theme = null;
+    public function getTheme(): OfficeStyleSheet
+    {
+        if (null === $this->_theme) {
+            $part = $this->getThemePart();
+            $this->_theme = new OfficeStyleSheet($part->element, $part);
+        }
+    }
+
     private ?array $_colorScheme = null;
     public function getColorScheme(): array
     {

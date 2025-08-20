@@ -24,6 +24,7 @@ class SlideMasterPart extends BaseSlidePart
     public function getSlideMaster(): SlideMaster
     {
         if ($this->_slideMaster === null) {
+            //TODO inject theme 注入主题
             $this->_slideMaster = new SlideMaster($this->_element, $this);
         }
         return $this->_slideMaster;

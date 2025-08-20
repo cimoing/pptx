@@ -5,6 +5,7 @@ namespace Imoing\Pptx\Dml\Fill;
 use Imoing\Pptx\Common\BaseObject;
 use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Enum\MsoFillType;
+use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
 use Imoing\Pptx\OXml\Dml\Fill\CTBlipFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTGroupFillProperties;
@@ -20,7 +21,7 @@ use Imoing\Pptx\OXml\Dml\Fill\CTSolidColorFillProperties;
  */
 abstract class Fill extends BaseObject
 {
-    private mixed $_xFill;
+    private ?AbsFill $_xFill;
     public function __construct($xFill)
     {
         parent::__construct();

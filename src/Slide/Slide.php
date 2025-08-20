@@ -77,6 +77,7 @@ class Slide extends BaseSlide
 
         $unwrap = function ($element) use (&$elements, &$unwrap, &$phIdxList) {
             $isPlaceholder = array_key_exists('isPlaceholder', $element) && $element['isPlaceholder'];
+            unset($element['isPlaceholder']);
             if (!array_key_exists('elements', $element)) {
                 $elements[] = $element;
                 if ($isPlaceholder) {
@@ -88,8 +89,6 @@ class Slide extends BaseSlide
             $children = $element['elements'];
             unset($element['elements']);
             foreach ($children as $child) {
-                $child['top'] += $element['top'];
-                $child['left'] += $element['left'];
                 $unwrap(array_merge($element, $child));
             }
         };

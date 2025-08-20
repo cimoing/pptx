@@ -66,4 +66,9 @@ class FillFormat extends BaseObject
     {
         return $this->_fill->toArray();
     }
+
+    public function getFill(): Fill
+    {
+        return $this->_fill;
+    }
 }

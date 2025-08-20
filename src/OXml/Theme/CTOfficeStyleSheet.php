@@ -14,7 +14,7 @@ use Imoing\Pptx\OXml\XmlChemy\RequiredAttribute;
 class CTOfficeStyleSheet extends BaseOXmlElement
 {
     #[OneAndOnlyOne("a:themeElements")]
-    protected mixed $_themeElements;
+    protected CTThemeElements $_themeElements;
 
     #[RequiredAttribute("name", XsdString::class)]
     protected string $_name;

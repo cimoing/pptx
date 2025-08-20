@@ -62,6 +62,8 @@ use Imoing\Pptx\OXml\Shapes\GroupShape\CTGroupShapeProperties;
 use Imoing\Pptx\OXml\Shapes\Pictures\CTPicture;
 use Imoing\Pptx\OXml\Shapes\Pictures\CTPictureNonVisual;
 use Imoing\Pptx\OXml\Shapes\Shared\CTApplicationNonVisualDrawingProps;
+use Imoing\Pptx\OXml\Shapes\Shared\CTCustomDash;
+use Imoing\Pptx\OXml\Shapes\Shared\CTDashSegment;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\OXml\Shapes\Shared\CTNonVisualDrawingProps;
 use Imoing\Pptx\OXml\Shapes\Shared\CTPlaceholder;
@@ -71,6 +73,7 @@ use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
 use Imoing\Pptx\OXml\Shapes\Shared\CTTransform2D;
 use Imoing\Pptx\OXml\Slide\CTBackground;
 use Imoing\Pptx\OXml\Slide\CTBackgroundProperties;
+use Imoing\Pptx\OXml\Slide\CTBackgroundRef;
 use Imoing\Pptx\OXml\Slide\CTColorMap;
 use Imoing\Pptx\OXml\Slide\CTCommonSlideData;
 use Imoing\Pptx\OXml\Slide\CTNotesMaster;
@@ -96,7 +99,13 @@ use Imoing\Pptx\OXml\Text\CTTextSpacing;
 use Imoing\Pptx\OXml\Text\CTTextSpacingPercent;
 use Imoing\Pptx\OXml\Text\CTTextSpacingPoint;
 use Imoing\Pptx\OXml\Theme\CTColorScheme;
+use Imoing\Pptx\OXml\Theme\CTFillStyleList;
+use Imoing\Pptx\OXml\Theme\CTFonts;
+use Imoing\Pptx\OXml\Theme\CTFormatScheme;
+use Imoing\Pptx\OXml\Theme\CTFontScheme;
+use Imoing\Pptx\OXml\Theme\CTLineStyleList;
 use Imoing\Pptx\OXml\Theme\CTOfficeStyleSheet;
+use Imoing\Pptx\OXml\Theme\CTStyle;
 use Imoing\Pptx\OXml\Theme\CTThemeElements;
 
 NsMap::registerTagClass('ct:Default', CTDefault::class);
@@ -156,6 +165,8 @@ NsMap::registerTagClass("a:srcRect", CTRelativeRect::class);
 
 # dml.line
 NsMap::registerTagClass("a:prstDash", CTPresetLineDashProperties::class);
+NsMap::registerTagClass("a:custDash", CTCustomDash::class);
+NsMap::registerTagClass("a:ds", CTDashSegment::class);
 
 #presentation
 NsMap::registerTagClass("p:presentation", CTPresentation::class);
@@ -225,6 +236,7 @@ NsMap::registerTagClass("a:outerShdw", CTOuterShadow::class);
 # slide
 NsMap::registerTagClass("p:bg", CTBackground::class);
 NsMap::registerTagClass("p:bgPr", CTBackgroundProperties::class);
+NsMap::registerTagClass("p:bgRef", CTBackgroundRef::class);
 NsMap::registerTagClass("p:childTnLst", CTTimeNodeList::class);
 NsMap::registerTagClass("p:cSld", CTCommonSlideData::class);
 NsMap::registerTagClass("p:clrMap", CTColorMap::class);
@@ -278,3 +290,11 @@ NsMap::registerTagClass("a:lvl9pPr", CTLevelParaProperties::class);
 NsMap::registerTagClass("a:theme", CTOfficeStyleSheet::class);
 NsMap::registerTagClass("a:themeElements", CTThemeElements::class);
 NsMap::registerTagClass("a:clrScheme", CTColorScheme::class);
+NsMap::registerTagClass("a:fontScheme", CTFontScheme::class);
+NsMap::registerTagClass("a:fmtScheme", CTFormatScheme::class);
+NsMap::registerTagClass("a:lnStyleLst", CTLineStyleList::class);
+NsMap::registerTagClass("a:fillStyleLst", CTFillStyleList::class);
+NsMap::registerTagClass("a:bgFillStyleLst", CTFillStyleList::class);
+NsMap::registerTagClass("a:majorFont", CTFonts::class);
+NsMap::registerTagClass("a:minorFont", CTFonts::class);
+NsMap::registerTagClass("p:style", CTStyle::class);

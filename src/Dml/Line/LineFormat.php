@@ -136,7 +136,7 @@ class LineFormat extends BaseObject
 
         return [
             'color' => $color,
-            'width' => $this->width->getPt(),
+            'width' => $this->width->px,
             'style' => $borderType,
         ];
     }

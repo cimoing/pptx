@@ -93,6 +93,10 @@ class Shape extends BaseShape
             return MsoShapeType::TEXT_BOX;
         }
 
+        if ($this->_sp->spPr->prstGeom->prst) {
+            return MsoShapeType::AUTO_SHAPE;
+        }
+
         throw new \Exception("Shape instance of unrecognized shape type");
     }
 
@@ -215,6 +219,7 @@ class Shape extends BaseShape
             'shapeType' => $shapeType,
             'viewBox' => [200, 200],
             'points' => ['', $shapeType == MsoAutoShapeType::LINE_INVERSE->getXmlValue() ? 'arrow' : ''],
+            'fill' => $this->getFillArr(),
         ];
     }
 
@@ -285,114 +290,19 @@ class Shape extends BaseShape
             'fixedRatio' => false,
             'outline' => $this->getOutlineArr(),
             'lock' => false,
+            'flipH' => $this->flipH,
+            'flipV' => $this->flipV,
         ], $this->getFillArr());
     }
 
     public function getLineArr(): array
     {
-        $shapeType = $this->_sp->prstGeom->prst->getXmlValue();
-        $start = $end = [0, 0];
-        $isFlipV = $this->flipV;
-        $isFlipH = $this->flipH;
-        $width = $this->getWidth()->px;
-        $height = $this->getHeight()->px;
-        if (!$isFlipV && !$isFlipH) {
-            $end = [$width, $height];
-        } else if ($isFlipV && $isFlipH) {
-            $start = [$width, $height];
-        } else if ($isFlipV && !$isFlipH) {
-            $start = [0, $height];
-            $end = [$width, 0];
-        } else {
-            $start = [$width, 0];
-            $end = [0, $height];
-        }
-
-        $rot = $this->rotation;
+        $data = parent::getLineArr();
 
         $outline = $this->getOutlineArr();
-        $data = [
-            'width' => $width ?: 1,
-            'type' => 'line',
-            'start' => $start,
-            'end' => $end,
-            'color' => $outline['color'],
-            'style' => $outline['style'],
-            'points' => ['', $shapeType == MsoAutoShapeType::LINE_INVERSE->getXmlValue() ? 'arrow' : ''],
-        ];
-        if ($rot != 0) {
-            $data = $this->rotateLine($data, $rot);
-        }
-
-        if (str_contains($shapeType, 'bentConnector')) {
-            $data['broken2'] = [
-                abs(($data['start'][0] - $data['end'][0]) / 2),
-                abs(($data['start'][1] - $data['end'][1]) / 2)
-            ];
-        }
-
-        if (str_contains($shapeType, 'curvedConnector')) {
-            $cubic = [
-                abs(($data['start'][0] - $data['end'][0]) / 2),
-                abs(($data['start'][1] - $data['end'][1]) / 2)
-            ];
-            $data['cubic'] = [$cubic, $cubic];
-        }
-
-        return $data;
-    }
-
-    private function rotateLine(array $data, $angleDeg): array
-    {
-        $start = $data['start'];
-
-        $end = $data['end'];
-
-
-        $angleRad = $angleDeg * M_PI / 180;
-
-
-        $midX = ($start[0] + $end[0]) / 2;
-        $midY = ($start[1] + $end[1]) / 2;
-
-        $startTransX = $start[0] - $midX;
-        $startTransY = $start[1] - $midY;
-        $endTransX = $end[0] - $midX;
-        $endTransY = $end[1] - $midY;
-
-        $cosA = cos($angleRad);
-        $sinA = sin($angleRad);
-
-        $startRotX = $startTransX * $cosA - $startTransY * $sinA;
-        $startRotY = $startTransX * $sinA + $startTransY * $cosA;
-
-        $endRotX = $endTransX * $cosA - $endTransY * $sinA;
-        $endRotY = $endTransX * $sinA + $endTransY * $cosA;
-
-        $startNewX = $startRotX + $midX;
-        $startNewY = $startRotY + $midY;
-        $endNewX = $endRotX + $midX;
-        $endNewY = $endRotY + $midY;
-
-        $beforeMinX = min($start[0], $end[0]);
-        $beforeMinY = min($start[1], $end[1]);
-
-        $afterMinX = min($startNewX, $endNewX);
-        $afterMinY = min($startNewY, $endNewY);
-
-        $startAdjustedX = $startNewX - $afterMinX;
-        $startAdjustedY = $startNewY - $afterMinY;
-        $endAdjustedX = $endNewX - $afterMinX;
-        $endAdjustedY = $endNewY - $afterMinY;
-
-        $startAdjusted = [$startAdjustedX, $startAdjustedY];
-        $endAdjusted = [$endAdjustedX, $endAdjustedY];
-        $offset = [$afterMinX - $beforeMinX, $afterMinY - $beforeMinY];
-
-        $data['start'] = $startAdjusted;
-        $data['end'] = $endAdjusted;
-        $data['left'] += $offset[0];
-        $data['top'] += $offset[1];
+        $data['width'] = $outline['width'] ?: 1;
+        $data['color'] = $outline['color'];
+        $data['style'] = $outline['style'];
 
         return $data;
     }
@@ -401,11 +311,8 @@ class Shape extends BaseShape
     {
         $shape = $this->getGeometryArr();
         if (!empty($shape) && $shape['type'] == 'shape') {
-            $shapeType = $shape['shapeType'] ?? '';
             $text = $this->getTextArr();
-            if ($shapeType === 'rect' && $text) {
-                $shape = $text;
-            }else if ($text) {
+            if ($text) {
                 $shape['text'] = [
                     'content' => $text['content'],
                     'defaultFontName' => $text['defaultFontName'],

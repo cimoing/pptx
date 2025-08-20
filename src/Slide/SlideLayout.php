@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Slide;
 
+use Imoing\Pptx\Common\Coordinate;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlideLayoutPart;
@@ -151,19 +152,13 @@ class SlideLayout extends BaseSlide
             unset($element['elements']);
             foreach ($children as $child) {
                 // 涉及旋转的
-                if ($element['rotate'] > 0) {
-                    list($child['left'], $child['top']) = self::calculateRotatePosition([$element['left'], $element['top']], [$element['width'], $element['height']],[$child['left'], $child['top']], $element['rotate']);
-                } else {
-                    $child['top'] += $element['top'];
-                    $child['left'] += $element['left'];
-                }
-
                 $unwrap(array_merge($element, $child));
             }
         };
         foreach ($this->shapes->toArray() as $element) {
             $unwrap($element);
         }
+        //$elements = $this->shapes->toArray();
 
         return [
             'background' => $fill,

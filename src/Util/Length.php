@@ -12,6 +12,8 @@ use Imoing\Pptx\Common\BaseObject;
  * @property-read int $emu
  * @property-read float $pt
  * @property-read int $px 转为像素
+ * @property-read int $scalePx 转为缩放后的像素
+ * @property-read float $htmlVal 转换为html内的值
  */
 class Length extends BaseObject
 {
@@ -39,7 +41,8 @@ class Length extends BaseObject
     }
 
     public function getCm(): float {
-        return $this->emu / self::EMUS_PER_CM;
+        $num = bcdiv($this->emu, self::EMUS_PER_CM,3);
+        return round($num, 2);
     }
 
     public function getEmu(): int {
@@ -57,6 +60,17 @@ class Length extends BaseObject
     public function getPx(): float
     {
         return round($this->emu / self::EMUS_PER_PT * (96 / 72), 3);
+    }
+
+    public function getScalePx(): int
+    {
+        return (int) ($this->px * 1000 / 1280);
+    }
+
+    public function getHtmlVal(): float
+    {
+        return $this->getCm();
+        //return $this->getScalePx();
     }
 
     private array $_cache = [];

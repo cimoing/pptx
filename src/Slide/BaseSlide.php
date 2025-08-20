@@ -2,8 +2,11 @@
 
 namespace Imoing\Pptx\Slide;
 
+use Imoing\Pptx\Dml\Fill\Fill;
 use Imoing\Pptx\OXml\Slide\CTSlide;
 use Imoing\Pptx\Shared\PartElementProxy;
+use Imoing\Pptx\Util\Emu;
+use Imoing\Pptx\Util\Length;
 
 /**
  * @property-read CTSlide $_element
@@ -43,19 +46,28 @@ class BaseSlide extends PartElementProxy
         $this->_element->cSld->name = $newName;
     }
 
-    public static function calculateRotatePosition(array $offset, array $size, array $childOffset, int $rotate): array
+    public function getAbsTop(): Length
     {
-        $radians = $rotate * M_PI / 180;
-        $centerX = $offset[0] + $size[0] / 2;
-        $centerY = $offset[1] + $size[1] / 2;
+        return new Emu(0);
+    }
 
-        $relativeX = $childOffset[0] - $size[0] / 2;
-        $relativeY = $childOffset[1] - $size[1] / 2;
+    public function getAbsLeft(): Length
+    {
+        return new Emu(0);
+    }
 
-        $rotateX = $relativeX * cos($radians) + $relativeY * sin($radians);
-        $rotateY = $relativeX * -sin($radians) + $relativeY * cos($radians);
-        $x = $centerX + $rotateX;
-        $y = $centerY + $rotateY;
-        return [$x, $y];
+    public function getChildLeft(): ?Length
+    {
+        return null;
+    }
+
+    public function getChildTop(): ?Length
+    {
+        return null;
+    }
+
+    public function getRotation(): float
+    {
+        return 0.0;
     }
 }

@@ -58,7 +58,7 @@ class Picture extends BasePicture
 
         return array_merge(parent::toArray(), [
             'type' => 'image',
-            //'src' => $this->getImage()?->base64 ?: '',
+            'src' => $this->getImage()?->base64 ?: '',
             'fixedRatio' => true, // 固定图片宽高比例
             'outline' => $this->getOutlineArr(),
             'clip' => $clip,

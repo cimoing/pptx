@@ -11,7 +11,7 @@ use Imoing\Pptx\Types\ProvidesPart;
  */
 class PartElementProxy extends ElementProxy implements ProvidesPart
 {
-    private XmlPart $_part;
+    protected XmlPart $_part;
     public function __construct(BaseOXmlElement $element, XmlPart $part)
     {
         parent::__construct($element);

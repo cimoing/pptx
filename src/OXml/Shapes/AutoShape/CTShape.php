@@ -10,6 +10,7 @@ use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
 use Imoing\Pptx\OXml\Text\CTTextBody;
+use Imoing\Pptx\OXml\Theme\CTStyle;
 use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 use Imoing\Pptx\Util\Length;
@@ -32,6 +33,9 @@ class CTShape extends BaseShapeElement
 
     #[OneAndOnlyOne("p:spPr")]
     protected CTShapeProperties $_spPr;
+
+    #[ZeroOrOne("p:style")]
+    protected ?CTStyle $_style;
 
     #[ZeroOrOne("p:txBody", successors: ["p:extLst"])]
     protected ?CTTextBody $_txBody;

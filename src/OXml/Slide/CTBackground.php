@@ -8,7 +8,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 /**
  * @method void _insert_bgPr(CTBackgroundProperties $properties)
  * @property ?CTBackgroundProperties $bgPr
- * @property mixed $bgRef
+ * @property ?CTBackgroundRef $bgRef
  */
 class CTBackground extends BaseOXmlElement
 {
@@ -16,7 +16,7 @@ class CTBackground extends BaseOXmlElement
     protected ?CTBackgroundProperties $_bgPr;
 
     #[ZeroOrOne("p:bgRef", successors: [])]
-    protected mixed $_bgRef;
+    protected ?CTBackgroundRef $_bgRef;
 
     public function add_noFill_bgPr()
     {
@@ -29,12 +29,5 @@ class CTBackground extends BaseOXmlElement
 
         $this->_insert_bgPr($obj);
         return $obj;
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'type' => '',
-        ];
     }
 }
