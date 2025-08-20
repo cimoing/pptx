@@ -196,7 +196,7 @@ class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Co
         $scaleX = $this->width->emu ? $chExt[0]->emu / $this->width->emu : 1;
         $scaleY = $this->height->emu ? $chExt[1]->emu / $this->height->emu : 1;
 
-        $chPoint = new Point(($point->x - $chOff[0]->emu) * $scaleX, ($point->y - $chOff[1]->emu) * $scaleY);
+        $chPoint = new Point(intval(($point->x - $chOff[0]->emu) * $scaleX), intval(($point->y - $chOff[1]->emu) * $scaleY));
         $offset = $this->getOffsetPoint();
 
         return $chPoint->rotate($this->rotation, $center)->move($offset);

@@ -93,8 +93,17 @@ class GroupShape extends BaseShape implements \IteratorAggregate
         $scaleX = $chExt[0]->emu / $this->width->emu;
         $scaleY = $chExt[1]->emu / $this->height->emu;
 
-        $chPoint = new Point(($relativePoint->x - $chOff[0]->emu) * $scaleX, ($relativePoint->y - $chOff[1]->emu) * $scaleY); // 子节点左顶点在当前节点位置
-        $relativePoint = $chPoint->rotate($this->rotation, $center); // 获取子节点在当前节点旋转后的位置
+        $relativePoint = new Point(intval(($relativePoint->x - $chOff[0]->emu) * $scaleX), intval(($relativePoint->y - $chOff[1]->emu) * $scaleY)); // 子节点左顶点在当前节点位置
+
+        if ($this->flipV) {
+            $relativePoint->flipV($center);
+        }
+        if ($this->flipH) {
+            $relativePoint->flipH($center);
+        }
+
+        $relativePoint = $relativePoint->rotate($this->rotation, $center); // 获取子节点在当前节点旋转后的位置
+
         $relativePoint->move($offset); // 平移并返回
         return $this->_parent->getAbsPoint($relativePoint);
     }

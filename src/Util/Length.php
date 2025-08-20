@@ -69,8 +69,8 @@ class Length extends BaseObject
 
     public function getHtmlVal(): float
     {
-        return $this->getCm();
-        //return $this->getScalePx();
+        //return $this->getCm();
+        return $this->getScalePx();
     }
 
     private array $_cache = [];

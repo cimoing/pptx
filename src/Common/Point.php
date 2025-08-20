@@ -6,8 +6,10 @@ use Imoing\Pptx\Util\Emu;
 use Imoing\Pptx\Util\Length;
 
 /**
- * @property int $x
- * @property int $y
+ * @property-read int $x
+ * @property-read int $y
+ * @property-read Length $lx
+ * @property-read Length $ly
  */
 class Point extends BaseObject
 {
@@ -54,18 +56,7 @@ class Point extends BaseObject
         $rY = $tX * sin($radians) + $tY * cos($radians);
 
         // 获取旋转后的点
-        $result = new static(intval($rX + $center->x), intval($rY + $center->y));
-        echo sprintf("点: (%s,%s) 围绕中心点 (%s,%s) 旋转 %s 度后的点: (%s,%s)\n",
-        $this->getLx()->htmlVal,
-        $this->getLy()->htmlVal,
-        $center->getLx()->htmlVal,
-        $center->getLy()->htmlVal,
-        $degree,
-        $result->getLx()->htmlVal,
-        $result->getLy()->htmlVal
-        );
-
-        return $result;
+        return new static(intval($rX + $center->x), intval($rY + $center->y));
     }
 
     /**
@@ -99,6 +90,18 @@ class Point extends BaseObject
     public function getY(): int
     {
         return $this->_y;
+    }
+
+    public function flipV(Point $center): self
+    {
+        $this->_y = $center->y - ($this->_y - $center->y);
+        return $this;
+    }
+
+    public function flipH(Point $center): self
+    {
+        $this->_x = $center->x - ($this->_x - $center->x);
+        return $this;
     }
 
     public function __toString(): string

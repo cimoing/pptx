@@ -251,7 +251,18 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
      */
     public function getAbsOffsetPoint(): Point
     {
-        return $this->_parent->getAbsPoint($this->getOffsetPoint());
+        $offset = $this->_parent->getAbsPoint($this->getOffsetPoint());
+        $center = $this->getAbsPoint($this->getCenterPoint()); // 当前图形中心点
+        $rotate = $this->absRotation - $this->rotation;
+        $offset = $offset->rotate(-$rotate, $center); // 旋转回去（offset为旋转前的点）
+        if ($this->_parent->flipV) {
+            $offset->flipV($center);
+        }
+        if ($this->_parent->flipH) {
+            $offset->flipH($center);
+        }
+
+        return $offset;
     }
 
     public function getAbsPoint(Point $relativePoint): Point
@@ -261,10 +272,10 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
         // 反转
         if ($this->flipV) {
-            //$relativePoint->y = $center->y - ($relativePoint->y - $center->y);
+            $relativePoint->flipV($center);
         }
         if ($this->flipH) {
-            //$relativePoint->x = $center->x - ($relativePoint->x - $center->x);
+            $relativePoint->flipH($center);
         }
 
         $rot = $this->rotation;
@@ -418,6 +429,10 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
             return $arr;
         }
 
+        if ($arr['type'] ?? '' === 'none') {
+            $arr = [];
+        }
+
         return $arr;
     }
 
@@ -454,18 +469,18 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
         $svgBox = $this->getSvgBox();
 
-        $start = $this->getAbsOffsetPoint();
-        $end = $this->getAbsPoint(new Point($this->width?->emu ?: 1, $this->height->emu));
+        $start = $this->getAbsPoint(new Point(0,0));
+        $end = $this->getAbsPoint(new Point($this->width?->emu ?: 0, $this->height?->emu ?: 0));
 
         $outline = $this->getOutlineArr();
         $data = array_merge($svgBox, [
             'id' => $this->shapeId,
             'name' => $this->name,
             'isPlaceholder' => $this->isPlaceholder,
-            'width' => $outline['width'] ?? 1,
+            'width' => $outline['width'] ?? 1.33,
             'type' => 'line',
-            'start' => [$start->getLx()->htmlVal - $svgBox['left'], $start->getLy()->htmlVal - $svgBox['top']],
-            'end' => [$end->getLx()->htmlVal - $svgBox['left'], $end->getLy()->htmlVal - $svgBox['top']],
+            'start' => [$start->lx->htmlVal - $svgBox['left'], $start->ly->htmlVal - $svgBox['top']],
+            'end' => [$end->lx->htmlVal - $svgBox['left'], $end->ly->htmlVal - $svgBox['top']],
             'color' => $outline['color'] ?? '',
             'style' => $outline['style'] ?? '',
             'points' => ['', $shapeType == MsoAutoShapeType::LINE_INVERSE->getXmlValue() ? 'arrow' : ''],
@@ -517,13 +532,10 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     public function getSvgBox(): array
     {
         $offset = $this->getAbsOffsetPoint(); // 获取绝对位置
-        $center = $this->getAbsPoint($this->getCenterPoint()); // 当前图形中心点
-        $rotate = $this->absRotation - $this->rotation;
-        $o = $offset->rotate(-$rotate, $center); // 旋转回去（offset为旋转前的点）
 
         return [
-            'left' => $o->lx->htmlVal,
-            'top' => $o->ly->htmlVal,
+            'left' => $offset->lx->htmlVal,
+            'top' => $offset->ly->htmlVal,
             'width' => $this->width?->htmlVal ?: 0,
             'height' => $this->height?->htmlVal ?: 0,
         ];
