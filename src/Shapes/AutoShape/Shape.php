@@ -256,8 +256,8 @@ class Shape extends BaseShape
 
                 $maxX = intval($path->width?->emu); // 此值实际是相对于当前的宽高
                 $maxY = intval($path->height?->emu); // 此值实际是相对于当前的宽高
-                $cX = $maxX === 0 ? 0 : $w->pt / $maxX; // 换算比值
-                $cY = $maxY === 0 ? 0 : $h->pt / $maxY; // 换算比值
+                $cX = $maxX === 0 ? 0 : $w->emu / $maxX; // 换算比值
+                $cY = $maxY === 0 ? 0 : $h->emu / $maxY; // 换算比值
                 foreach ($path->contentChildren as $child) {
                     $cmd = $child->getCommand();
                     $ptLst = $child->getPtLst();
@@ -272,9 +272,9 @@ class Shape extends BaseShape
                         if ($y->emu === 0 && !is_numeric($pt->fY)) {
                             $y = $parseLength($pt->fY);
                         }
-                        $points[] = $x->emu * $cX . ',' . $y->emu * $cY;
-                        $viewBox[0] = max($viewBox[0], $x->emu * $cX);
-                        $viewBox[1] = max($viewBox[1], $y->emu * $cY);
+                        $points[] = (new Emu(intval($x->emu * $cX)))->htmlVal . ',' . (new Emu(intval($y->emu * $cY)))->htmlVal;
+                        $viewBox[0] = max($viewBox[0], $x->htmlVal * $cX);
+                        $viewBox[1] = max($viewBox[1], $y->htmlVal * $cY);
                     }
                     $pathList[] = $cmd . implode(' ', $points);
                 }
