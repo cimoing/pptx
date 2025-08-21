@@ -89,13 +89,30 @@ class SlideLayout extends BaseSlide
 
     public function getColorMap(): array
     {
-        //TODO merge color map
-        return $this->slideMaster->getColorMap();
+        $clrMap = $this->_element->clrMapOvr?->overrideClrMapping;
+        $map = $clrMap ? array_filter([
+            'bg1' => $clrMap->bg1,
+            'tx1' => $clrMap->tx1,
+            'bg2' => $clrMap->bg2,
+            'tx2' => $clrMap->tx2,
+            'accent1' => $clrMap->accent1,
+            'accent2' => $clrMap->accent2,
+            'accent3' => $clrMap->accent3,
+            'accent4' => $clrMap->accent4,
+            'accent5' => $clrMap->accent5,
+            'accent6' => $clrMap->accent6,
+            'hlink' => $clrMap->hlink,
+            'folHlink' => $clrMap->folHlink,
+        ]) : [];
+
+        return array_merge($this->slideMaster->getColorMap(), $map);
     }
 
     public function getSchemeColor(string $scheme): string
     {
-        return $this->slideMaster->getSchemeColor($scheme);
+        $map = $this->getColorMap();
+        $alias = $map[$scheme];
+        return $this->slideMaster->getColorScheme()[$alias];
     }
 
     public function getUsedBySlides(): array

@@ -3,6 +3,7 @@
 namespace Imoing\Pptx\OXml\Slide;
 
 use Imoing\Pptx\OXml\Ns\NsMap;
+use Imoing\Pptx\OXml\Theme\CTColorMapOverrides;
 use Imoing\Pptx\OXml\XmlChemy\OneAndOnlyOne;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 
@@ -10,6 +11,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  * tag sequences "p:cSld", "p:clrMapOvr", "p:transition", "p:timing", "p:extLst"
  * @property CTCommonSlideData $cSld
  * @property ?CTBackground $bg
+ * @property ?CTColorMapOverrides $clrMapOvr
  */
 class CTSlide extends BaseSlideElement
 {
