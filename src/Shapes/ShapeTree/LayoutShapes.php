@@ -27,27 +27,4 @@ class LayoutShapes extends BaseShapes
     {
         return $this->parent->getSchemeColor($scheme);
     }
-
-    public function getGlobalRotation(): float
-    {
-        return $this->rotation;
-    }
-    public function getAbsRotation(): float
-    {
-        return $this->rotation;
-    }
-
-    public function getAbsOff(): array
-    {
-        return [$this->left, $this->top];
-    }
-
-    /**
-     * 获取绝对偏移点
-     * @return Point
-     */
-    public function getAbsOffsetPoint(): Point
-    {
-        return new Point($this->left->emu, $this->top->emu);
-    }
 }

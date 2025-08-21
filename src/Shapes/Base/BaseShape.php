@@ -208,6 +208,21 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         return new PlaceholderFormat($ph);
     }
 
+    private ?Transform2D $_transform2D = null;
+    public function getTransform2D(): ?Transform2D
+    {
+        if (is_null($this->_transform2D)) {
+            $xfrm = $this->_element->getXfrm();
+            if (!$xfrm) {
+                return null;
+            }
+
+            $this->_transform2D = new Transform2D($xfrm, $this->_parent->getTransform2D());
+        }
+
+        return $this->_transform2D;
+    }
+
     /**
      * 获取绝对旋转角度
      * @return float
@@ -225,143 +240,6 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     public function setRotation(float $rotation): void
     {
         $this->_element->rot = $rotation;
-    }
-
-    public function getParentRotation(): float
-    {
-        return $this->_parent->rotation;
-    }
-
-    public function getGlobalRotation(): float
-    {
-        return $this->rotation + $this->parentRotation;
-    }
-
-    public function getOffsetPoint(): Point
-    {
-        return new Point(
-            ($this->left?->emu ?: 0),
-            ($this->top?->emu ?: 0),
-        );
-    }
-
-    /**
-     * 获取绝对偏移点
-     * @return Point
-     */
-    public function getAbsOffsetPoint(): Point
-    {
-        $offset = $this->_parent->getAbsPoint($this->getOffsetPoint());
-        $center = $this->getAbsPoint($this->getCenterPoint()); // 当前图形中心点
-        $rotate = $this->absRotation - $this->rotation;
-        $offset = $offset->rotate(-$rotate, $center); // 旋转回去（offset为旋转前的点）
-        if ($this->_parent->flipV) {
-            $offset->flipV($center);
-        }
-        if ($this->_parent->flipH) {
-            $offset->flipH($center);
-        }
-
-        return $offset;
-    }
-
-    public function getAbsPoint(Point $relativePoint): Point
-    {
-        $offset = $this->getOffsetPoint();
-        $center = $this->getCenterPoint();
-
-        // 反转
-        if ($this->flipV) {
-            $relativePoint->flipV($center);
-        }
-        if ($this->flipH) {
-            $relativePoint->flipH($center);
-        }
-
-        $rot = $this->rotation;
-        if ($rot != 0) {
-            $relativePoint = $relativePoint->rotate($rot, $center);
-        }
-
-        // 相对上级位置
-        $relativePoint = $relativePoint->move($offset);
-        return $this->_parent->getAbsPoint($relativePoint);
-    }
-
-    public function getRAbsPoint(Point $point): Point
-    {
-        $offset = $this->getOffsetPoint();
-        return $this->_parent->getAbsPoint($point->move($offset));
-    }
-
-    /**
-     * 相对中心点 子节点均按照此点进行旋转并执行偏移，未偏移的中心点
-     * @return Point
-     */
-    public function getCenterPoint(): Point
-    {
-        $relative = new Point(
-            $this->width?->emu ?: 0,
-            $this->height?->emu ?: 0,
-        );
-
-        return (new Point(0,0))->getCenter($relative);
-    }
-
-    protected function rotateLine(array $data, $angleDeg): array
-    {
-        $start = $data['start'];
-
-        $end = $data['end'];
-
-
-        $angleRad = $angleDeg * M_PI / 180;
-
-
-        $midX = ($start[0] + $end[0]) / 2;
-        $midY = ($start[1] + $end[1]) / 2;
-
-        $startTransX = $start[0] - $midX;
-        $startTransY = $start[1] - $midY;
-        $endTransX = $end[0] - $midX;
-        $endTransY = $end[1] - $midY;
-
-        $cosA = cos($angleRad);
-        $sinA = sin($angleRad);
-
-        $startRotX = $startTransX * $cosA - $startTransY * $sinA;
-        $startRotY = $startTransX * $sinA + $startTransY * $cosA;
-
-        $endRotX = $endTransX * $cosA - $endTransY * $sinA;
-        $endRotY = $endTransX * $sinA + $endTransY * $cosA;
-
-        $startNewX = $startRotX + $midX;
-        $startNewY = $startRotY + $midY;
-        $endNewX = $endRotX + $midX;
-        $endNewY = $endRotY + $midY;
-
-        $beforeMinx = min($start[0], $end[0]);
-        $beforeMiny = min($start[1], $end[1]);
-
-
-        $afterMinX = min($startNewX, $endNewX);
-        $afterMinY = min($startNewY, $endNewY);
-
-        $startAdjustedX = $startNewX - $afterMinX;
-        $startAdjustedY = $startNewY - $afterMinY;
-        $endAdjustedX = $endNewX - $afterMinX;
-        $endAdjustedY = $endNewY - $afterMinY;
-
-        $startAdjusted = [$startAdjustedX, $startAdjustedY];
-        $endAdjusted = [$endAdjustedX, $endAdjustedY];
-
-        $data['left'] += $afterMinX - $beforeMinx;
-        $data['top'] += $afterMinY - $beforeMiny;
-
-        $data['start'] = $startAdjusted;
-        $data['end'] = $endAdjusted;
-
-        return $data;
     }
 
     public function getShadow(): ShadowFormat
@@ -468,9 +346,10 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         }
 
         $svgBox = $this->getSvgBox();
+        $transform = $this->getTransform2D();
 
-        $start = $this->getAbsPoint(new Point(0,0));
-        $end = $this->getAbsPoint(new Point($this->width?->emu ?: 0, $this->height?->emu ?: 0));
+        $start = $transform->calAbsPoint(new Point(0, 0));
+        $end = $transform->calAbsPoint(new Point($this->width?->emu ?: 0, $this->height?->emu ?: 0));
 
         $outline = $this->getOutlineArr();
         $data = array_merge($svgBox, [
@@ -531,14 +410,9 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
     public function getSvgBox(): array
     {
-        $offset = $this->getAbsOffsetPoint(); // 获取绝对位置
+        $transform = $this->getTransform2D();
 
-        return [
-            'left' => $offset->lx->htmlVal,
-            'top' => $offset->ly->htmlVal,
-            'width' => $this->width?->htmlVal ?: 0,
-            'height' => $this->height?->htmlVal ?: 0,
-        ];
+        return $transform ? $transform->toArray() : [];
     }
 
 }

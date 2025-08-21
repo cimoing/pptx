@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Shapes\AutoShape;
 
+use Imoing\Pptx\Common\Point;
 use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Dml\Line\LineFormat;
 use Imoing\Pptx\Enum\MsoAutoShapeType;
@@ -227,9 +228,9 @@ class Shape extends BaseShape
     {
         $custGeom = $this->_sp->spPr->custGeom;
         $pathList = [];
-        $w = $this->getWidth();
-        $h = $this->getHeight();
-        $viewBox = [$w->pt,$h->pt];
+        $transform = $this->getTransform2D();
+        $size = $transform->absSize;
+        $viewBox = clone $size;
         if ($custGeom->pathLst) {
             $formula = new Formula();
             if ($custGeom->gdLst) {
@@ -256,12 +257,14 @@ class Shape extends BaseShape
 
                 $maxX = intval($path->width?->emu); // 此值实际是相对于当前的宽高
                 $maxY = intval($path->height?->emu); // 此值实际是相对于当前的宽高
-                $cX = $maxX === 0 ? 0 : $w->emu / $maxX; // 换算比值
-                $cY = $maxY === 0 ? 0 : $h->emu / $maxY; // 换算比值
+                $cX = $maxX === 0 ? 0 : $size->x / $maxX; // 换算比值
+                $cY = $maxY === 0 ? 0 : $size->y / $maxY; // 换算比值
+                $scale = new Point($cX, $cY);
                 foreach ($path->contentChildren as $child) {
                     $cmd = $child->getCommand();
                     $ptLst = $child->getPtLst();
 
+                    $offset = $transform->inheritOffset->scale(new Point(-1,-1));
                     $points = [];
                     foreach ($ptLst as $pt) {
                         $x = $pt->x;
@@ -272,13 +275,32 @@ class Shape extends BaseShape
                         if ($y->emu === 0 && !is_numeric($pt->fY)) {
                             $y = $parseLength($pt->fY);
                         }
-                        $points[] = (new Emu(intval($x->emu * $cX)))->htmlVal . ',' . (new Emu(intval($y->emu * $cY)))->htmlVal;
-                        $viewBox[0] = max($viewBox[0], $x->htmlVal * $cX);
-                        $viewBox[1] = max($viewBox[1], $y->htmlVal * $cY);
+                        $point = new Point($x->emu, $y->emu);
+                        //$point = $point->rotate($transform->absRotation, $center);
+
+                        $point->scale($scale);
+                        // 应用上一级的偏移及旋转并减去偏移
+                        $point = $transform->calInheritPoint($point)
+                            ->move($offset);
+
+
+                        $points[] = $point->lx->htmlVal . ',' . $point->ly->htmlVal;
+                        if ($point->x > $viewBox->x) {
+                            $viewBox->x = $point->x;
+                        }
+                        if ($point->y > $viewBox->y) {
+                            $viewBox->y = $point->y;
+                        }
                     }
                     $pathList[] = $cmd . implode(' ', $points);
                 }
             }
+        }
+
+        if (($viewBox->x / $viewBox->y) > ($size->x / $size->y)) {
+            $viewBox->x = $viewBox->y * $size->x / $size->y;
+        } else {
+            $viewBox->y = $viewBox->x * $size->y / $size->x;
         }
 
         return array_merge([
@@ -286,12 +308,13 @@ class Shape extends BaseShape
             'special' => true,
             'path' => implode(' ', $pathList),
             'shadow' => $this->getShadowArr(),
-            'viewBox' => $viewBox,
+            'viewBox' => [$viewBox->lx->htmlVal, $viewBox->ly->htmlVal],
             'fixedRatio' => false,
             'outline' => $this->getOutlineArr(),
             'lock' => false,
             'flipH' => $this->flipH,
             'flipV' => $this->flipV,
+            'rotate' => $transform->rotation,
         ], $this->getFillArr());
     }
 
@@ -300,7 +323,7 @@ class Shape extends BaseShape
         $data = parent::getLineArr();
 
         $outline = $this->getOutlineArr();
-        $data['width'] = $outline['width'] ?: 1;
+        $data['width'] = $outline['width'] ?: 1.33;
         $data['color'] = $outline['color'];
         $data['style'] = $outline['style'];
 

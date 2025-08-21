@@ -10,6 +10,7 @@ use Imoing\Pptx\OXml\Shapes\GroupShape\CTGroupShape;
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\OXml\SimpleTypes\STDirection;
 use Imoing\Pptx\Shapes\Base\BaseShape;
+use Imoing\Pptx\Shapes\Base\Transform2D;
 use Imoing\Pptx\Shapes\Placeholder\LayoutPlaceholder;
 use Imoing\Pptx\Shared\ParentedElementProxy;
 use Imoing\Pptx\Types\ProvidesPart;
@@ -111,121 +112,14 @@ class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Co
         $this->_cachedMaxShapeId = $value ? $this->_spTree->getMaxShapeId() : null;
     }
 
-    public function getAbsRotation(): float
+    public function getTransform2D(): ?Transform2D
     {
-        return $this->rotation + $this->parent->absRotation;
-    }
+        $xfrm = $this->_spTree->getXfrm();
+        if (!$xfrm) {
+            return null;
+        }
 
-    public function getRotation(): float
-    {
-        return (float) $this->_spTree->grpSpPr?->xfrm?->rot;
-    }
-
-    /**
-     * @return Length[]
-     */
-    public function getAbsOff(): array
-    {
-        $offset = Coordinate::calChildOffset($this, $this->parent);
-        return [new Emu((int) $offset[0]), new Emu((int) $offset[1])];
-    }
-
-    public function getTop(): Length
-    {
-        return $this->_spTree->grpSpPr?->xfrm?->off?->y ?: new Emu(0);
-    }
-
-    public function getLeft(): Length
-    {
-        return $this->_spTree->grpSpPr?->xfrm?->off?->x ?: new Emu(0);
-    }
-
-    public function getOffsetPoint(): Point
-    {
-        return new Point(
-            $this->left->emu,
-            $this->top->emu,
-        );
-    }
-
-    /**
-     * 获取绝对偏移点
-     * @return Point
-     */
-    public function getAbsOffsetPoint(): Point
-    {
-        return $this->parent->getAbsPoint($this->getOffsetPoint());
-    }
-
-    /**
-     * 获取绝对中心点
-     * @return Point
-     */
-    public function getAbsCenterPoint(): Point
-    {
-        $offsetPoint = $this->getOffsetPoint();
-        $center = $this->getCenterPoint();
-        return $this->parent->getAbsPoint($center)->move($offsetPoint);
-    }
-
-    /**
-     * 相对中心点 子节点均按照此点进行旋转并执行偏移，未偏移的中心点
-     * @return Point
-     */
-    public function getCenterPoint(): Point
-    {
-        $relative = new Point(
-            $this->width->emu,
-            $this->height->emu
-        );
-
-        return (new Point(0,0))->getCenter($relative);
-    }
-
-    /**
-     * 获取绝对点
-     * @param Point $point
-     * @return Point
-     */
-    public function getAbsPoint(Point $point):  Point
-    {
-        $chOff = $this->getChildOff();
-        $chExt = $this->getChildSize();
-        $center = new Point(intval($chExt[0]->emu / 2), intval($chExt[1]->emu / 2));
-
-        $scaleX = $this->width->emu ? $chExt[0]->emu / $this->width->emu : 1;
-        $scaleY = $this->height->emu ? $chExt[1]->emu / $this->height->emu : 1;
-
-        $chPoint = new Point(intval(($point->x - $chOff[0]->emu) * $scaleX), intval(($point->y - $chOff[1]->emu) * $scaleY));
-        $offset = $this->getOffsetPoint();
-
-        return $chPoint->rotate($this->rotation, $center)->move($offset);
-    }
-
-    public function getChildOff(): array
-    {
-        return [
-            $this->_spTree->grpSpPr?->xfrm?->chOff->x ?: $this->left,
-            $this->_spTree->grpSpPr?->xfrm?->chOff->y ?: $this->top,
-        ];
-    }
-
-    public function getChildLeft(): ?Length
-    {
-        return $this->_spTree->grpSpPr?->xfrm?->chOff->x ?? $this->left;
-    }
-
-    public function getChildTop(): ?Length
-    {
-        return $this->_spTree->grpSpPr?->xfrm?->chOff->y ?? $this->top;
-    }
-
-    public function getChildSize(): array
-    {
-        return [
-            $this->_spTree->grpSpPr?->xfrm?->ext?->cx ?: $this->width,
-            $this->_spTree->grpSpPr?->xfrm?->ext?->cy ?: $this->height,
-        ];
+        return new Transform2D($xfrm);
     }
 
     public function getWidth(): Length

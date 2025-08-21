@@ -8,7 +8,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "\\Imoing\\Pptx\\": "src"
+      "\\Imoing\\Pptx\\": "src",
+      "\\Tests\\": "tests"
     },
     "files": [
       "src/helper.php",
@@ -22,5 +23,13 @@
     "ext-zip": "*",
     "ext-gd": "*",
     "ext-bcmath": "*"
+  },
+  "require-dev": {
+    "pestphp/pest": "^4.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   }
 }

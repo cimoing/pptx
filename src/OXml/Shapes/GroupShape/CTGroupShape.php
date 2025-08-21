@@ -204,7 +204,7 @@ class CTGroupShape extends BaseShapeElement
     {
         $shapes = (array) $this->iter_shape_elms();
         if (empty($shapes)) {
-            return [new Emu(0), new Emu(0), new Emu(0), new Emu(0)];;
+            return [new Emu(0), new Emu(0), new Emu(0), new Emu(0)];
         }
 
         $minX = min(array_map(function (BaseShapeElement $elm) {

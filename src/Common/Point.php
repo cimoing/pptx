@@ -6,18 +6,18 @@ use Imoing\Pptx\Util\Emu;
 use Imoing\Pptx\Util\Length;
 
 /**
- * @property-read int $x
- * @property-read int $y
+ * @property float $x
+ * @property float $y
  * @property-read Length $lx
  * @property-read Length $ly
  */
 class Point extends BaseObject
 {
-    private int $_x;
+    protected float $_x;
 
-    private int $_y;
+    protected float $_y;
 
-    public function __construct(int $x, int $y)
+    public function __construct(float $x, float $y)
     {
         parent::__construct([]);
         $this->_x = $x;
@@ -44,6 +44,9 @@ class Point extends BaseObject
      */
     public function rotate(float $degree, Point $center): self
     {
+        if ($degree == 0.0) {
+            return $this;
+        }
 
         $radians = deg2rad($degree);
 
@@ -54,42 +57,55 @@ class Point extends BaseObject
         // 旋转
         $rX = $tX * cos($radians) - $tY * sin($radians);
         $rY = $tX * sin($radians) + $tY * cos($radians);
-
-        // 获取旋转后的点
-        return new static(intval($rX + $center->x), intval($rY + $center->y));
+        $this->_x = $rX + $center->x;
+        $this->_y = $rY + $center->y;
+        return $this;
     }
 
     /**
      * 获取中心点
-     * @param Point $relative
+     * @param ?Point $relative 默认相对于原点
      * @return $this
      */
-    public function getCenter(Point $relative): self
+    public function getCenter(?Point $relative = null): self
     {
+        if (!$relative) {
+            $relative = new Point(0, 0);
+        }
         return new static(
-            intval(($this->_x + $relative->x) / 2),
-            intval(($this->_y + $relative->y) / 2)
+            ($this->_x + $relative->x) / 2,
+            ($this->_y + $relative->y) / 2
         );
     }
 
-    public function getX(): int
+    public function getX(): float
     {
         return $this->_x;
     }
 
+    public function setX(float $val): void
+    {
+        $this->_x = $val;
+    }
+
     public function getLx(): Length
     {
-        return new Emu($this->_x);
+        return new Emu((int) $this->_x);
     }
 
     public function getLy(): Length
     {
-        return new Emu($this->_y);
+        return new Emu((int) $this->_y);
     }
 
-    public function getY(): int
+    public function getY(): float
     {
         return $this->_y;
+    }
+
+    public function setY(float $val): void
+    {
+        $this->_y = $val;
     }
 
     public function flipV(Point $center): self
@@ -101,6 +117,13 @@ class Point extends BaseObject
     public function flipH(Point $center): self
     {
         $this->_x = $center->x - ($this->_x - $center->x);
+        return $this;
+    }
+
+    public function scale(Point $scale): self
+    {
+        $this->_x *= $scale->x;
+        $this->_y *= $scale->y;
         return $this;
     }
 
