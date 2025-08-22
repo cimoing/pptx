@@ -81,17 +81,4 @@ class CTColorScheme extends BaseOXmlElement
 
     #[ZeroOrOne("a:bg2")]
     protected mixed $_bg2;
-
-    public function toHexArray(): array
-    {
-        $names = ['dk1', 'lt1', 'dk2', 'lt2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'hlink', 'folHlink'];
-        $colors = [];
-
-        foreach ($names as $name) {
-            $color = ColorFormat::fromColorChoiceParent($this->{$name});
-            $colors[$name] = (string) $color->getRgb();
-        }
-
-        return $colors;
-    }
 }

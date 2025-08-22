@@ -59,7 +59,7 @@ abstract class BasePicture extends BaseShape
     public function getLine(): LineFormat
     {
         if (is_null($this->_line)) {
-            $this->_line = new LineFormat($this);
+            $this->_line = new LineFormat($this, $this->_parent->theme);
         }
         return $this->_line;
     }

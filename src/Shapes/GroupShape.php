@@ -48,11 +48,6 @@ class GroupShape extends BaseShape implements \IteratorAggregate
         }
     }
 
-    public function getSchemeColor(string $scheme): string
-    {
-        return $this->_parent->getSchemeColor($scheme);
-    }
-
     public function toArray(): array
     {
         $arr = parent::toArray();

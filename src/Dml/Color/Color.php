@@ -12,6 +12,7 @@ use Imoing\Pptx\OXml\Dml\Color\CTSchemeColor;
 use Imoing\Pptx\OXml\Dml\Color\CTScRgbColor;
 use Imoing\Pptx\OXml\Dml\Color\CTSRgbColor;
 use Imoing\Pptx\OXml\Dml\Color\CTSystemColor;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property float $brightness
@@ -26,12 +27,15 @@ abstract class Color extends BaseObject
      */
     protected mixed $_xClr;
 
-    public function __construct(?BaseColorElement $xClr)
+    protected ?Theme $_theme;
+
+    public function __construct(?BaseColorElement $xClr, ?Theme $theme)
     {
         parent::__construct();
         $this->_xClr = $xClr;
+        $this->_theme = $theme;
     }
-    public static function create($xClr): Color
+    public static function create($xClr, ?Theme $theme): Color
     {
         $clsMaps = [
             null => NoneColor::class,
@@ -44,7 +48,7 @@ abstract class Color extends BaseObject
         ];
 
         $cls = $clsMaps[is_null($xClr) ? null : get_class($xClr)] ?? NoneColor::class;
-        return new $cls($xClr);
+        return new $cls($xClr, $theme);
     }
 
     public function getBrightness(): float

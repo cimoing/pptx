@@ -5,6 +5,7 @@ namespace Imoing\Pptx\Dml\Color;
 use Imoing\Pptx\Common\BaseObject;
 use Imoing\Pptx\Enum\MsoColorType;
 use Imoing\Pptx\Enum\MsoThemeColorIndex;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property float $brightness
@@ -19,18 +20,21 @@ class ColorFormat extends BaseObject
      * @var Color
      */
     protected Color $_color;
-    public function __construct($egColorChoiceParent, $color)
+
+    protected ?Theme $_theme;
+    public function __construct($egColorChoiceParent, $color, ?Theme $theme = null)
     {
         parent::__construct();
         $this->_xFill = $egColorChoiceParent;
         $this->_color = $color;
+        $this->_theme = $theme;
     }
 
-    public static function fromColorChoiceParent($egColorChoiceParent): ColorFormat
+    public static function fromColorChoiceParent($egColorChoiceParent, ?Theme $theme): ColorFormat
     {
         $xClr = $egColorChoiceParent->eg_colorChoice;
-        $color = Color::create($xClr);
-        return new self($egColorChoiceParent, $color);
+        $color = Color::create($xClr, $theme);
+        return new self($egColorChoiceParent, $color, $theme);
     }
 
     public function getBrightness(): float
@@ -73,7 +77,7 @@ class ColorFormat extends BaseObject
     {
         if (!($this->_color instanceof SchemeColor)) {
             $schemeClr = $this->_xFill->get_or_change_to_schemeClr();
-            $this->_color = new SchemeColor($schemeClr);
+            $this->_color = new SchemeColor($schemeClr, $this->_theme);
         }
         $this->_color->themeColor = $themeColor;
     }
@@ -111,6 +115,7 @@ class ColorFormat extends BaseObject
         return $this->isThemeColor() ? [
             'type' => 'scheme',
             'scheme' => $this->themeColor->getXmlValue(),
+            'color' => $this->getRgb(),
         ] : [
             'type' => 'color',
             'color' => (string) $this->getRgb(),

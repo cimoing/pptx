@@ -12,6 +12,7 @@ use Imoing\Pptx\Enum\MsoTextStrikeType;
 use Imoing\Pptx\Enum\MsoTextUnderlineType;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Text\CTTextCharacterProperties;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Util\Centipoints;
 use Imoing\Pptx\Util\Length;
 
@@ -31,11 +32,15 @@ class Font extends BaseObject
     private CTTextCharacterProperties $_rPr;
 
     private ?CTLevelParaProperties $_lvlPPr;
-    public function __construct(CTTextCharacterProperties $rPr, ?CTLevelParaProperties $lvlPPr = null)
+
+    protected ?Theme $_theme;
+
+    public function __construct(CTTextCharacterProperties $rPr, ?CTLevelParaProperties $lvlPPr = null, ?Theme $theme = null)
     {
         parent::__construct([]);
         $this->_element = $this->_rPr = $rPr;
         $this->_lvlPPr = $lvlPPr;
+        $this->_theme = $theme;
     }
 
     public function getBold(): ?bool
@@ -65,7 +70,7 @@ class Font extends BaseObject
     public function getFill(): FillFormat
     {
         if (!$this->_fill) {
-            $this->_fill = FillFormat::fromFillParent($this->_rPr);
+            $this->_fill = FillFormat::fromFillParent($this->_rPr, $this->_theme);
         }
 
         return $this->_fill;
@@ -154,7 +159,7 @@ class Font extends BaseObject
         $defaultPPr = $this->_lvlPPr?->defRPr;
         $defaultArr = [];
         if ($defaultPPr) {
-            $defaultArr = (new static($defaultPPr, null))->toHtmlStyle();
+            $defaultArr = (new static($defaultPPr, null, $this->_theme))->toHtmlStyle();
         }
 
         $color = $this->getColor()->toArray();

@@ -7,6 +7,7 @@ use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Enum\MsoFillType;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Picture\BasePicture;
 use Imoing\Pptx\Util\Emu;
 use Imoing\Pptx\Util\Length;
@@ -23,10 +24,14 @@ class LineFormat extends BaseObject
      * @var mixed|BasePicture
      */
     protected mixed $_parent;
-    public function __construct($parent)
+
+    protected ?Theme $_theme;
+
+    public function __construct($parent, ?Theme $theme = null)
     {
         parent::__construct([]);
         $this->_parent = $parent;
+        $this->_theme = $theme;
     }
 
     private ?ColorFormat $_color = null;
@@ -82,7 +87,7 @@ class LineFormat extends BaseObject
     {
         if (is_null($this->_fill)) {
             $ln = $this->get_or_add_ln();
-            $this->_fill = FillFormat::fromFillParent($ln);
+            $this->_fill = FillFormat::fromFillParent($ln, $this->_theme);
         }
 
         return $this->_fill;

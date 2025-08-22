@@ -7,6 +7,7 @@ use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Text\CTTextBody;
 use Imoing\Pptx\OXml\Text\CTTextParagraph;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Subshape;
 use Imoing\Pptx\Types\ProvidesPart;
 
@@ -14,6 +15,7 @@ use Imoing\Pptx\Types\ProvidesPart;
  * @property-read Paragraph[] $paragraphs
  * @property string $text
  * @property-read bool $isVertical
+ * @property-read Theme $theme
  */
 class TextFrame extends Subshape
 {
@@ -83,6 +85,11 @@ class TextFrame extends Subshape
     public function getIsVertical(): bool
     {
         return $this->_txBody->bodyPr->vert === 'eaVert';
+    }
+
+    protected function getTheme(): Theme
+    {
+        return $this->_parent->theme;
     }
 
     public function toHtml(): string

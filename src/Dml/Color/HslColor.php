@@ -10,7 +10,7 @@ class HslColor extends Color
     private CTHslColor $_hslColor;
     public function __construct(CTHslColor $color)
     {
-        parent::__construct($color);
+        parent::__construct($color, null);
         $this->_hslColor = $color;
     }
 

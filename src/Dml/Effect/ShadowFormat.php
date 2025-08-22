@@ -6,6 +6,7 @@ use Imoing\Pptx\Common\BaseObject;
 use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\OXml\Shapes\Shared\CTShapeProperties;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property bool $inherit
@@ -16,10 +17,13 @@ class ShadowFormat extends BaseObject
      * @var mixed|CTShapeProperties
      */
     protected mixed $_element;
-    public function __construct($spPr)
+
+    protected ?Theme $_theme;
+    public function __construct($spPr, ?Theme $theme)
     {
         parent::__construct([]);
         $this->_element = $spPr;
+        $this->_theme = $theme;
     }
 
     public function getInherit(): bool
@@ -47,7 +51,7 @@ class ShadowFormat extends BaseObject
         }
 
         $shadow = $this->_element->effectLst->outerShdw;
-        $color = ColorFormat::fromColorChoiceParent($shadow);
+        $color = ColorFormat::fromColorChoiceParent($shadow, $this->_theme);
 
         $direction = $shadow->dir ?: 0;
         $distance = $shadow->dist?->px ?: 0;

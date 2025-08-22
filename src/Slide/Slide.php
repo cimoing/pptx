@@ -4,6 +4,7 @@ namespace Imoing\Pptx\Slide;
 
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlidePart;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\ShapeTree\SlidePlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
 
@@ -13,6 +14,7 @@ use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
  * @property-read bool $hasNotesSlide
  * @property-read SlidePlaceholders $placeholders
  * @property SlideShapes $shapes
+ * @property-read Theme $theme 主题
  */
 class Slide extends BaseSlide
 {
@@ -51,21 +53,16 @@ class Slide extends BaseSlide
         return $this->_shapes;
     }
 
-    private ?array $_colorScheme = null;
-
-    public function getColorScheme(): array
+    private ?Theme $_theme = null;
+    protected function getTheme(): Theme
     {
-        return $this->part->slideLayout->getColorScheme();
-    }
+        if (is_null($this->_theme)) {
+            $theme = $this->part->slideLayout->theme;
 
-    public function getColorMap(): array
-    {
-        return $this->part->slideLayout->getColorMap();
-    }
+            $this->_theme = $theme;
+        }
 
-    public function getSchemeColor(string $scheme): string
-    {
-        return $this->part->slideLayout->getSchemeColor($scheme);
+        return $this->_theme;
     }
 
     public function toArray(): array
@@ -108,7 +105,7 @@ class Slide extends BaseSlide
         } elseif ($backgroundArr['type'] == 'scheme') {
             $backgroundArr = [
                 'type' => 'solid',
-                'color' => $this->getSchemeColor($backgroundArr['scheme']),
+                'color' => $this->theme->getSchemeColor($backgroundArr['scheme']),
             ];
         }
 

@@ -4,6 +4,7 @@ namespace Imoing\Pptx\Slide;
 
 use Imoing\Pptx\Dml\Fill\Fill;
 use Imoing\Pptx\OXml\Slide\CTSlide;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shared\PartElementProxy;
 use Imoing\Pptx\Util\Emu;
 use Imoing\Pptx\Util\Length;
@@ -19,7 +20,7 @@ class BaseSlide extends PartElementProxy
     public function getBackground(): Background
     {
         if (is_null($this->_background)) {
-            $this->_background = new Background($this->_element->cSld);
+            $this->_background = new Background($this->_element->cSld, $this->theme);
         }
         return $this->_background;
     }
@@ -44,30 +45,5 @@ class BaseSlide extends PartElementProxy
     {
         $newName = empty($name) ? "" : $name;
         $this->_element->cSld->name = $newName;
-    }
-
-    public function getAbsTop(): Length
-    {
-        return new Emu(0);
-    }
-
-    public function getAbsLeft(): Length
-    {
-        return new Emu(0);
-    }
-
-    public function getChildLeft(): ?Length
-    {
-        return null;
-    }
-
-    public function getChildTop(): ?Length
-    {
-        return null;
-    }
-
-    public function getRotation(): float
-    {
-        return 0.0;
     }
 }

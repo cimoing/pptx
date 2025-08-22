@@ -6,6 +6,7 @@ use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Enum\MsoFillType;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientFillProperties;
 use Imoing\Pptx\OXml\Dml\Fill\CTGradientStop;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property ?float $gradientAngle
@@ -19,9 +20,9 @@ class GradFill extends Fill
      * @var mixed|CTGradientFillProperties
      */
     protected $_gradFill;
-    public function __construct($gradFill)
+    public function __construct($gradFill, ?Theme $theme = null)
     {
-        parent::__construct($gradFill);
+        parent::__construct($gradFill, $theme);
         $this->_element = $this->_gradFill = $gradFill;
     }
 
@@ -78,7 +79,7 @@ class GradFill extends Fill
                 'rot' => $this->_gradFill->lin?->ang,
                 'type' => $pathType === 'line' ? 'linear' : 'radial',
                 'colors' => array_map(function ($gs) {
-                    $color = ColorFormat::fromColorChoiceParent($gs);
+                    $color = ColorFormat::fromColorChoiceParent($gs, $this->_theme);
                     return [
                         'pos' => $gs->pos * 100,
                         'color' => (string) $color->getRgb(),

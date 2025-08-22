@@ -10,6 +10,7 @@ use Imoing\Pptx\OXml\Shapes\GroupShape\CTGroupShape;
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\OXml\SimpleTypes\STDirection;
 use Imoing\Pptx\Shapes\Base\BaseShape;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Base\Transform2D;
 use Imoing\Pptx\Shapes\Placeholder\LayoutPlaceholder;
 use Imoing\Pptx\Shared\ParentedElementProxy;
@@ -180,6 +181,11 @@ class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Co
             return $this->_cachedMaxShapeId;
         }
         return $this->_spTree->getMaxShapeId() + 1;
+    }
+
+    protected function getTheme(): Theme
+    {
+        return $this->parent->theme;
     }
 
     protected function shapeFactory(BaseShapeElement $shapeElement): BaseShape

@@ -7,11 +7,13 @@ use Imoing\Pptx\Enum\MsoThemeColorIndex;
 use Imoing\Pptx\OXml\Slide\CTSlideMaster;
 use Imoing\Pptx\Parts\Slide\SlideMasterPart;
 use Imoing\Pptx\Parts\Theme\OfficeStyleSheetPart;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property CTSlideMaster $_element
  * @property-read SlideLayouts $slideLayouts
  * @property-read SlideMasterPart $part
+ * @property-read Theme $theme
  */
 class SlideMaster extends BaseMaster
 {
@@ -29,13 +31,15 @@ class SlideMaster extends BaseMaster
         return $this->part->getThemePart();
     }
 
-    private ?OfficeStyleSheet $_theme = null;
-    public function getTheme(): OfficeStyleSheet
+    private ?Theme $_theme = null;
+    protected function getTheme(): Theme
     {
         if (null === $this->_theme) {
             $part = $this->getThemePart();
-            $this->_theme = new OfficeStyleSheet($part->element, $part);
+            $this->_theme = Theme::createFromStyleSheet($part->element);
         }
+
+        return $this->_theme;
     }
 
     private ?array $_colorScheme = null;
@@ -67,7 +71,7 @@ class SlideMaster extends BaseMaster
                 if (null === $color) {
                     $colors[$schemeName] = $fallback[$schemeName];
                 } else {
-                    $colorFmt = ColorFormat::fromColorChoiceParent($color);
+                    $colorFmt = ColorFormat::fromColorChoiceParent($color, $this->theme);
                     $colors[$schemeName] = (string) $colorFmt->getRgb();
                 }
             }

@@ -23,7 +23,7 @@ class Run extends Subshape
     public function getFont(): Font
     {
         $rPr = $this->_r->get_or_add_rPr();
-        return new Font($rPr);
+        return new Font($rPr, null, $this->_parent->theme);
     }
 
     //TODO hyperlink

@@ -6,6 +6,7 @@ use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\OXml\Dml\Fill\CTNoFillProperties;
 use Imoing\Pptx\OXml\Slide\CTBackgroundRef;
 use Imoing\Pptx\OXml\Slide\CTCommonSlideData;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shared\ElementProxy;
 
 /**
@@ -14,10 +15,13 @@ use Imoing\Pptx\Shared\ElementProxy;
 class Background extends ElementProxy
 {
     protected ?CTCommonSlideData $_cSld;
-    public function __construct(?CTCommonSlideData $cSld)
+
+    protected ?Theme $_theme;
+    public function __construct(?CTCommonSlideData $cSld, ?Theme $theme = null)
     {
         parent::__construct($cSld);
         $this->_cSld = $cSld;
+        $this->_theme = $theme;
     }
 
     public static function createFromFill(FillFormat $fill): static
@@ -32,7 +36,7 @@ class Background extends ElementProxy
     {
         if (is_null($this->_fill)) {
             $bgPr = $this->_cSld->get_or_add_bgPr();
-            $this->_fill = FillFormat::fromFillParent($bgPr);
+            $this->_fill = FillFormat::fromFillParent($bgPr, $this->_theme);
         }
 
         return $this->_fill;

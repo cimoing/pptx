@@ -24,12 +24,12 @@ class Connector extends BaseShape
 
     public function getLine(): LineFormat
     {
-        return new LineFormat($this->_connector->spPr);
+        return new LineFormat($this->_connector->spPr, $this->_parent->theme);
     }
 
     public function getSchemeColor(string $scheme): ?string
     {
-        return $this->_parent->getSchemeColor($scheme);
+        return $this->_parent->theme->getSchemeColor($scheme);
     }
 
     public function getAutoShapeType(): ?MsoAutoShapeType

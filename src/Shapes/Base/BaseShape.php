@@ -48,6 +48,7 @@ use Imoing\Pptx\Util\Length;
  * @property-read ShadowFormat $shadow
  * @property-read int $shapeId
  * @property-read  MsoShapeType $shapeType
+ * @property-read Theme $theme
  *
  */
 abstract class BaseShape extends BaseObject implements ProvidesPart
@@ -140,22 +141,6 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         $this->_element->cx = $width;
     }
 
-    /**
-     * @return Length[]|null [left, top]
-     */
-    public function getChOff(): ?array
-    {
-        return null;
-    }
-
-    /**
-     * @return Length[]|null [cx, cy]
-     */
-    public function getChExt(): ?array
-    {
-        return null;
-    }
-
     public function getFlipV(): bool
     {
         return $this->_element->flipV;
@@ -223,15 +208,6 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         return $this->_transform2D;
     }
 
-    /**
-     * 获取绝对旋转角度
-     * @return float
-     */
-    public function getAbsRotation(): float
-    {
-        return $this->rotation + $this->_parent->absRotation;
-    }
-
     public function getRotation(): float
     {
         return $this->_element->rot;
@@ -244,7 +220,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
 
     public function getShadow(): ShadowFormat
     {
-        return new ShadowFormat($this->_element->spPr);
+        return new ShadowFormat($this->_element->spPr, $this->theme);
     }
 
     public function getShapeId(): int
@@ -259,11 +235,21 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         return null;
     }
 
+    private ?Theme $_theme = null;
+    protected function getTheme(): Theme
+    {
+        if (is_null($this->_theme)) {
+            $this->_theme = $this->_parent->theme;
+        }
+
+        return $this->_theme;
+    }
+
     private ?FillFormat $_fill = null;
     public function getFill(): FillFormat
     {
         if (is_null($this->_fill)) {
-            $this->_fill = FillFormat::fromFillParent($this->_element->spPr);
+            $this->_fill = FillFormat::fromFillParent($this->_element->spPr, $this->theme);
         }
         return $this->_fill;
     }
@@ -284,7 +270,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         }
 
         if ($fillType === 'scheme') {
-            return $this->_parent->getSchemeColor($arr['scheme']);
+            return $this->theme->getSchemeColor($arr['scheme']);
         }
 
         return null;
@@ -387,7 +373,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     {
         $colorType = $color['type'] ?? '';
         if ($colorType === 'scheme') {
-            return $this->getSchemeColor($color['scheme']);
+            return $this->theme->getSchemeColor($color['scheme']);
         } elseif ($colorType === 'color') {
             return $color['color'];
         }

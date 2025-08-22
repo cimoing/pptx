@@ -10,6 +10,7 @@ use Imoing\Pptx\OXml\Text\CTTextLineBreak;
 use Imoing\Pptx\OXml\Text\CTTextParagraph;
 use Imoing\Pptx\OXml\Text\CTTextParagraphProperties;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Subshape;
 use Imoing\Pptx\Types\ProvidesPart;
 
@@ -18,6 +19,7 @@ use Imoing\Pptx\Types\ProvidesPart;
  * @property CTTextParagraphProperties $pPr
  * @property CTTextCharacterProperties $defRPr
  * @property-read TextFrame $_parent
+ * @property-read Theme $theme
  */
 class Paragraph extends Subshape
 {
@@ -58,6 +60,11 @@ class Paragraph extends Subshape
         $this->pPr->algn = $value;
     }
 
+    protected function getTheme(): Theme
+    {
+        return $this->_parent->theme;
+    }
+
     public function clear(): self
     {
         foreach ($this->_element->contentChildren as $elm) {
@@ -68,7 +75,7 @@ class Paragraph extends Subshape
 
     public function getFont(): Font
     {
-        return new Font($this->defRPr, $this->_parent->getLevelPPr($this->getLevel()));
+        return new Font($this->defRPr, $this->_parent->getLevelPPr($this->getLevel()), $this->theme);
     }
 
     public function getLevel(): int
@@ -173,7 +180,7 @@ class Paragraph extends Subshape
     protected function getChildFont(CTRegularTextRun|CTTextLineBreak|CTTextField $element): array
     {
         $font = $this->getFont();
-        $childFont = new Font($element->get_or_add_rPr());
+        $childFont = new Font($element->get_or_add_rPr(), null, $this->theme);
         $pArr = $font->toHtmlStyle();
         $cArr = $childFont->toHtmlStyle();
         return array_merge($pArr, $cArr);

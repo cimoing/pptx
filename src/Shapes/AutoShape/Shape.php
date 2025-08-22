@@ -41,7 +41,7 @@ class Shape extends BaseShape
 
     public function getSchemeColor(string $scheme): string
     {
-        return $this->_parent->getSchemeColor($scheme);
+        return $this->_parent->theme->getSchemeColor($scheme);
     }
 
     public function getAutoShapeType(): ?\Imoing\Pptx\Enum\MsoAutoShapeType
@@ -67,7 +67,7 @@ class Shape extends BaseShape
     public function getLine(): LineFormat
     {
         if (is_null($this->_line)) {
-            $this->_line = new LineFormat($this);
+            $this->_line = new LineFormat($this, $this->theme);
         }
 
         return $this->_line;

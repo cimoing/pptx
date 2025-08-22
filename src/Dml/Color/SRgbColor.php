@@ -13,7 +13,7 @@ class SRgbColor extends Color
     protected CTSRgbColor $_srgbClr;
     public function __construct($srgbClr)
     {
-        parent::__construct($srgbClr);
+        parent::__construct($srgbClr, null);
         $this->_srgbClr = $srgbClr;
     }
     public function getColorType(): ?MsoColorType

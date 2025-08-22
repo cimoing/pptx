@@ -6,6 +6,7 @@ use Imoing\Pptx\Common\Coordinate;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlideLayoutPart;
+use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Placeholder\SlidePlaceholder;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
@@ -16,6 +17,7 @@ use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
  * @property-read LayoutShapes $shapes
  * @property-read SlideMaster $slideMaster
  * @property-read array $usedBySlides
+ * @property-read Theme $theme
  */
 class SlideLayout extends BaseSlide
 {
@@ -87,32 +89,15 @@ class SlideLayout extends BaseSlide
         return $this->part->slideMaster;
     }
 
-    public function getColorMap(): array
+    private ?Theme $_theme = null;
+    protected function getTheme(): Theme
     {
-        $clrMap = $this->_element->clrMapOvr?->overrideClrMapping;
-        $map = $clrMap ? array_filter([
-            'bg1' => $clrMap->bg1,
-            'tx1' => $clrMap->tx1,
-            'bg2' => $clrMap->bg2,
-            'tx2' => $clrMap->tx2,
-            'accent1' => $clrMap->accent1,
-            'accent2' => $clrMap->accent2,
-            'accent3' => $clrMap->accent3,
-            'accent4' => $clrMap->accent4,
-            'accent5' => $clrMap->accent5,
-            'accent6' => $clrMap->accent6,
-            'hlink' => $clrMap->hlink,
-            'folHlink' => $clrMap->folHlink,
-        ]) : [];
+        if (is_null($this->_theme)) {
+            $theme = $this->slideMaster->theme;
+            $this->_theme = $theme->withClrMap(Theme::parseClrMap($this->_element->clrMapOvr?->overrideClrMapping));
+        }
 
-        return array_merge($this->slideMaster->getColorMap(), $map);
-    }
-
-    public function getSchemeColor(string $scheme): string
-    {
-        $map = $this->getColorMap();
-        $alias = $map[$scheme];
-        return $this->slideMaster->getColorScheme()[$alias];
+        return $this->_theme;
     }
 
     public function getUsedBySlides(): array
@@ -138,23 +123,13 @@ class SlideLayout extends BaseSlide
         $pPr = $ph->getLevelPProperties($level);
     }
 
-    private ?array $_colorScheme = null;
-    public function getColorScheme(): array
-    {
-        if (null === $this->_colorScheme) {
-            $this->_colorScheme = $this->getSlideMaster()->getColorScheme();
-        }
-
-        return $this->_colorScheme;
-    }
-
     public function toArray(): array
     {
         $fill = $this->getBackground()->toArray();
         if (!empty($fill) && $fill['type'] === 'scheme') {
             $fill = [
                 'type' => 'color',
-                'color' => $this->getColorScheme()[$fill['scheme']],
+                'color' => $this->theme->getSchemeColor($fill['scheme']),
             ];
         }
 
@@ -168,14 +143,12 @@ class SlideLayout extends BaseSlide
             $children = $element['elements'];
             unset($element['elements']);
             foreach ($children as $child) {
-                // 涉及旋转的
                 $unwrap(array_merge($element, $child));
             }
         };
         foreach ($this->shapes->toArray() as $element) {
             $unwrap($element);
         }
-        //$elements = $this->shapes->toArray();
 
         return [
             'background' => $fill,

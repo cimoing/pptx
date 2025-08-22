@@ -7,6 +7,7 @@ use Imoing\Pptx\Dml\Color\ColorFormat;
 use Imoing\Pptx\Enum\MsoFillType;
 use Imoing\Pptx\OXml\Dml\Fill\AbsFill;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
+use Imoing\Pptx\Shapes\Base\Theme;
 
 
 /**
@@ -21,24 +22,27 @@ class FillFormat extends BaseObject
      */
     protected BaseOXmlElement $_xPr;
     protected Fill $_fill;
-    public function __construct(BaseOXmlElement $egFillPropertiesParent, Fill $fill)
+
+    protected ?Theme $_theme;
+    public function __construct(BaseOXmlElement $egFillPropertiesParent, Fill $fill, ?Theme $theme = null)
     {
         parent::__construct();
         $this->_fill = $fill;
         $this->_xPr = $egFillPropertiesParent;
+        $this->_theme = $theme;
     }
 
-    public static function fromFillParent(BaseOXmlElement $egFillPropertiesParent): FillFormat
+    public static function fromFillParent(BaseOXmlElement $egFillPropertiesParent, ?Theme $theme = null): FillFormat
     {
         $fillElm = $egFillPropertiesParent->eg_fillProperties;
-        $fill = Fill::create($fillElm);
-        return new FillFormat($egFillPropertiesParent, $fill);
+        $fill = Fill::create($fillElm, $theme);
+        return new FillFormat($egFillPropertiesParent, $fill, $theme);
     }
 
     public function background(): void
     {
         $noFill = $this->_xPr->get_or_change_to_noFill();
-        $this->_fill = new NoFill($noFill);
+        $this->_fill = new NoFill($noFill, $this->_theme);
     }
 
     public function getBackColor(): ColorFormat
@@ -54,7 +58,7 @@ class FillFormat extends BaseObject
     public function solid(): void
     {
         $solidFill = $this->_xPr->get_or_change_to_solidFill();
-        $this->_fill = new SolidFill($solidFill);
+        $this->_fill = new SolidFill($solidFill, $this->_theme);
     }
 
     public function getType(): ?MsoFillType
