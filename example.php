@@ -57,7 +57,8 @@ function sample4()
 }
 
 function toJson() {
-    $ppt = \Imoing\Pptx\Presentation::load("./d3.pptx");
+    //\Imoing\Pptx\Util\Length::$HTML_VAL_UNIT = 'cm';
+    $ppt = \Imoing\Pptx\Presentation::load("./d1.pptx");
     $arr = $ppt->toArray();
     $content = json_encode($arr, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
     file_put_contents('./default.json', $content);

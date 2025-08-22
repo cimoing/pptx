@@ -17,6 +17,8 @@ use Imoing\Pptx\OXml\Shapes\AutoShape\CTShape;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\OXml\SimpleTypes\Formula;
 use Imoing\Pptx\Shapes\Base\BaseShape;
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
+use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
 use Imoing\Pptx\Text\Text\TextFrame;
 use Imoing\Pptx\Types\ProvidesPart;
 use Imoing\Pptx\Util\Emu;
@@ -130,6 +132,34 @@ class Shape extends BaseShape
         return $this->_parent->parent->getPhLevelPPr($ph->idx, $level);
     }
 
+    private ?TextLevelParaStyle $_textLevelParaStyle = null;
+    public function getTextLevelParaStyle(): TextLevelParaStyle
+    {
+        if (is_null($this->_textLevelParaStyle)) {
+            $ph = $this->_element->getPh();
+            if (!empty($ph)) {
+                $placeholder = $this->_parent->getLayoutPlaceholders()->get($ph->idx);
+                if ($placeholder) {
+                    $this->_textLevelParaStyle = $placeholder->getTextLevelParaStyle();
+                }
+            }
+
+            $override = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
+            if ($this->_textLevelParaStyle) {
+                $this->_textLevelParaStyle = $this->_textLevelParaStyle->withStyles($override);
+            } else {
+                $this->_textLevelParaStyle = new TextLevelParaStyle($override);
+            }
+        }
+
+        return $this->_textLevelParaStyle;
+    }
+
+    public function getLayoutPlaceholders(): LayoutPlaceholders
+    {
+        return $this->_parent->getLayoutPlaceholders();
+    }
+
     public function getLineColor(): ?string
     {
         if (!$this->_sp->ln) {
@@ -177,7 +207,7 @@ class Shape extends BaseShape
         return array_merge([
             'type' => 'text',
             'content' => $textFrame->toHtml(),
-            'defaultFontName' => '', // theme.fontName
+            'defaultFontName' => $this->theme->getMajorFont(), // theme.fontName
             'defaultColor' => '', // theme.fontColor
             'lineHeight' => 1,
             'vertical' => $textFrame->isVertical,

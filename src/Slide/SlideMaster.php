@@ -36,7 +36,12 @@ class SlideMaster extends BaseMaster
     {
         if (null === $this->_theme) {
             $part = $this->getThemePart();
-            $this->_theme = Theme::createFromStyleSheet($part->element);
+            $theme = Theme::createFromStyleSheet($part->element);
+            $clrMap = Theme::parseClrMap($this->_element->clrMap);
+            if ($clrMap) {
+                $theme = $theme->withClrMap($clrMap);
+            }
+            $this->_theme = $theme;
         }
 
         return $this->_theme;

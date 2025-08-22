@@ -13,7 +13,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  * @method CTTextLineBreak _add_br()
  * @method CTRegularTextRun _add_r()
  * @property-read CTRegularTextRun[]|CTTextLineBreak[]|CTTextField[] $contentChildren
- * @property ?CTTextCharacterProperties $pPr
+ * @property ?CTTextParagraphProperties $pPr
  * @property CTRegularTextRun[] $r_lst
  * @property ?CTTextCharacterProperties $endParaRPr
  */

@@ -66,7 +66,7 @@ class Length extends BaseObject
 
     public function getScalePx(): float
     {
-        return $this->px;
+        return $this->px * (1000 / 1280);
     }
 
     public function getHtmlVal(): float

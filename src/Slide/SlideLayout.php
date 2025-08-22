@@ -113,16 +113,6 @@ class SlideLayout extends BaseSlide
         return $items;
     }
 
-    public function getPlaceholderLevelPProperties(int $phIdx, int $level): ?CTLevelParaProperties
-    {
-        $ph = $this->placeholders->get($phIdx);
-        if (!$ph) {
-            return null;
-        }
-
-        $pPr = $ph->getLevelPProperties($level);
-    }
-
     public function toArray(): array
     {
         $fill = $this->getBackground()->toArray();

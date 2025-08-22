@@ -28,6 +28,7 @@ use Imoing\Pptx\Util\Length;
  * @property Length $bIns
  * @property ?string $wrap
  * @property ?string $vert
+ * @property ?MsoVerticalAnchor $anchor
  */
 class CTTextBodyProperties extends BaseOXmlElement
 {
@@ -51,7 +52,7 @@ class CTTextBodyProperties extends BaseOXmlElement
     protected Length $_bIns;
 
     #[OptionalAttribute("anchor", MsoVerticalAnchor::class)]
-    protected ?MsoVerticalAnchor $anchor;
+    protected ?MsoVerticalAnchor $_anchor;
 
     #[OptionalAttribute("wrap", STTextWrappingType::class)]
     protected ?string $_wrap;

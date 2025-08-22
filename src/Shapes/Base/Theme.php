@@ -87,20 +87,20 @@ class Theme extends BaseObject
     }
 
     private array $_colorScheme = [
-        'lt1' => 'FFFFFF',
-        'dk1' => '000000',
-        'accent1' => '4472C4',
-        'accent2' => 'ED7D31',
-        'accent3' => 'A5A5A5',
-        'accent4' => 'FFC000',
-        'accent5' => '772B01',
-        'accent6' => 'ED7D31',
-        'hlink' => '0563C1',
-        'folHlink' => '954F72',
-        'bg1' => 'FFFFFF',
-        'bg2' => 'FFFFFF',
-        'tx1' => '000000',
-        'tx2' => '000000',
+        'lt1' => '#FFFFFF',
+        'dk1' => '#000000',
+        'accent1' => '#4472C4',
+        'accent2' => '#ED7D31',
+        'accent3' => '#A5A5A5',
+        'accent4' => '#FFC000',
+        'accent5' => '#772B01',
+        'accent6' => '#ED7D31',
+        'hlink' => '#0563C1',
+        'folHlink' => '#954F72',
+        'bg1' => '#FFFFFF',
+        'bg2' => '#FFFFFF',
+        'tx1' => '#000000',
+        'tx2' => '#000000',
     ];
     protected function getColorScheme(): array
     {
@@ -209,6 +209,6 @@ class Theme extends BaseObject
     {
         $alias = $this->_clrMap[$name] ?? '';
 
-        return $this->_colorScheme[$alias] ?? '000000';
+        return $this->_colorScheme[$alias] ?? '#000000';
     }
 }

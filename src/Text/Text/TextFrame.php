@@ -82,6 +82,11 @@ class TextFrame extends Subshape
         return $this->_parent->getLevelPPr($level);
     }
 
+    public function getLevelStyles(int $level): array
+    {
+        return $this->_parent->getTextLevelParaStyle()->getStylesByLevel($level);
+    }
+
     public function getIsVertical(): bool
     {
         return $this->_txBody->bodyPr->vert === 'eaVert';
@@ -90,6 +95,20 @@ class TextFrame extends Subshape
     protected function getTheme(): Theme
     {
         return $this->_parent->theme;
+    }
+
+    public function getHtmlStyles(): array
+    {
+        $pr = $this->_txBody->bodyPr;
+        if (!$pr) {
+            return [];
+        }
+
+        return array_filter([
+            'align-items' => $pr->anchor?->getHtmlValue(),
+        ], function ($item) {
+            return !is_null($item);
+        });
     }
 
     public function toHtml(): string

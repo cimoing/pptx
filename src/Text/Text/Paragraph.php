@@ -10,6 +10,7 @@ use Imoing\Pptx\OXml\Text\CTTextLineBreak;
 use Imoing\Pptx\OXml\Text\CTTextParagraph;
 use Imoing\Pptx\OXml\Text\CTTextParagraphProperties;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
 use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Subshape;
 use Imoing\Pptx\Types\ProvidesPart;
@@ -43,16 +44,7 @@ class Paragraph extends Subshape
     }
     public function getAlignment(): ?PPParagraphAlignment
     {
-        $algn = $this->pPr->algn;
-        if ($algn) {
-            return $algn;
-        }
-
-        $lvl = $this->getLevel();
-        $pPr = $this->_parent->getLevelPPr($lvl);
-        $algn = $pPr?->algn;
-
-        return $algn;
+        return $this->pPr->algn;
     }
 
     public function setAlignment(?PPParagraphAlignment $value): void
@@ -78,9 +70,12 @@ class Paragraph extends Subshape
         return new Font($this->defRPr, $this->_parent->getLevelPPr($this->getLevel()), $this->theme);
     }
 
+    /**
+     * @return int 默认层级为0
+     */
     public function getLevel(): int
     {
-        return $this->pPr->lvl ?: 1;
+        return $this->pPr->lvl ?: 0;
     }
 
     public function setLevel(int $value): void
@@ -138,14 +133,24 @@ class Paragraph extends Subshape
 
     public function getHtmlStyle(): string
     {
+        $styles = $this->_parent->getLevelStyles($this->getLevel());
+        $overrides = [];
         $algn = $this->getAlignment();
-        if (empty($algn)) {
-            return '';
+        if (!empty($algn)) {
+            $overrides['text-align'] = $algn->getHtmlValue();
+        }
+        $overrides = array_merge($overrides, TextLevelParaStyle::parseTextCharacter($this->_p->pPr?->defRPr, $this->theme));
+
+        $styles = array_filter(array_merge($styles, $overrides), function ($style) {
+            return !is_null($style);
+        });
+
+        $str = "";
+        foreach ($styles as $style => $value) {
+            $str .= $style . ": " . $value . "; ";
         }
 
-        $val = $algn->getHtmlValue();
-
-        return "text-align: $val;";
+        return $str;
     }
 
     public function getHtmlSpan(): string
@@ -179,11 +184,7 @@ class Paragraph extends Subshape
      */
     protected function getChildFont(CTRegularTextRun|CTTextLineBreak|CTTextField $element): array
     {
-        $font = $this->getFont();
-        $childFont = new Font($element->get_or_add_rPr(), null, $this->theme);
-        $pArr = $font->toHtmlStyle();
-        $cArr = $childFont->toHtmlStyle();
-        return array_merge($pArr, $cArr);
+        return TextLevelParaStyle::parseTextCharacter($element->rPr, $this->theme);
     }
 
     public function toHtml(): string

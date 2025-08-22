@@ -384,7 +384,7 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
     public function toArray(): array
     {
         $arr = array_merge([
-            'id' => $this->shapeId,
+            'id' => (string) $this->shapeId,
             'rotate' => $this->absRotation,
             'name' => $this->name,
             'isPlaceholder' => $this->isPlaceholder,

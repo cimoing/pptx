@@ -32,4 +32,14 @@ class SlideShapes extends BaseGroupShapes
 
         return null;
     }
+
+    private ?LayoutPlaceholders $_layoutPlaceholders = null;
+    public function getLayoutPlaceholders(): LayoutPlaceholders
+    {
+        if (is_null($this->_layoutPlaceholders)) {
+            $this->_layoutPlaceholders = $this->parent->getLayoutPlaceholders();
+        }
+
+        return $this->_layoutPlaceholders;
+    }
 }

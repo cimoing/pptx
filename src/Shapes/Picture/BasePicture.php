@@ -7,6 +7,7 @@ use Imoing\Pptx\Enum\MsoShapeType;
 use Imoing\Pptx\OXml\Shapes\Pictures\CTPicture;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\Shapes\Base\BaseShape;
+use Imoing\Pptx\Shapes\Base\Transform2D;
 use Imoing\Pptx\Types\ProvidesPart;
 
 /**
@@ -103,5 +104,26 @@ abstract class BasePicture extends BaseShape
                 ],
             ],
         ];
+    }
+
+    private ?Transform2D $_transform2D = null;
+    public function getTransform2D(): Transform2D
+    {
+        if (is_null($this->_transform2D)) {
+            $xfrm = $this->_picture->getXfrm();
+            if (empty($xfrm)) {
+                if ($this->isPlaceholder) {
+                    $idx = $this->_picture->getPhIdx();
+                    $ph = $this->_parent->getLayoutPlaceholders()->get($idx);
+                    $this->_transform2D = $ph->getTransform2D();
+                }
+            }
+
+            if ($xfrm) {
+                $this->_transform2D = new Transform2D($xfrm);
+            }
+        }
+
+        return $this->_transform2D;
     }
 }

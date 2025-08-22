@@ -5,6 +5,7 @@ namespace Imoing\Pptx\Slide;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\Parts\Slide\SlidePart;
 use Imoing\Pptx\Shapes\Base\Theme;
+use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\SlidePlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
 
@@ -36,6 +37,16 @@ class Slide extends BaseSlide
             $this->_placeholders = new SlidePlaceholders($this->_element->spTree, $this);
         }
         return $this->_placeholders;
+    }
+
+    private ?LayoutPlaceholders $_layoutPlaceholders = null;
+    public function getLayoutPlaceholders(): LayoutPlaceholders
+    {
+        if (is_null($this->_layoutPlaceholders)) {
+            $this->_layoutPlaceholders = $this->part->slideLayout->getPlaceholders();
+        }
+
+        return $this->_layoutPlaceholders;
     }
 
     public function getPhLevelPPr(int $phIdx, int $level): ?CTLevelParaProperties
@@ -98,6 +109,10 @@ class Slide extends BaseSlide
         $layoutElements = array_filter($layouts['elements'], function ($element) {
             return !array_key_exists('isPlaceholder', $element) || $element['isPlaceholder'] === false;
         });
+        foreach ($layoutElements as &$element) {
+            unset($layoutElements['isPlaceholder']);
+        }
+        unset($element);
 
         $backgroundArr = $background->toArray();
         if ($backgroundArr['type'] == 'none') {

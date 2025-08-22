@@ -7,6 +7,7 @@ use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTShape;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
 
 /**
  * @property CTShape $_element
@@ -42,5 +43,16 @@ class LayoutPlaceholder extends Shape
         $style = $this->getLstStyle();
         $propName = 'lvl' . $level . 'pPr';
         return $style?->$propName;
+    }
+
+    private ?TextLevelParaStyle $_textLevelParaStyle = null;
+    public function getTextLevelParaStyle(): TextLevelParaStyle
+    {
+        if (is_null($this->_textLevelParaStyle)) {
+            $override = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
+            $this->_textLevelParaStyle = new TextLevelParaStyle($override);
+        }
+
+        return $this->_textLevelParaStyle;
     }
 }

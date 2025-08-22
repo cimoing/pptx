@@ -11,6 +11,7 @@ use Imoing\Pptx\Util\Length;
 
 /**
  * @property ?PPParagraphAlignment $algn
+ * @property ?Length $defTabSz
  * @property ?CTTextCharacterProperties $defRPr
  */
 class CTLevelParaProperties extends BaseOXmlElement
