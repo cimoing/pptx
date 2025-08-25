@@ -10,7 +10,6 @@ use Imoing\Pptx\Shapes\Base\Theme;
 
 /**
  * @property ?float $gradientAngle
- * @property-read array $gradientStops
  */
 class GradFill extends Fill
 {
@@ -56,7 +55,7 @@ class GradFill extends Fill
      * @var CTGradientStop[]|null
      */
     private ?array $_gradientStops = null;
-    public function gradientStops(): array
+    public function gegGradientStops(): array
     {
         if (empty($this->_gradientStops)) {
             $this->_gradientStops = $this->_gradFill->get_or_add_gsLst()->gs_lst;
@@ -73,18 +72,26 @@ class GradFill extends Fill
     public function toArray(): array
     {
         $pathType = $this->_gradFill->path?->path ?? 'line';
+        $colors = [];
+        foreach ($this->gegGradientStops() as $i => $gradientStop) {
+            if ($gradientStop->eg_colorChoice->isPlaceholderColor()) {
+                $color = ColorFormat::fromColorChoice($this->_phClrLst[$i], $this->_theme);
+            } else {
+                $color = ColorFormat::fromColorChoiceParent($gradientStop, $this->_theme);
+            }
+
+            $colors[] = [
+                'pos' => $gradientStop->pos * 100,
+                'color' => (string) $color->getRgb(),
+            ];
+        }
+
         return [
             'type' => 'gradient',
             'gradient' => [
                 'rot' => $this->_gradFill->lin?->ang,
                 'type' => $pathType === 'line' ? 'linear' : 'radial',
-                'colors' => array_map(function ($gs) {
-                    $color = ColorFormat::fromColorChoiceParent($gs, $this->_theme);
-                    return [
-                        'pos' => $gs->pos * 100,
-                        'color' => (string) $color->getRgb(),
-                    ];
-                }, $this->gradientStops()),
+                'colors' => $colors,
             ],
         ];
     }

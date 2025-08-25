@@ -31,7 +31,7 @@ abstract class Fill extends BaseObject
         $this->_xFill = $xFill;
         $this->_theme = $theme;
     }
-    public static function create(mixed $xFill, ?Theme $theme = null): Fill
+    public static function create(mixed $xFill, ?Theme $theme = null, array $phClrLst = []): Fill
     {
         $clsMap = [
             CTBlipFillProperties::class => BlipFill::class,
@@ -55,7 +55,12 @@ abstract class Fill extends BaseObject
             $cls = Fill::class;
         }
 
-        return new $cls($xFill, $theme);
+        $obj = new $cls($xFill, $theme);
+        if (!empty($phClrLst)) {
+            $obj->setPhClrLst($phClrLst);
+        }
+
+        return $obj;
     }
 
     abstract public function getType(): ?MsoFillType;
@@ -82,6 +87,12 @@ abstract class Fill extends BaseObject
     public function getPattern()
     {
         throw new \Exception(sprintf("fill type %s has no pattern, call .patterned() first", __CLASS__));
+    }
+
+    protected array $_phClrLst = [];
+    public function setPhClrLst(array $phClrLst): void
+    {
+        $this->_phClrLst = $phClrLst;
     }
 
     public function toArray(): array

@@ -12,6 +12,7 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  */
 class BaseColorElement extends BaseOXmlElement
 {
+    const VAL_PLACEHOLDER_COLOR = 'phClr';
     #[ZeroOrOne("a:lumMod")]
     protected mixed $_lumMod;
 
@@ -46,5 +47,10 @@ class BaseColorElement extends BaseOXmlElement
     public function getHexValue(): string
     {
         return '';
+    }
+
+    public function isPlaceholderColor(): bool
+    {
+        return false;
     }
 }

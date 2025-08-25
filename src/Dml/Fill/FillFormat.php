@@ -20,11 +20,11 @@ class FillFormat extends BaseObject
     /**
      * @var BaseOXmlElement
      */
-    protected BaseOXmlElement $_xPr;
+    protected ?BaseOXmlElement $_xPr;
     protected Fill $_fill;
 
     protected ?Theme $_theme;
-    public function __construct(BaseOXmlElement $egFillPropertiesParent, Fill $fill, ?Theme $theme = null)
+    public function __construct(?BaseOXmlElement $egFillPropertiesParent, Fill $fill, ?Theme $theme = null)
     {
         parent::__construct();
         $this->_fill = $fill;
@@ -37,6 +37,13 @@ class FillFormat extends BaseObject
         $fillElm = $egFillPropertiesParent->eg_fillProperties;
         $fill = Fill::create($fillElm, $theme);
         return new FillFormat($egFillPropertiesParent, $fill, $theme);
+    }
+
+    public static function fromRef(Theme $theme, int $idx, array $schemeClrLst = []): FillFormat
+    {
+        $fill = $theme->getFill($idx, $schemeClrLst);
+
+        return new FillFormat(null, $fill, $theme);
     }
 
     public function background(): void

@@ -82,4 +82,16 @@ enum PPPlaceholderType: int implements IBaseXmlEnum
     {
         return $this === self::TITLE || $this === self::CENTER_TITLE;
     }
+
+    public function getTextType(): string
+    {
+        return match ($this) {
+            self::TITLE, self::CENTER_TITLE => 'title',
+            self::SUBTITLE => 'subtitle',
+            self::BODY => 'content',
+            self::HEADER => 'header',
+            self::FOOTER => 'footer',
+            default => '',
+        };
+    }
 }

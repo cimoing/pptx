@@ -2,39 +2,23 @@
 
 namespace Imoing\Pptx\Shapes\Base;
 
-use Imoing\Pptx\Common\BaseObject;
 use Imoing\Pptx\Dml\Color\ColorFormat;
+use Imoing\Pptx\Dml\Fill\Fill;
+use Imoing\Pptx\OXml\Dml\Color\CTSchemeColor;
 use Imoing\Pptx\OXml\Slide\CTColorMap;
-use Imoing\Pptx\OXml\Theme\CTColorMapOverrides;
 use Imoing\Pptx\OXml\Theme\CTColorScheme;
 use Imoing\Pptx\OXml\Theme\CTFonts;
 use Imoing\Pptx\OXml\Theme\CTOfficeStyleSheet;
+use Imoing\Pptx\Parts\Theme\OfficeStyleSheetPart;
+use Imoing\Pptx\Shared\PartElementProxy;
 
-class Theme extends BaseObject
+/**
+ * @property-read OfficeStyleSheetPart $part
+ * @property-read CTOfficeStyleSheet $_element
+ */
+class Theme extends PartElementProxy
 {
     const SCHEME_NAMES = ['dk1', 'lt1', 'dk2', 'lt2', 'accent1', 'accent2', 'accent3', 'accent4', 'accent5', 'accent6', 'tx1', 'tx2', 'bg1', 'bg2', 'hlink', 'folHlink'];
-
-    public function __construct(array $colorScheme = [], array $fonScheme = [], array $formatScheme = [], array $colorMap = [])
-    {
-        parent::__construct();
-
-        $this->_colorScheme = array_merge($this->_colorScheme, $colorScheme);
-        $this->_fontScheme = array_merge_recursive($this->_fontScheme, $fonScheme);
-        $this->_formatScheme = array_merge($this->_formatScheme, $formatScheme);
-        $this->_clrMap = array_merge($this->_clrMap, $colorMap);
-    }
-
-    public static function createFromStyleSheet(CTOfficeStyleSheet $styleSheet): static
-    {
-        $colorScheme = self::parseClrScheme($styleSheet->themeElements->clrScheme);
-
-        $fontScheme = [
-            'major' => self::parseFontScheme($styleSheet->themeElements->fontScheme->majorFont),
-            'minor' => self::parseFontScheme($styleSheet->themeElements->fontScheme->minorFont),
-        ];
-
-        return new static($colorScheme, $fontScheme);
-    }
 
     protected static function parseClrScheme(CTColorScheme $clrScheme): array
     {
@@ -86,24 +70,13 @@ class Theme extends BaseObject
         return $map;
     }
 
-    private array $_colorScheme = [
-        'lt1' => '#FFFFFF',
-        'dk1' => '#000000',
-        'accent1' => '#4472C4',
-        'accent2' => '#ED7D31',
-        'accent3' => '#A5A5A5',
-        'accent4' => '#FFC000',
-        'accent5' => '#772B01',
-        'accent6' => '#ED7D31',
-        'hlink' => '#0563C1',
-        'folHlink' => '#954F72',
-        'bg1' => '#FFFFFF',
-        'bg2' => '#FFFFFF',
-        'tx1' => '#000000',
-        'tx2' => '#000000',
-    ];
+    private array $_colorScheme = [];
+
     protected function getColorScheme(): array
     {
+        if (empty($this->_colorScheme)) {
+            $this->_colorScheme = self::parseClrScheme($this->_element->themeElements->clrScheme);
+        }
         return $this->_colorScheme;
     }
 
@@ -114,8 +87,10 @@ class Theme extends BaseObject
      */
     public function withColorScheme(array $colorScheme): static
     {
-        $colorScheme = array_merge($this->_colorScheme, $colorScheme);
-        return new static($colorScheme, $this->_fontScheme, $this->_formatScheme, $this->_clrMap);
+        $colorScheme = array_merge($this->getColorScheme(), $colorScheme);
+        $theme = clone $this;
+        $theme->_colorScheme = $colorScheme;
+        return $theme;
     }
 
     private array $_fontScheme = [
@@ -135,7 +110,10 @@ class Theme extends BaseObject
     public function withFontScheme(array $fontScheme): static
     {
         $fontScheme = array_merge_recursive($this->_fontScheme, $fontScheme);
-        return new static($this->_colorScheme, $fontScheme, $this->_formatScheme, $this->_clrMap);
+        $theme = clone $this;
+        $theme->_fontScheme = $fontScheme;
+
+        return $theme;
     }
 
     /**
@@ -145,7 +123,8 @@ class Theme extends BaseObject
      */
     public function getMajorFont(string $script = "latin"): string
     {
-        return array_key_exists($script, $this->_fontScheme['major']) ? $this->_fontScheme['major'][$script] : '';
+        $fontScheme = $this->_element->themeElements->fontScheme;
+        return $this->getFont($fontScheme->majorFont, $script);
     }
 
     /**
@@ -155,7 +134,23 @@ class Theme extends BaseObject
      */
     public function getMinorFont(string $script = "latin"): string
     {
-        return array_key_exists($script, $this->_fontScheme['minor']) ? $this->_fontScheme['minor'][$script] : '';
+        $fontScheme = $this->_element->themeElements->fontScheme;
+        return $this->getFont($fontScheme->minorFont, $script);
+    }
+
+    protected function getFont(CTFonts $fonts, string $script): string
+    {
+        if (in_array($script, ['latin', 'ea', 'cs'])) {
+            return $fonts->{$script}?->typeface ?: '';
+        }
+
+        foreach ($fonts->font_lst as $font) {
+            if ($font->script === $script) {
+                return $font->typeface;
+            }
+        }
+
+        return '';
     }
 
     private array $_formatScheme = [];
@@ -167,7 +162,9 @@ class Theme extends BaseObject
     public function withFormatScheme(array $formatScheme): static
     {
         $formatScheme = array_merge($this->_formatScheme, $formatScheme);
-        return new static($this->_colorScheme,$this->_fontScheme, $formatScheme, $this->_clrMap);
+        $theme = clone $this;
+        $this->_formatScheme = $formatScheme;
+        return $theme;
     }
 
     private array $_clrMap = [
@@ -194,10 +191,14 @@ class Theme extends BaseObject
         return $this->_clrMap;
     }
 
-    public function withClrMap(array $clrMap): static
+    public function withClrMap(?CTColorMap $colorMap): static
     {
-        $clrMap = array_merge($this->_clrMap, $clrMap);
-        return new static($this->_colorScheme,$this->_fontScheme,$this->_formatScheme,$clrMap);
+        $arr = self::parseClrMap($colorMap);
+
+        $clrMap = array_merge($this->_clrMap, $arr);
+        $theme = clone $this;
+        $theme->_clrMap = $clrMap;
+        return $theme;
     }
 
     /**
@@ -207,8 +208,48 @@ class Theme extends BaseObject
      */
     public function getSchemeColor(string $name): string
     {
-        $alias = $this->_clrMap[$name] ?? '';
+        $alias = $this->_clrMap[$name] ?? $name;
 
-        return $this->_colorScheme[$alias] ?? '#000000';
+        $colorScheme = $this->getColorScheme();
+
+        return $colorScheme[$alias] ?? '#000000';
+    }
+
+    /**
+     * @param int $idx
+     * @param CTSchemeColor[] $phClrLst
+     * @return Fill|null
+     */
+    public function getFill(int $idx, array $phClrLst = []): ?Fill
+    {
+        if ($idx <= 1000) {
+            $base = 1;
+            $children = $this->_element->themeElements->fmtScheme->fillStyleLst->getChildren();
+        } else {
+            $base = 1001;
+            $children = $this->_element->themeElements->fmtScheme->bgFillStyleLst->getChildren();
+        }
+        foreach ($children as $k => $child) {
+            $id = $k + $base;
+            if ($id === $idx) {
+                return Fill::create($child, $this, $phClrLst);
+            }
+        }
+
+        return null;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'themeColors' => [
+                $this->getSchemeColor('accent1'),
+                $this->getSchemeColor('accent2'),
+                $this->getSchemeColor('accent3'),
+                $this->getSchemeColor('accent4'),
+                $this->getSchemeColor('accent5'),
+                $this->getSchemeColor('accent6'),
+            ],
+        ];
     }
 }

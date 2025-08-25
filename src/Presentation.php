@@ -114,9 +114,20 @@ class Presentation extends PartElementProxy
             'title' => $this->coreProperties->title,
             'width' => 1280,
             'height' => 720,
-            //'theme' => $this->slideMasters[0]->getColorScheme(),
+            'theme' => $this->slideMasters[0]->theme->toArray(),
             'slides' => $this->slides->toArray(),
             //'slideLayouts' => $this->slideLayouts->toArray(),
+        ];
+    }
+
+    public function toTpl(): array
+    {
+        return [
+            'title' => $this->coreProperties->title,
+            'width' => 1280,
+            'height' => 720,
+            'theme' => $this->slideMasters[0]->theme->toArray(),
+            'slides' => $this->slideLayouts->toArray(),
         ];
     }
 }

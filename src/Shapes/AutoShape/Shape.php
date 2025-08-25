@@ -204,6 +204,7 @@ class Shape extends BaseShape
             return null;
         }
 
+        $textType = null;
         if ($this->isPlaceholder) {
             $textType = $this->placeholderFormat->type;
             $textFrame->setMajor($textType->isMajor());
@@ -216,7 +217,7 @@ class Shape extends BaseShape
             'defaultColor' => '', // theme.fontColor
             'lineHeight' => 1,
             'vertical' => $textFrame->isVertical,
-            //'textType' => $textType,
+            'textType' => $textType?->getTextType(),
             // lineHeight 行高
             // wordSpace 字间距
             // opacity 不透明度
@@ -256,6 +257,7 @@ class Shape extends BaseShape
             'viewBox' => [200, 200],
             'points' => ['', $shapeType == MsoAutoShapeType::LINE_INVERSE->getXmlValue() ? 'arrow' : ''],
             'fill' => $this->getFillArr(),
+            'path' => '',
         ];
     }
 

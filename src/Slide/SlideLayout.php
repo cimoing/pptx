@@ -94,7 +94,7 @@ class SlideLayout extends BaseSlide
     {
         if (is_null($this->_theme)) {
             $theme = $this->slideMaster->theme;
-            $this->_theme = $theme->withClrMap(Theme::parseClrMap($this->_element->clrMapOvr?->overrideClrMapping));
+            $this->_theme = $theme->withClrMap($this->_element->clrMapOvr?->overrideClrMapping);
         }
 
         return $this->_theme;
@@ -115,10 +115,10 @@ class SlideLayout extends BaseSlide
 
     public function toArray(): array
     {
-        $fill = $this->getBackground()->toArray();
+        $fill = $this->getInheritedBackground()->toArray();
         if (!empty($fill) && $fill['type'] === 'scheme') {
             $fill = [
-                'type' => 'color',
+                'type' => 'solid',
                 'color' => $this->theme->getSchemeColor($fill['scheme']),
             ];
         }
@@ -144,6 +144,7 @@ class SlideLayout extends BaseSlide
             'background' => $fill,
             'name' => $this->name,
             'elements' => $elements,
+            // type => // cover: 封面（标题） contents: 目录 transition: 过渡 (标题+一个内容) content: 内容(标题+多个内容) end: 结束
         ];
     }
 }

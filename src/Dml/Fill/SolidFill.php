@@ -24,7 +24,11 @@ class SolidFill extends Fill
     public function getForeColor(): ColorFormat
     {
         if ($this->_foreColor === null) {
-            $this->_foreColor = ColorFormat::fromColorChoiceParent($this->_solidFill, $this->_theme);
+            if ($this->_solidFill->eg_colorChoice?->isPlaceholderColor()) {
+                $this->_foreColor = ColorFormat::fromColorChoice($this->_phClrLst[0], $this->_theme);
+            } else {
+                $this->_foreColor = ColorFormat::fromColorChoiceParent($this->_solidFill, $this->_theme);
+            }
         }
         return $this->_foreColor;
     }
@@ -36,7 +40,7 @@ class SolidFill extends Fill
 
     public function toArray(): array
     {
-        $color = ColorFormat::fromColorChoiceParent($this->_solidFill, $this->_theme);
-        return $color->toArray();
+        $clr = $this->getForeColor();
+        return $clr->toArray();
     }
 }

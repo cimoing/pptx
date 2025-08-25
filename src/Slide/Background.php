@@ -24,19 +24,17 @@ class Background extends ElementProxy
         $this->_theme = $theme;
     }
 
-    public static function createFromFill(FillFormat $fill): static
-    {
-        $obj = new static(null);
-        $obj->_fill = $fill;
-        return $obj;
-    }
-
     private ?FillFormat $_fill = null;
     public function getFill(): FillFormat
     {
         if (is_null($this->_fill)) {
-            $bgPr = $this->_cSld->get_or_add_bgPr();
-            $this->_fill = FillFormat::fromFillParent($bgPr, $this->_theme);
+            if ($this->_cSld->bg->bgRef) {
+                $this->_fill = FillFormat::fromRef($this->_theme, $this->_cSld->bg->bgRef->idx, $this->_cSld->bg->bgRef->schemeClr_lst);
+            } else {
+                $bgPr = $this->_cSld->get_or_add_bgPr();
+                $this->_fill = FillFormat::fromFillParent($bgPr, $this->_theme);
+            }
+
         }
 
         return $this->_fill;

@@ -37,6 +37,12 @@ class ColorFormat extends BaseObject
         return new self($egColorChoiceParent, $color, $theme);
     }
 
+    public static function fromColorChoice($egColorChoice, ?Theme $theme): ColorFormat
+    {
+        $color = Color::create($egColorChoice, $theme);
+        return new self(null, $color, $theme);
+    }
+
     public function getBrightness(): float
     {
         return $this->_color->brightness;

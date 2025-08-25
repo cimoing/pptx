@@ -24,6 +24,7 @@ enum MsoThemeColorIndex: int
     case TEXT_1 = 13;
     case TEXT_2 = 15;
     case MIXED = -2;
+    case PH_CLR = -3;
 
     public static function getXmlValues(): array
     {
@@ -46,6 +47,7 @@ enum MsoThemeColorIndex: int
             self::TEXT_1->value => ["tx1", "Specifies the Text 1 theme color."],
             self::TEXT_2->value => ["tx2", "Specifies the Text 2 theme color."],
             self::MIXED->value => ["", "Indicates multiple theme colors are used, such as in a group shape (read-only)."],
+            self::PH_CLR->value => ["phClr", "placeholder color."]
         ];
     }
 }

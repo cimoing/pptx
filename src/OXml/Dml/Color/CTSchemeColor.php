@@ -12,4 +12,9 @@ class CTSchemeColor extends BaseColorElement
 {
     #[RequiredAttribute("val", MsoThemeColorIndex::class)]
     protected mixed $_val;
+
+    public function isPlaceholderColor(): bool
+    {
+        return $this->val === MsoThemeColorIndex::PH_CLR;
+    }
 }
