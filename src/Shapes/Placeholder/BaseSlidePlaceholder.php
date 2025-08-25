@@ -28,14 +28,18 @@ class BaseSlidePlaceholder extends Shape
     protected function getBasePlaceholder(): mixed
     {
         list($layout, $idx) = [$this->part->slideLayout, $this->_element->phIdx];
-        return $layout->placeholders->get($idx);
+        $ph = $layout->placeholders->get($idx);
+        if (!$ph) {
+            $ph = $layout->placeholders->getByType($this->_element->phType);
+        }
+        return $ph;
     }
 
     protected function replacePlaceholderWith($element): void
     {
         $element->_nvXxPr->nvPr->_insert_ph($this->_element->ph);
         $this->_element->before($element);
-        $this->_element->parentElement->removeChild($this->_element);
+        $this->_element->parentElement->removeChild($this->_element->element);
         $this->_element = null;
     }
 }

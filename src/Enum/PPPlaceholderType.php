@@ -77,4 +77,9 @@ enum PPPlaceholderType: int implements IBaseXmlEnum
             self::MIXED->value => '',
         };
     }
+
+    public function isMajor(): bool
+    {
+        return $this === self::TITLE || $this === self::CENTER_TITLE;
+    }
 }

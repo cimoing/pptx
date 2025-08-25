@@ -17,10 +17,13 @@ class TextLevelParaStyle extends BaseObject
 {
     private array $_levelStyles = [];
 
-    public function __construct(array $styles)
+    private Theme $_theme;
+
+    public function __construct(array $styles, Theme $theme)
     {
         parent::__construct([]);
         $this->_levelStyles = $styles;
+        $this->_theme = $theme;
     }
 
     public static function parseTextCharacter(?CTTextCharacterProperties $properties, Theme $theme): array
@@ -75,14 +78,14 @@ class TextLevelParaStyle extends BaseObject
     public function withListStyle(?CTListStyle $listStyle, Theme $theme): static
     {
         $items = self::parseListStyle($listStyle, $theme);
-        return $this->withStyles($items);
+        return $this->withStyles($items, $theme);
     }
 
-    public function withStyles(array $styles): static
+    public function withStyles(array $styles, Theme $theme): static
     {
         $styles = array_merge_recursive($this->_levelStyles, $styles);
 
-        return new static($styles);
+        return new static($styles, $theme);
     }
 
     public function getStylesByLevel(int $level = 0): array
@@ -92,5 +95,15 @@ class TextLevelParaStyle extends BaseObject
         return array_filter($arr, function ($style) {
             return !is_null($style);
         });
+    }
+
+    public function getMajorFont(): string
+    {
+        return $this->_theme->getMajorFont();
+    }
+
+    public function getMinorFont(): string
+    {
+        return $this->_theme->getMinorFont();
     }
 }

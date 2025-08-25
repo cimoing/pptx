@@ -5,11 +5,9 @@ namespace Imoing\Pptx\Text\Text;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Text\CTTextBody;
-use Imoing\Pptx\OXml\Text\CTTextParagraph;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
 use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Subshape;
-use Imoing\Pptx\Types\ProvidesPart;
 
 /**
  * @property-read Paragraph[] $paragraphs
@@ -22,11 +20,18 @@ class TextFrame extends Subshape
     protected CTTextBody $_element;
     protected CTTextBody $_txBody;
 
+    protected bool $isMajor = false;
+
     public function __construct(CTTextBody $txBody, Shape $parent)
     {
         parent::__construct($parent);
         $this->_parent = $parent;
         $this->_txBody = $this->_element = $txBody;
+    }
+
+    public function setMajor(bool $major): void
+    {
+        $this->isMajor = $major;
     }
 
     public function getParagraphs(): array
@@ -84,7 +89,13 @@ class TextFrame extends Subshape
 
     public function getLevelStyles(int $level): array
     {
-        return $this->_parent->getTextLevelParaStyle()->getStylesByLevel($level);
+        $style = $this->_parent->getTextLevelParaStyle();
+        $arr = $style->getStylesByLevel($level);
+        if (empty($arr['font-family'])) {
+            $arr['font-family'] = $this->isMajor ? $style->getMajorFont() : $style->getMinorFont();
+        }
+
+        return $arr;
     }
 
     public function getIsVertical(): bool

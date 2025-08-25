@@ -141,14 +141,19 @@ class Shape extends BaseShape
                 $placeholder = $this->_parent->getLayoutPlaceholders()->get($ph->idx);
                 if ($placeholder) {
                     $this->_textLevelParaStyle = $placeholder->getTextLevelParaStyle();
+                } else {
+                    $placeholder = $this->_parent->getLayoutPlaceholders()->getByType($ph->type);
+                }
+                if ($placeholder) {
+                    $this->_textLevelParaStyle = $placeholder->getTextLevelParaStyle();
                 }
             }
 
             $override = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
             if ($this->_textLevelParaStyle) {
-                $this->_textLevelParaStyle = $this->_textLevelParaStyle->withStyles($override);
+                $this->_textLevelParaStyle = $this->_textLevelParaStyle->withStyles($override, $this->theme);
             } else {
-                $this->_textLevelParaStyle = new TextLevelParaStyle($override);
+                $this->_textLevelParaStyle = new TextLevelParaStyle($override, $this->theme);
             }
         }
 
@@ -199,9 +204,9 @@ class Shape extends BaseShape
             return null;
         }
 
-        $textType = '';
         if ($this->isPlaceholder) {
-            $textType = $this->placeholderFormat->type->getHtmlValue();
+            $textType = $this->placeholderFormat->type;
+            $textFrame->setMajor($textType->isMajor());
         }
 
         return array_merge([
@@ -376,7 +381,7 @@ class Shape extends BaseShape
             }
         }
         if (empty($shape)) {
-            $shape = $this->getTextArr();
+            $shape = array_merge($this->getTextArr(), $this->getSvgBox());
         }
         return array_merge(parent::toArray(),  $shape);
     }

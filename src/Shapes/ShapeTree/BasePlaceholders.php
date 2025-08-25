@@ -17,6 +17,6 @@ abstract class BasePlaceholders extends BaseShapes
     {
         $items = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
 
-        return new TextLevelParaStyle($items);
+        return new TextLevelParaStyle($items, $this->theme);
     }
 }

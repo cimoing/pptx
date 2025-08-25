@@ -50,7 +50,7 @@ class LayoutPlaceholder extends Shape
     {
         if (is_null($this->_textLevelParaStyle)) {
             $override = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
-            $this->_textLevelParaStyle = new TextLevelParaStyle($override);
+            $this->_textLevelParaStyle = new TextLevelParaStyle($override, $this->theme);
         }
 
         return $this->_textLevelParaStyle;

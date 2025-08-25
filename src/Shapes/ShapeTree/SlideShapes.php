@@ -2,7 +2,9 @@
 
 namespace Imoing\Pptx\Shapes\ShapeTree;
 
+use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
+use Imoing\Pptx\Shapes\Base\BaseShape;
 use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Slide\Slide;
 use Imoing\Pptx\Slide\SlideLayout;
@@ -41,5 +43,10 @@ class SlideShapes extends BaseGroupShapes
         }
 
         return $this->_layoutPlaceholders;
+    }
+
+    public function shapeFactory(BaseShapeElement $shapeElement): BaseShape
+    {
+        return ShapeTree::slideShapeFactory($shapeElement, $this);
     }
 }

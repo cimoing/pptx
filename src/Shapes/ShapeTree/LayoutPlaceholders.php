@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Shapes\ShapeTree;
 
+use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\Shapes\Base\BaseShape;
 use Imoing\Pptx\Shapes\Placeholder\LayoutPlaceholder;
@@ -20,6 +21,20 @@ class LayoutPlaceholders extends BasePlaceholders implements \IteratorAggregate
         }
 
         return $default;
+    }
+
+    public function getByType(PPPlaceholderType $type): ?LayoutPlaceholder
+    {
+        foreach ($this as $placeholder) {
+            /**
+             * @var LayoutPlaceholder $placeholder
+             */
+            if ($placeholder->element->phType == $type) {
+                return $placeholder;
+            }
+        }
+
+        return null;
     }
 
     protected function shapeFactory(BaseShapeElement $shapeElement): BaseShape

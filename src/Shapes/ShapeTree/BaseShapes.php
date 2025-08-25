@@ -29,6 +29,7 @@ use Imoing\Pptx\Util\Length;
  * @property Length $height
  * @property Length[] $childOff 子节点相对偏移
  * @property Length[] $childSize
+ * @property Theme $theme
  */
 class BaseShapes extends ParentedElementProxy implements \IteratorAggregate, \Countable, \ArrayAccess
 {
