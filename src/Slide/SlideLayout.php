@@ -60,21 +60,6 @@ class SlideLayout extends BaseSlide
         return $this->_placeholders;
     }
 
-    public function getPhLevelPPr(int $phIdx, int $level): ?CTLevelParaProperties
-    {
-        $ph = $this->placeholders->get($phIdx);
-        if (!$ph) {
-            return null;
-        }
-
-        $pPr = $ph->getLevelPPr($level);
-        if ($pPr) {
-            return $pPr;
-        }
-
-        return $this->slideMaster->getPhLevelPPr($ph->element->phType, $level);
-    }
-
     private ?LayoutShapes $_shapes = null;
     public function getShapes(): LayoutShapes
     {

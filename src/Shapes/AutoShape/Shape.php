@@ -122,16 +122,6 @@ class Shape extends BaseShape
         return new TextFrame($txBody, $this);
     }
 
-    public function getLevelPPr(int $level): ?CTLevelParaProperties
-    {
-        $ph = $this->_element->getPh();
-        if (empty($ph)) {
-            return null;
-        }
-
-        return $this->_parent->parent->getPhLevelPPr($ph->idx, $level);
-    }
-
     private ?TextLevelParaStyle $_textLevelParaStyle = null;
     public function getTextLevelParaStyle(): TextLevelParaStyle
     {

@@ -23,7 +23,7 @@ class LayoutPlaceholders extends BasePlaceholders implements \IteratorAggregate
         return $default;
     }
 
-    public function getByType(PPPlaceholderType $type): ?LayoutPlaceholder
+    public function getByType(PPPlaceholderType $type, ?LayoutPlaceholder $default = null): ?LayoutPlaceholder
     {
         foreach ($this as $placeholder) {
             /**
@@ -34,7 +34,7 @@ class LayoutPlaceholders extends BasePlaceholders implements \IteratorAggregate
             }
         }
 
-        return null;
+        return $default;
     }
 
     protected function shapeFactory(BaseShapeElement $shapeElement): BaseShape

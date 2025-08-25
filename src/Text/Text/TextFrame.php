@@ -76,17 +76,6 @@ class TextFrame extends Subshape
         return $this->_element->lstStyle;
     }
 
-    public function getLevelPPr(int $level): ?CTLevelParaProperties
-    {
-        $lstStyle = $this->getListStyle();
-        $pPr = $lstStyle->{"lvl{$level}pPr"};
-        if ($pPr) {
-            return $pPr;
-        }
-
-        return $this->_parent->getLevelPPr($level);
-    }
-
     public function getLevelStyles(int $level): array
     {
         $style = $this->_parent->getTextLevelParaStyle();

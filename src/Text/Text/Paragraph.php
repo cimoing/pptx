@@ -65,11 +65,6 @@ class Paragraph extends Subshape
         return $this;
     }
 
-    public function getFont(): Font
-    {
-        return new Font($this->defRPr, $this->_parent->getLevelPPr($this->getLevel()), $this->theme);
-    }
-
     /**
      * @return int 默认层级为0
      */
