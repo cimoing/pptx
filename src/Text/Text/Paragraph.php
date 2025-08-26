@@ -112,14 +112,13 @@ class Paragraph extends Subshape
      */
     public function getHtmlLiTag(): string
     {
-        if (!$this->_p->pPr) {
-            return '';
-        }
+        $style = $this->_parent->getStyle($this->getLevel());
 
-        if (!empty($this->_p->pPr->buChar)) {
+        if ($this->_p->pPr?->buChar || $style->isBuChar()) {
             return 'ul';
         }
-        if (!empty($this->_p->pPr->buAutoNum)) {
+
+        if ($this->_p->pPr?->buAutoNum || $style->isBuAutoNum()) {
             return 'ol';
         }
 

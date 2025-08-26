@@ -19,11 +19,22 @@ class TextLevelParaStyle extends BaseObject
 
     private Theme $_theme;
 
-    public function __construct(array $styles, Theme $theme)
+    private ?CTLevelParaProperties $_properties;
+
+    private ?TextLevelParaStyle $_parent = null;
+
+    public function __construct(?CTLevelParaProperties $properties, Theme $theme)
     {
         parent::__construct([]);
-        $this->_levelStyles = $styles;
+        $this->_properties = $properties;
         $this->_theme = $theme;
+    }
+
+    public function withChild(CTLevelParaProperties $properties, Theme $theme): static
+    {
+        $o = new static($properties, $theme);
+        $o->_parent = $this;
+        return $o;
     }
 
     public static function parseTextCharacter(?CTTextCharacterProperties $properties, Theme $theme): array
@@ -36,7 +47,7 @@ class TextLevelParaStyle extends BaseObject
         $color = $fill->type === MsoFillType::SOLID ? $fill->foreColor : null;
 
         return array_filter([
-            'color' => (string) $color?->getRgb(),
+            'color' => (string) $color?->getRgb() ?: null,
             'font-size' => $properties->sz?->htmlVal,
             'font-family' => $properties->latin?->typeface,
             'font-bold' => $properties->b,
@@ -88,6 +99,20 @@ class TextLevelParaStyle extends BaseObject
         return new static($styles, $theme);
     }
 
+    public function getStyles(): array
+    {
+        return self::parseLevelParaProperties($this->_properties, $this->_theme);
+    }
+
+    public function getLevel(): int
+    {
+        $tagName = $this->_properties->tagName;
+        preg_match('/^lvl(%d)pPr$/m', $tagName, $matches);
+
+        assert(!empty($matches));
+        return (int) $matches[1];
+    }
+
     public function getStylesByLevel(int $level = 0): array
     {
         $arr = array_key_exists($level, $this->_levelStyles) ? $this->_levelStyles[$level] : [];
@@ -105,5 +130,17 @@ class TextLevelParaStyle extends BaseObject
     public function getMinorFont(): string
     {
         return $this->_theme->getMinorFont();
+    }
+
+    public function isBuChar(): bool
+    {
+        $o = $this->_properties?->buChar;
+        return !empty($o) || $this->_parent?->isBuChar();
+    }
+
+    public function isBuAutoNum(): bool
+    {
+        $o = $this->_properties?->buAutoNum;
+        return !empty($o);
     }
 }

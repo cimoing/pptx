@@ -13,6 +13,8 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
  * @property ?CTTextCharacterProperties $defRPr
  * @property ?PPParagraphAlignment $algn
  * @property int $lvl
+ * @property ?BaseOXmlElement $buChar
+ * @property ?BaseOXmlElement $buAutoNum
  */
 class CTTextParagraphProperties extends BaseOXmlElement
 {
@@ -24,4 +26,10 @@ class CTTextParagraphProperties extends BaseOXmlElement
 
     #[OptionalAttribute("algn", PPParagraphAlignment::class)]
     protected ?PPParagraphAlignment $_algn;
+
+    #[ZeroOrOne("a:buChar")]
+    protected mixed $_buChar;
+
+    #[ZeroOrOne("a:buAutoNum")]
+    protected mixed $_buAutoNum;
 }

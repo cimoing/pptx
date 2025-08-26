@@ -20,29 +20,29 @@ use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
 class CTListStyle extends BaseOXmlElement
 {
     #[ZeroOrOne("a:lvl1pPr")]
-    protected ?CTLevelParaProperties $_lvl1pPr = null;
+    protected ?CTLevelParaProperties $_lvl1pPr;
 
     #[ZeroOrOne("a:lvl2pPr")]
-    protected ?CTLevelParaProperties $_lvl2pPr = null;
+    protected ?CTLevelParaProperties $_lvl2pPr;
 
     #[ZeroOrOne("a:lvl3pPr")]
-    protected ?CTLevelParaProperties $_lvl3pPr = null;
+    protected ?CTLevelParaProperties $_lvl3pPr;
 
     #[ZeroOrOne("a:lvl4pPr")]
-    protected ?CTLevelParaProperties $_lvl4pPr = null;
+    protected ?CTLevelParaProperties $_lvl4pPr;
 
     #[ZeroOrOne("a:lvl5pPr")]
-    protected ?CTLevelParaProperties $_lvl5pPr = null;
+    protected ?CTLevelParaProperties $_lvl5pPr;
 
     #[ZeroOrOne("a:lvl6pPr")]
-    protected ?CTLevelParaProperties $_lvl6pPr = null;
+    protected ?CTLevelParaProperties $_lvl6pPr;
 
     #[ZeroOrOne("a:lvl7pPr")]
-    protected ?CTLevelParaProperties $_lvl7pPr = null;
+    protected ?CTLevelParaProperties $_lvl7pPr;
 
     #[ZeroOrOne("a:lvl8pPr")]
-    protected ?CTLevelParaProperties $_lvl8pPr = null;
+    protected ?CTLevelParaProperties $_lvl8pPr;
 
     #[ZeroOrOne("a:lvl9pPr")]
-    protected ?CTLevelParaProperties $_lvl9pPr = null;
+    protected ?CTLevelParaProperties $_lvl9pPr;
 }

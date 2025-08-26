@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Shapes\Placeholder;
 
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyleLst;
 use Imoing\Pptx\Shapes\Base\Transform2D;
 
 class SlidePlaceholder extends BaseSlidePlaceholder
@@ -18,5 +19,20 @@ class SlidePlaceholder extends BaseSlidePlaceholder
         }
 
         return $this->_transform;
+    }
+
+    private ?TextLevelParaStyleLst $_textLevelParaStyleLst = null;
+    public function getTextLevelParaStyleLst(): TextLevelParaStyleLst
+    {
+        if (is_null($this->_textLevelParaStyleLst)) {
+            $parent = $this->getBasePlaceholder()->getTextLevelParaStyleLst();
+            if ($this->_element->txBody?->lstStyle) {
+                $this->_textLevelParaStyleLst = $parent->withChild($this->_element->txBody->lstStyle, $this->theme);
+            } else {
+                $this->_textLevelParaStyleLst = $parent;
+            }
+        }
+
+        return $this->_textLevelParaStyleLst;
     }
 }

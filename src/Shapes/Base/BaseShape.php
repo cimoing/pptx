@@ -11,9 +11,11 @@ use Imoing\Pptx\Enum\MsoAutoShapeType;
 use Imoing\Pptx\Enum\MsoShapeType;
 use Imoing\Pptx\OXml\Shapes\Shared\BaseShapeElement;
 use Imoing\Pptx\OXml\Shapes\Shared\CTPoint2D;
+use Imoing\Pptx\OXml\Shapes\Shared\CTTransform2D;
 use Imoing\Pptx\Parts\Slide\BaseSlidePart;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
 use Imoing\Pptx\Shapes\GroupShape;
+use Imoing\Pptx\Shapes\Placeholder\BaseSlidePlaceholder;
 use Imoing\Pptx\Shapes\ShapeTree\BasePlaceholders;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutShapes;
 use Imoing\Pptx\Shapes\ShapeTree\SlideShapes;
@@ -193,16 +195,33 @@ abstract class BaseShape extends BaseObject implements ProvidesPart
         return new PlaceholderFormat($ph);
     }
 
+    protected function getTransform2DEle(): ?CTTransform2D
+    {
+        $transform = $this->_element->getXfrm();
+        if (empty($transform) && $this->isPlaceholder && $this instanceof BaseSlidePlaceholder) {
+            $ph = $this->getBasePlaceholder();
+            $transform = $ph->getXfrm();
+        }
+
+        return $transform;
+    }
+
     private ?Transform2D $_transform2D = null;
+
+    /**
+     * 2D形变，包含继承关系，继承关系为Group->Shape的上下级关系
+     * 当形状为占位符时，xfrm遵循 slide<-layout<-master 的获取逻辑，优先通过idx获取，当idx不存在时通过占位符类型获取
+     * @return Transform2D|null
+     */
     public function getTransform2D(): ?Transform2D
     {
         if (is_null($this->_transform2D)) {
-            $xfrm = $this->_element->getXfrm();
-            if (!$xfrm) {
+            $transform2DEle = $this->getTransform2DEle();
+            if (!$transform2DEle) {
                 return null;
             }
 
-            $this->_transform2D = new Transform2D($xfrm, $this->_parent->getTransform2D());
+            $this->_transform2D = new Transform2D($transform2DEle, $this->_parent->getTransform2D());
         }
 
         return $this->_transform2D;

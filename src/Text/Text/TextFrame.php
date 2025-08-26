@@ -6,6 +6,7 @@ use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Text\CTTextBody;
 use Imoing\Pptx\Shapes\AutoShape\Shape;
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
 use Imoing\Pptx\Shapes\Base\Theme;
 use Imoing\Pptx\Shapes\Subshape;
 
@@ -76,10 +77,15 @@ class TextFrame extends Subshape
         return $this->_element->lstStyle;
     }
 
+    public function getStyle(int $level): TextLevelParaStyle
+    {
+        return $this->_parent->getTextLevelParaStyleLst()->getLevelParaStyle($level);
+    }
+
     public function getLevelStyles(int $level): array
     {
-        $style = $this->_parent->getTextLevelParaStyle();
-        $arr = $style->getStylesByLevel($level);
+        $style = $this->getStyle($level);
+        $arr = $style->getStyles();
         if (empty($arr['font-family'])) {
             $arr['font-family'] = $this->isMajor ? $style->getMajorFont() : $style->getMinorFont();
         }
@@ -119,7 +125,7 @@ class TextFrame extends Subshape
             $tag = $p->getHtmlLiTag();
             if ($tag !== $lastTag) {
                 if (!empty($lastTag)) {
-                    $html = "</$lastTag>";
+                    $html .= "</$lastTag>";
                 }
                 $lastTag = $tag;
                 $html .= "<$tag>";

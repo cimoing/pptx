@@ -25,13 +25,18 @@ class BaseSlidePlaceholder extends Shape
         return MsoShapeType::PLACEHOLDER;
     }
 
-    protected function getBasePlaceholder(): mixed
+    protected function getBasePlaceholder(): ?LayoutPlaceholder
     {
         list($layout, $idx) = [$this->part->slideLayout, $this->_element->phIdx];
         $ph = $layout->placeholders->get($idx);
         if (!$ph) {
             $ph = $layout->placeholders->getByType($this->_element->phType);
         }
+
+        if (!$ph) {
+            $ph = $layout->slideMaster->placeholders->get($this->_element->phType);
+        }
+
         return $ph;
     }
 

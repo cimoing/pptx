@@ -18,6 +18,7 @@ use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\OXml\SimpleTypes\Formula;
 use Imoing\Pptx\Shapes\Base\BaseShape;
 use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
+use Imoing\Pptx\Shapes\Base\TextLevelParaStyleLst;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
 use Imoing\Pptx\Text\Text\TextFrame;
 use Imoing\Pptx\Types\ProvidesPart;
@@ -122,32 +123,14 @@ class Shape extends BaseShape
         return new TextFrame($txBody, $this);
     }
 
-    private ?TextLevelParaStyle $_textLevelParaStyle = null;
-    public function getTextLevelParaStyle(): TextLevelParaStyle
+    private ?TextLevelParaStyleLst $_textLevelParaStyleLst = null;
+    public function getTextLevelParaStyleLst(): TextLevelParaStyleLst
     {
-        if (is_null($this->_textLevelParaStyle)) {
-            $ph = $this->_element->getPh();
-            if (!empty($ph)) {
-                $placeholder = $this->_parent->getLayoutPlaceholders()->get($ph->idx);
-                if ($placeholder) {
-                    $this->_textLevelParaStyle = $placeholder->getTextLevelParaStyle();
-                } else {
-                    $placeholder = $this->_parent->getLayoutPlaceholders()->getByType($ph->type);
-                }
-                if ($placeholder) {
-                    $this->_textLevelParaStyle = $placeholder->getTextLevelParaStyle();
-                }
-            }
-
-            $override = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
-            if ($this->_textLevelParaStyle) {
-                $this->_textLevelParaStyle = $this->_textLevelParaStyle->withStyles($override, $this->theme);
-            } else {
-                $this->_textLevelParaStyle = new TextLevelParaStyle($override, $this->theme);
-            }
+        if (is_null($this->_textLevelParaStyleLst)) {
+            $this->_textLevelParaStyleLst = new TextLevelParaStyleLst($this->_element->txBody?->lstStyle, $this->theme);
         }
 
-        return $this->_textLevelParaStyle;
+        return $this->_textLevelParaStyleLst;
     }
 
     public function getLayoutPlaceholders(): LayoutPlaceholders

@@ -13,6 +13,8 @@ use Imoing\Pptx\Util\Length;
  * @property ?PPParagraphAlignment $algn
  * @property ?Length $defTabSz
  * @property ?CTTextCharacterProperties $defRPr
+ * @property ?BaseOXmlElement $buChar
+ * @property ?BaseOXmlElement $buAutoNum
  */
 class CTLevelParaProperties extends BaseOXmlElement
 {
@@ -24,4 +26,10 @@ class CTLevelParaProperties extends BaseOXmlElement
 
     #[ZeroOrOne("a:defRPr", successors: ["a:extLst"])]
     protected ?CTTextCharacterProperties $_defRPr;
+
+    #[ZeroOrOne("a:buChar")]
+    protected mixed $_buChar;
+
+    #[ZeroOrOne("a:buAutoNum")]
+    protected mixed $_buAutoNum;
 }
