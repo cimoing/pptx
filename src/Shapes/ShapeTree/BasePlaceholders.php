@@ -12,11 +12,4 @@ abstract class BasePlaceholders extends BaseShapes
     {
         return $shapeElement->hasPhElm;
     }
-
-    public function getTextLevelParaStyle(): TextLevelParaStyle
-    {
-        $items = TextLevelParaStyle::parseListStyle($this->_element->txBody?->lstStyle, $this->theme);
-
-        return new TextLevelParaStyle($items, $this->theme);
-    }
 }

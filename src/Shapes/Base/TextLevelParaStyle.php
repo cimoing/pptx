@@ -8,7 +8,6 @@ use Imoing\Pptx\Enum\MsoFillType;
 use Imoing\Pptx\Enum\MsoTextStrikeType;
 use Imoing\Pptx\Enum\MsoTextUnderlineType;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
-use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Text\CTTextCharacterProperties;
 
 /**
@@ -75,42 +74,9 @@ class TextLevelParaStyle extends BaseObject
         }));
     }
 
-    public static function parseListStyle(?CTListStyle $listStyle, Theme $theme): array
-    {
-        $items = [];
-        for ($i = 0; $i < 9; $i++) {
-            $name = sprintf("lvl%dpPr", $i + 1);
-            $items[$i] = self::parseLevelParaProperties($listStyle->{$name}, $theme);
-        }
-
-        return $items;
-    }
-
-    public function withListStyle(?CTListStyle $listStyle, Theme $theme): static
-    {
-        $items = self::parseListStyle($listStyle, $theme);
-        return $this->withStyles($items, $theme);
-    }
-
-    public function withStyles(array $styles, Theme $theme): static
-    {
-        $styles = array_merge_recursive($this->_levelStyles, $styles);
-
-        return new static($styles, $theme);
-    }
-
     public function getStyles(): array
     {
         return self::parseLevelParaProperties($this->_properties, $this->_theme);
-    }
-
-    public function getLevel(): int
-    {
-        $tagName = $this->_properties->tagName;
-        preg_match('/^lvl(%d)pPr$/m', $tagName, $matches);
-
-        assert(!empty($matches));
-        return (int) $matches[1];
     }
 
     public function getStylesByLevel(int $level = 0): array

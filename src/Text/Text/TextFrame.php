@@ -85,12 +85,7 @@ class TextFrame extends Subshape
     public function getLevelStyles(int $level): array
     {
         $style = $this->getStyle($level);
-        $arr = $style->getStyles();
-        if (empty($arr['font-family'])) {
-            $arr['font-family'] = $this->isMajor ? $style->getMajorFont() : $style->getMinorFont();
-        }
-
-        return $arr;
+        return $style->getStyles();
     }
 
     public function getIsVertical(): bool

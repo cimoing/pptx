@@ -183,6 +183,8 @@ class Shape extends BaseShape
             $textFrame->setMajor($textType->isMajor());
         }
 
+        $style = $this->getTextLevelParaStyleLst()->getLevelParaStyle(0); // 默认使用第一级样式
+
         return array_merge([
             'type' => 'text',
             'content' => $textFrame->toHtml(),
