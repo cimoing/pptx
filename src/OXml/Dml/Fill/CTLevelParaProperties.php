@@ -3,10 +3,12 @@
 namespace Imoing\Pptx\OXml\Dml\Fill;
 
 use Imoing\Pptx\Enum\PPParagraphAlignment;
+use Imoing\Pptx\OXml\SimpleTypes\STCoordinate32;
 use Imoing\Pptx\OXml\Text\CTTextCharacterProperties;
 use Imoing\Pptx\OXml\XmlChemy\BaseOXmlElement;
 use Imoing\Pptx\OXml\XmlChemy\OptionalAttribute;
 use Imoing\Pptx\OXml\XmlChemy\ZeroOrOne;
+use Imoing\Pptx\Util\Emu;
 use Imoing\Pptx\Util\Length;
 
 /**
@@ -22,7 +24,7 @@ class CTLevelParaProperties extends BaseOXmlElement
 
     protected string $_algn;
 
-    #[OptionalAttribute("defTabSz", Length::class)]
+    #[OptionalAttribute("defTabSz", STCoordinate32::class, default: new Emu(0))]
     protected ?Length $_defTabSz;
 
     #[ZeroOrOne("a:defRPr", successors: ["a:extLst"])]
