@@ -21,7 +21,6 @@ use Imoing\Pptx\Util\Length;
 class CTLevelParaProperties extends BaseOXmlElement
 {
     #[OptionalAttribute("algn", PPParagraphAlignment::class, default: PPParagraphAlignment::LEFT)]
-
     protected string $_algn;
 
     #[OptionalAttribute("defTabSz", STCoordinate32::class, default: new Emu(0))]
