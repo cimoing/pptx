@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Shapes\Placeholder;
 
+use Imoing\Pptx\Enum\MsoVerticalAnchor;
 use Imoing\Pptx\Shapes\Base\TextLevelParaStyleLst;
 use Imoing\Pptx\Shapes\Base\Transform2D;
 
@@ -34,5 +35,15 @@ class SlidePlaceholder extends BaseSlidePlaceholder
         }
 
         return $this->_textLevelParaStyleLst;
+    }
+
+    public function getTextVAlign(): ?MsoVerticalAnchor
+    {
+        $anchor = parent::getTextVAlign();
+        if (!$anchor) {
+            $anchor = $this->getBasePlaceholder()->getTextVAlign();
+        }
+
+        return $anchor;
     }
 }

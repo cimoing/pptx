@@ -7,23 +7,16 @@ use Imoing\Pptx\Dml\Fill\FillFormat;
 use Imoing\Pptx\Dml\Line\LineFormat;
 use Imoing\Pptx\Enum\MsoAutoShapeType;
 use Imoing\Pptx\Enum\MsoShapeType;
-use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
-use Imoing\Pptx\OXml\Drawing\CTListStyle;
-use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DClose;
-use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DCubicBezTo;
-use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DLineTo;
-use Imoing\Pptx\OXml\Shapes\AutoShape\CTPath2DMoveTo;
+use Imoing\Pptx\Enum\MsoVerticalAnchor;
 use Imoing\Pptx\OXml\Shapes\AutoShape\CTShape;
 use Imoing\Pptx\OXml\Shapes\Shared\CTLineProperties;
 use Imoing\Pptx\OXml\SimpleTypes\Formula;
 use Imoing\Pptx\Shapes\Base\BaseShape;
-use Imoing\Pptx\Shapes\Base\TextLevelParaStyle;
 use Imoing\Pptx\Shapes\Base\TextLevelParaStyleLst;
 use Imoing\Pptx\Shapes\ShapeTree\LayoutPlaceholders;
 use Imoing\Pptx\Text\Text\TextFrame;
 use Imoing\Pptx\Types\ProvidesPart;
 use Imoing\Pptx\Util\Emu;
-use Imoing\Pptx\Util\Length;
 
 /**
  * @property-read  TextFrame $textFrame
@@ -170,6 +163,11 @@ class Shape extends BaseShape
         return $arr;
     }
 
+    public function getTextVAlign(): ?MsoVerticalAnchor
+    {
+        return $this->_element->txBody?->bodyPr?->anchor;
+    }
+
     public function getTextArr(): ?array
     {
         $textFrame = $this->getTextFrame();
@@ -183,23 +181,22 @@ class Shape extends BaseShape
             $textFrame->setMajor($textType->isMajor());
         }
 
-        $style = $this->getTextLevelParaStyleLst()->getLevelParaStyle(0); // 默认使用第一级样式
-
-        return array_merge([
-            'type' => 'text',
+        //$style = $this->getTextLevelParaStyleLst()->getLevelParaStyle(0); // 默认使用第一级样式
+        return [
             'content' => $textFrame->toHtml(),
             'defaultFontName' => $this->theme->getMajorFont(), // theme.fontName
             'defaultColor' => '', // theme.fontColor
-            'lineHeight' => 1,
-            'vertical' => $textFrame->isVertical,
-            'textType' => $textType?->getTextType(),
+            //'lineHeight' => 1,
+            //'vertical' => $textFrame->isVertical,
+            'align' => $this->getTextVAlign()?->getHtmlValue() ?: '',
+            'type' => $textType?->getTextType(),
             // lineHeight 行高
             // wordSpace 字间距
             // opacity 不透明度
             // shadow 阴影
             // paragraphSpace 段落间距
             // align 文本对齐方式
-        ], $this->getFillArr());
+        ];
     }
 
     /**
@@ -216,7 +213,13 @@ class Shape extends BaseShape
             return $this->getCustomGeomArray();
         }
 
-        return [];
+        return array_merge([
+            'type' => 'shape',
+            'shapeType' => 'rect',
+            'viewBox' => [200,200],
+            'path' => '',
+            'fill' => $this->getFillArr(),
+        ], $this->getSvgBox());
     }
 
     private function getPrstGeomArray(): array
@@ -348,17 +351,8 @@ class Shape extends BaseShape
         if (!empty($shape) && $shape['type'] == 'shape') {
             $text = $this->getTextArr();
             if ($text) {
-                $shape['text'] = [
-                    'content' => $text['content'],
-                    'defaultFontName' => $text['defaultFontName'],
-                    'defaultColor' => $text['defaultColor'],
-                    'align' => $text['align'] ?? null,
-                    'type' => $text['textType'] ?? '', // 'title' | 'subtitle' | 'content' | 'item' | 'itemTitle' | 'notes' | 'header' | 'footer' | 'partNumber' | 'itemNumber'
-                ];
+                $shape['text'] = $text;
             }
-        }
-        if (empty($shape)) {
-            $shape = array_merge($this->getTextArr(), $this->getSvgBox());
         }
         return array_merge(parent::toArray(),  $shape);
     }

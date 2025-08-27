@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Shapes\Placeholder;
 
+use Imoing\Pptx\Enum\MsoVerticalAnchor;
 use Imoing\Pptx\Enum\PPPlaceholderType;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Drawing\CTListStyle;
@@ -47,5 +48,15 @@ class LayoutPlaceholder extends Shape
         }
 
         return $this->_textLevelParaStyleLst;
+    }
+
+    public function getTextVAlign(): ?MsoVerticalAnchor
+    {
+        $anchor = parent::getTextVAlign();
+        if (!$anchor) {
+            $anchor = $this->getBasePlaceholder()->getTextVAlign();
+        }
+
+        return $anchor;
     }
 }

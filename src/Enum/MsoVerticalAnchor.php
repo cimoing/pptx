@@ -39,9 +39,9 @@ enum MsoVerticalAnchor: int implements IBaseXmlEnum
     public function getHtmlValue(): string
     {
         return match ($this) {
-            self::TOP => 'start',
-            self::MIDDLE, self::MIXED => 'center',
-            self::BOTTOM => 'end',
+            self::TOP => 'top',
+            self::MIDDLE, self::MIXED => 'middle',
+            self::BOTTOM => 'bottom',
         };
     }
 }

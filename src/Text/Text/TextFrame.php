@@ -2,6 +2,7 @@
 
 namespace Imoing\Pptx\Text\Text;
 
+use Imoing\Pptx\Enum\MsoVerticalAnchor;
 use Imoing\Pptx\OXml\Dml\Fill\CTLevelParaProperties;
 use Imoing\Pptx\OXml\Drawing\CTListStyle;
 use Imoing\Pptx\OXml\Text\CTTextBody;
@@ -96,6 +97,11 @@ class TextFrame extends Subshape
     protected function getTheme(): Theme
     {
         return $this->_parent->theme;
+    }
+
+    public function getVAlign(): ?MsoVerticalAnchor
+    {
+        return $this->_txBody->bodyPr?->anchor;
     }
 
     public function getHtmlStyles(): array
