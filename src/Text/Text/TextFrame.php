@@ -22,8 +22,6 @@ class TextFrame extends Subshape
     protected CTTextBody $_element;
     protected CTTextBody $_txBody;
 
-    protected bool $isMajor = false;
-
     public function __construct(CTTextBody $txBody, Shape $parent)
     {
         parent::__construct($parent);
@@ -31,12 +29,7 @@ class TextFrame extends Subshape
         $this->_txBody = $this->_element = $txBody;
     }
 
-    public function setMajor(bool $major): void
-    {
-        $this->isMajor = $major;
-    }
-
-    public function getParagraphs(): array
+    protected function getParagraphs(): array
     {
         $items = [];
         foreach ($this->_txBody->p_lst as $p) {
@@ -71,11 +64,6 @@ class TextFrame extends Subshape
             $p = $txBody->add_p();
             $p->append_text($line);
         }
-    }
-
-    public function getListStyle(): CTListStyle
-    {
-        return $this->_element->lstStyle;
     }
 
     public function getStyle(int $level): TextLevelParaStyle

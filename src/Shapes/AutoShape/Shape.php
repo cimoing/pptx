@@ -178,24 +178,14 @@ class Shape extends BaseShape
         $textType = null;
         if ($this->isPlaceholder) {
             $textType = $this->placeholderFormat->type;
-            $textFrame->setMajor($textType->isMajor());
         }
 
-        //$style = $this->getTextLevelParaStyleLst()->getLevelParaStyle(0); // 默认使用第一级样式
         return [
             'content' => $textFrame->toHtml(),
             'defaultFontName' => $this->theme->getMajorFont(), // theme.fontName
             'defaultColor' => '', // theme.fontColor
-            //'lineHeight' => 1,
-            //'vertical' => $textFrame->isVertical,
             'align' => $this->getTextVAlign()?->getHtmlValue() ?: '',
             'type' => $textType?->getTextType(),
-            // lineHeight 行高
-            // wordSpace 字间距
-            // opacity 不透明度
-            // shadow 阴影
-            // paragraphSpace 段落间距
-            // align 文本对齐方式
         ];
     }
 
@@ -348,7 +338,7 @@ class Shape extends BaseShape
     public function toArray(): array
     {
         $shape = $this->getGeometryArr();
-        if (!empty($shape) && $shape['type'] == 'shape') {
+        if (!empty($shape) && $shape['type'] == 'shape' && empty($shape['text'])) {
             $text = $this->getTextArr();
             if ($text) {
                 $shape['text'] = $text;
